@@ -6,6 +6,15 @@ package com.example.kolas.lab1_tpcs;
 public class SimpleArrow
 {
     float x_from,x_to,y_from,y_to;
+    boolean horizontal;
+
+    public boolean isHorizontal() {
+        return horizontal;
+    }
+
+    public void setHorizontal(boolean horizontal) {
+        this.horizontal = horizontal;
+    }
 
     public float getX_from() {
         return x_from;
@@ -39,7 +48,12 @@ public class SimpleArrow
         this.y_to = y_to;
     }
 
-    public SimpleArrow(float x_from, float x_to, float y_from, float y_to) {
+    public SimpleArrow(float x_from, float y_from) {
+        this.x_from = x_from;
+        this.y_from = y_from;
+    }
+
+    public SimpleArrow(float x_from, float y_from, float x_to, float y_to) {
 
         this.x_from = x_from;
         this.x_to = x_to;

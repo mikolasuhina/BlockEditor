@@ -22,14 +22,27 @@ public class MySurfaceView extends SurfaceView implements
        Paint p =new Paint();
        p.setColor(Color.WHITE);
 
-           for (Link sarrow:allArrows) {
+if(MainActivity.arrow){
+    for (SimpleArrow s:MainActivity.lines
+         ) {
+        canvas.drawLine(s.getX_from(),s.getY_from(),s.getX_to(),s.getY_to(),p);
+
+    }
+    canvas.drawLine(MainActivity.sa.getX_from(),MainActivity.sa.getY_from(),MainActivity.nx,MainActivity.ny,p);
+}
+
+
+          for (Link sarrow:allArrows) {
+              canvas.drawLine(MainActivity.allobj.get(sarrow.getId_from()).getX_center(),MainActivity.allobj.get(sarrow.getId_from()).getY_center_bottom(),sarrow.arrows.get(0).getX_from(),sarrow.arrows.get(0).getY_from(),p);
+               for (SimpleArrow sa:sarrow.getArrows()){
+                canvas.drawLine(sa.getX_from(),sa.getY_from(),sa.getX_to(),sa.getY_to(),p);
+               }
               // canvas.drawLine(sarrow.getX_from(),sarrow.getX_to(),sarrow.getY_from(),sarrow.getY_to(),p);
-               canvas.drawLine(MainActivity.allobj.get(sarrow.getId_from()).getX_center(),MainActivity.allobj.get(sarrow.getId_from()).getY_center_bottom(),MainActivity.allobj.get(sarrow.getId_to()).getX_center(),MainActivity.allobj.get(sarrow.getId_to()).getY_center_top(),p);
+              canvas.drawLine(sarrow.arrows.get(sarrow.arrows.size()-1).getX_to(),sarrow.arrows.get(sarrow.arrows.size()-1).getY_to(),MainActivity.allobj.get(sarrow.getId_to()).getX_center(),MainActivity.allobj.get(sarrow.getId_to()).getY_center_top(),p);
 
            }
 
 
-       x++;
 
     }
 
