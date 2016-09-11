@@ -13,6 +13,20 @@ public class BlocObj {
     private float x,y;
     private  int width,height;
     int color;
+    BlocTypes type;
+    private PointLink in_Point;
+    private PointLink out_Point;
+
+    public BlocObj(float x, float y, int width, int height, int color, BlocTypes type) {
+        this.x = x;
+        this.y = y;
+        this.width = width;
+        this.height = height;
+        this.color = color;
+        this.type = type;
+        in_Point =new PointLink(getX()+getWidth()/2,getY(),true);
+        out_Point=new PointLink(getX()+getWidth()/2,getY()+getHeight(),false);
+    }
 
     public int getColor() {
         return color;
@@ -22,7 +36,22 @@ public class BlocObj {
         this.color = color;
     }
 
+    public BlocTypes getType() {
+        return type;
+    }
+
+    public void setType(BlocTypes type) {
+        this.type = type;
+    }
+
+    public BlocObj(BlocTypes type) {
+
+        this.type = type;
+    }
+
     public PointLink getIn_Point() {
+        getInLink();
+
         return in_Point;
     }
 
@@ -31,6 +60,8 @@ public class BlocObj {
     }
 
     public PointLink getOut_Point() {
+
+        getOutLink();
         return out_Point;
     }
 
@@ -38,8 +69,7 @@ public class BlocObj {
         this.out_Point = out_Point;
     }
 
-      private PointLink in_Point;
-      private PointLink out_Point;
+
 
 
 
@@ -87,15 +117,17 @@ public class BlocObj {
 
 
 
+   public void getInLink(){
+       in_Point.setX(getX()+getWidth()/2);
+       in_Point.setY(getY()-getHeight()/4);
 
+   }
 
-    public BlocObj(float x, float y, int width, int height) {
-        this.x = x;
-        in_Point=new PointLink();
-        out_Point=new PointLink();
-        this.y = y;
-        this.width = width;
-        this.height = height;
+    public void getOutLink(){
+        out_Point.setX(getX()+getWidth()/2);
+        out_Point.setY(getY()+getHeight()+getHeight()/4);
+
+    }
 
 
     }
@@ -104,4 +136,4 @@ public class BlocObj {
 
 
 
-}
+

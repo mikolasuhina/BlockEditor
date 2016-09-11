@@ -10,28 +10,7 @@ import java.util.ArrayList;
 public class RhombBloc extends BlocObj {
 
 
-
-    PointLink in_point;
-    PointLink out_point;
-
-    public RhombBloc(float x, float y, int width, int height) {
-        super(x, y, width, height);
-        in_point =new PointLink(getX()+getWidth()/2,getY(),true);
-        out_point=new PointLink(getX()+getWidth()/2,getY()+getHeight()/2,false);
-
-    }
-
-    @Override
-    public PointLink getIn_Point() {
-        in_point.setX(getX()+getWidth()/2);
-        in_point.setY(getY());
-        return in_point;
-    }
-
-    @Override
-    public PointLink getOut_Point() {
-       out_point.setX(getX()+getWidth()/2);
-        out_point.setY(getY()+getHeight()/2);
-        return out_point;
+    public RhombBloc(float x, float y, int width, int height, int color, BlocTypes type) {
+        super(x, y, width, height, color, type);
     }
 }

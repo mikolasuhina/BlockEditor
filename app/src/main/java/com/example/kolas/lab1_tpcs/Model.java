@@ -4,6 +4,7 @@ import android.graphics.Color;
 
 import com.example.kolas.lab1_tpcs.blocs.BeginBlock;
 import com.example.kolas.lab1_tpcs.blocs.BlocObj;
+import com.example.kolas.lab1_tpcs.blocs.BlocTypes;
 import com.example.kolas.lab1_tpcs.blocs.EndBloc;
 import com.example.kolas.lab1_tpcs.blocs.ReckBloc;
 import com.example.kolas.lab1_tpcs.blocs.RhombBloc;
@@ -44,17 +45,17 @@ public class Model {
         allLinks.add(newLinc);
     }
 
-    void addingNewBloc(String type, float x, float y, int w, int h){
+    void addingNewBloc(BlocTypes type, float x, float y, int w, int h){
       if(thisBloc!=null)
           thisBloc.setColor(Color.WHITE);
         switch (type){
-            case "rect":{thisBloc = new ReckBloc(x-w/2,y-h/2,w,h);
+            case RECT:{thisBloc = new ReckBloc(x,y,w,h,Color.GREEN,type);
                 break;}
-            case "begin":{thisBloc = new BeginBlock(x,y,w,h);
+            case BEGIN:{thisBloc = new BeginBlock(x,y,w,h,Color.GREEN,type);
                 break;}
-            case "end":{thisBloc = new EndBloc(x,y,w,h);
+            case END:{thisBloc = new EndBloc(x,y,w,h,Color.GREEN,type);
                 break;}
-            case "rhomb":{thisBloc = new RhombBloc(x,y,w,h);
+            case RHOMB:{thisBloc = new RhombBloc(x,y,w,h,Color.GREEN,type);
                 break;}
         }
         setIdforBloc();
@@ -73,19 +74,13 @@ public class Model {
 
     private void coloring(){
         for (BlocObj obj:allBlocs) {
-            if(obj.equals(thisBloc)){
-                obj.setColor(Color.GREEN);
-
-            }else obj.setColor(Color.WHITE);
+            if(!obj.equals(thisBloc))
+                obj.setColor(Color.WHITE);
 
         }
     }
 
-    private void setColorForBloc(int color){
 
-        thisBloc.setColor(color);
-
-    }
     void setPosForThisBloc(float x,float y){
         thisBloc.setX(x-thisBloc.getWidth()/2);
         thisBloc.setY(y-thisBloc.getHeight()/2);
@@ -140,7 +135,7 @@ public class Model {
     }
 
     private  void calcway(float x, float y){
-        if(Math.abs((double) (thisSimpleArrow.getX_from()-x))>20) {
+        if(Math.abs((double) (thisSimpleArrow.getX_from()-x))>100) {
 
            thisSimpleArrow.setX_to(x);
            thisSimpleArrow.setY_to(thisSimpleArrow.getY_from());
@@ -151,7 +146,7 @@ public class Model {
             thisSimpleArrow = new SimpleArrow(x,thisSimpleArrow.getY_from());
 
 
-        }else if(Math.abs((double) (thisSimpleArrow.getY_from()-y))>20){
+        }else if(Math.abs((double) (thisSimpleArrow.getY_from()-y))>100){
            thisSimpleArrow.setX_to(thisSimpleArrow.getX_from());
            thisSimpleArrow.setY_to(y);
            thisSimpleArrow.setHorizontal(false);
@@ -168,6 +163,7 @@ public class Model {
             calcway(x,y);
         }else {
             searchThisBlocCrossing();
+
           if(thisArrows.get(thisArrows.size()-1).isHorizontal())
                 thisArrows.get(thisArrows.size()-1).setX_to(thisBloc.getIn_Point().getX());
                 else
@@ -248,6 +244,11 @@ public class Model {
            thisArrows.add(thisSimpleArrow);
 
    }
-
+public  void  clear(){
+    allBlocs.clear();
+    allLinks.clear();
+    id_counter=0;
+    IdCrossing=0;
+}
     
 }

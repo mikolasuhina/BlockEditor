@@ -9,28 +9,71 @@ android:orientation="vertical"
     <LinearLayout
         android:orientation="horizontal"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:background="#2efe17">
 
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="add"
-            android:id="@+id/button2"
-            android:onClick="onClick" />
-
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="link"
-            android:id="@+id/line"
-            android:onClick="onClick" />
+            android:text="Clear"
+            android:id="@+id/clear"
+            android:onClick="onClick"
+            android:layout_marginLeft="100dp" />
     </LinearLayout>
 
-    <FrameLayout
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:id="@+id/frame">
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
-</FrameLayout>
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:background="#f5ba24">
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Rect"
+                android:id="@+id/addrect"
+                android:onClick="onClick" />
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="rhomb"
+                android:id="@+id/rhomb"
+                android:onClick="onClick" />
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="begin"
+                android:id="@+id/begin"
+                android:onClick="onClick" />
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="end"
+                android:id="@+id/end"
+                android:onClick="onClick" />
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="link"
+                android:id="@+id/line"
+                android:onClick="onClick" />
+        </LinearLayout>
+
+        <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/frame">
+
+    </FrameLayout>
+    </LinearLayout>
 
 </LinearLayout>

@@ -18,6 +18,7 @@ import android.widget.FrameLayout;
 import android.widget.Toast;
 
 import com.example.kolas.lab1_tpcs.blocs.BlocObj;
+import com.example.kolas.lab1_tpcs.blocs.BlocTypes;
 import com.example.kolas.lab1_tpcs.blocs.ReckBloc;
 import com.example.kolas.lab1_tpcs.blocs.RhombBloc;
 
@@ -129,8 +130,32 @@ FrameLayout frame;
 
                 break;
             }
-            case R.id.button2: {
-                model.addingNewBloc("rect",0,0,100,100);
+            case R.id.addrect: {
+                model.addingNewBloc(BlocTypes.RECT,0,0,100,100);
+                break;
+
+            }
+            case R.id.rhomb: {
+                model.addingNewBloc(BlocTypes.RHOMB,0,0,100,100);
+                break;
+
+            }
+            case R.id.end: {
+                model.addingNewBloc(BlocTypes.END,0,0,100,50);
+                break;
+
+            }
+            case R.id.begin: {
+                model.addingNewBloc(BlocTypes.BEGIN,0,0,100,50);
+                break;
+
+            }
+
+            case  R.id.clear:{
+               model.clear();
+
+                fsurface.drawajjej();
+                break;
 
             }
     }

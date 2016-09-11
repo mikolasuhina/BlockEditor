@@ -7,35 +7,16 @@ import com.example.kolas.lab1_tpcs.PointLink;
  */
 public class EndBloc extends BlocObj {
 
-    PointLink in_point;
 
-    public PointLink getIn_point() {
-        return in_point;
+
+    public EndBloc(float x, float y, int width, int height, int color, BlocTypes type) {
+        super(x, y, width, height, color, type);
     }
 
-    public void setIn_point(PointLink in_point) {
-        this.in_point = in_point;
-    }
-
-    public EndBloc(float x, float y, int width, int height) {
-        super(x, y, width, height);
-
-        in_point =new PointLink(getX()+getWidth()/2,getY(),true);
-
-
-    }
-
-    @Override
-    public PointLink getIn_Point() {
-        in_point.setX(getX()+getWidth()/2);
-        in_point.setY(getY());
-
-        return in_point;
-
-    }
 
     @Override
     public PointLink getOut_Point() {
+
         return null;
     }
 }

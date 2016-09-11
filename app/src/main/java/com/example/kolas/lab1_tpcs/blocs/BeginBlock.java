@@ -7,26 +7,9 @@ import com.example.kolas.lab1_tpcs.PointLink;
  */
 public class BeginBlock extends BlocObj {
 
-    public PointLink getOut_point() {
-        return out_point;
+    public BeginBlock(float x, float y, int width, int height, int color, BlocTypes type) {
+        super(x, y, width, height, color, type);
     }
-
-    public void setOut_point(PointLink out_point) {
-        this.out_point = out_point;
-    }
-
-    PointLink out_point;
-
-    public BeginBlock(float x, float y, int width, int height) {
-        super(x, y, width, height);
-
-        out_point=new PointLink(getX()+getWidth()/2,getY()+getHeight(),false);
-
-
-
-
-    }
-
 
     @Override
     public PointLink getIn_Point() {
@@ -35,11 +18,5 @@ public class BeginBlock extends BlocObj {
 
     }
 
-    @Override
-    public PointLink getOut_Point() {
-        out_point.setX(getX()+getWidth()/2);
-        out_point.setY(getY()+getHeight());
 
-        return out_point;
-    }
 }

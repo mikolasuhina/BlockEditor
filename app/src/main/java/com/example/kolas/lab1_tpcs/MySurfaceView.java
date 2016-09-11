@@ -5,6 +5,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.PorterDuff;
+import android.graphics.RectF;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
@@ -26,11 +27,37 @@ public class MySurfaceView extends SurfaceView implements
 
 
     for (BlocObj blocObj : model.allBlocs) {
-        p.setColor(blocObj.getColor());
+        switch (blocObj.getType()){
+            case RECT:{  p.setColor(blocObj.getColor());
         canvas.drawRect(blocObj.getX(), blocObj.getY(), blocObj.getX() + blocObj.getWidth(), blocObj.getY() + blocObj.getHeight(), p);
+        if(blocObj.getIn_Point()!=null)
         canvas.drawLine(blocObj.getIn_Point().getX(),blocObj.getIn_Point().getY(),blocObj.getIn_Point().getX(),blocObj.getIn_Point().getY()+blocObj.getHeight()/4,p);
+        if(blocObj.getOut_Point()!=null)
         canvas.drawLine(blocObj.getOut_Point().getX(),blocObj.getOut_Point().getY(),blocObj.getOut_Point().getX(),blocObj.getOut_Point().getY()-blocObj.getHeight()/4,p);
-    }
+       break; }
+            case RHOMB:{
+                p.setColor(blocObj.getColor());
+                canvas.rotate(45,blocObj.getX()+blocObj.getWidth()/2,blocObj.getY()+blocObj.getHeight()/2);
+            canvas.drawRect(blocObj.getX(), blocObj.getY(), blocObj.getX() + blocObj.getWidth(), blocObj.getY() + blocObj.getHeight(), p);
+                canvas.rotate(-45,blocObj.getX()+blocObj.getWidth()/2,blocObj.getY()+blocObj.getHeight()/2);
+            if(blocObj.getIn_Point()!=null)
+                canvas.drawLine(blocObj.getIn_Point().getX(),blocObj.getIn_Point().getY(),blocObj.getIn_Point().getX(),blocObj.getIn_Point().getY()+blocObj.getHeight()/4,p);
+            if(blocObj.getOut_Point()!=null)
+                canvas.drawLine(blocObj.getOut_Point().getX(),blocObj.getOut_Point().getY(),blocObj.getOut_Point().getX(),blocObj.getOut_Point().getY()-blocObj.getHeight()/4,p);
+
+                break; }
+            default :{  p.setColor(blocObj.getColor());
+                final RectF rect = new RectF();
+                rect.set(blocObj.getX(), blocObj.getY(), blocObj.getX() + blocObj.getWidth(), blocObj.getY() + blocObj.getHeight());
+                canvas.drawRoundRect(rect, 20, 20, p);
+                if(blocObj.getIn_Point()!=null)
+                    canvas.drawLine(blocObj.getIn_Point().getX(),blocObj.getIn_Point().getY(),blocObj.getIn_Point().getX(),blocObj.getIn_Point().getY()+blocObj.getHeight()/4,p);
+                if(blocObj.getOut_Point()!=null)
+                    canvas.drawLine(blocObj.getOut_Point().getX(),blocObj.getOut_Point().getY(),blocObj.getOut_Point().getX(),blocObj.getOut_Point().getY()-blocObj.getHeight()/4,p);
+                break; }
+
+
+    }}
         p.setColor(Color.YELLOW);
 
     if (MainActivity.arrow && MainActivity.isblocfrom) {

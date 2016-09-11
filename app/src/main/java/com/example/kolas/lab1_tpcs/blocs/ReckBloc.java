@@ -9,32 +9,15 @@ import java.util.ArrayList;
  */
 public class ReckBloc extends BlocObj {
 
-   
 
-    PointLink in_point;
-    PointLink out_point;
 
-    public ReckBloc(float x, float y, int width, int height) {
-        super(x, y, width, height);
-        in_point =new PointLink(getX()+getWidth()/2,getY(),true);
-        out_point=new PointLink(getX()+getWidth()/2,getY()+getHeight(),false);
+    public ReckBloc(float x, float y, int width, int height, int color, BlocTypes type) {
+        super(x, y, width, height, color, type);
+
     }
 
-    @Override
-    public PointLink getIn_Point() {
-     
-        in_point.setX(getX()+getWidth()/2);
-        in_point.setY(getY()-getHeight()/4);
 
-        return in_point;
-    }
 
-    @Override
-    public PointLink getOut_Point() {
-        out_point.setX(getX()+getWidth()/2);
-        out_point.setY(getY()+getHeight()+getHeight()/4);
-        return out_point;
-    }
 
 
 }
