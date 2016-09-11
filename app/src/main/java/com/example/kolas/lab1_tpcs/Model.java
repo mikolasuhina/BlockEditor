@@ -27,13 +27,23 @@ public class Model {
     MainActivity mainActivity;
     boolean flag;
 
+  float centers;
+
+    public float getCenters() {
+        return centers;
+    }
+
+    public void setCenters(float centers) {
+        this.centers = centers;
+    }
+
     public Model(MainActivity mainActivity) {
         this.mainActivity = mainActivity;
         allBlocs=new ArrayList<>();
         allLinks=new ArrayList<>();
         thisArrows=new ArrayList<>();
-       // thisSimpleArrow=new SimpleArrow();
         mySurfaceView=mainActivity.fsurface;
+
 
     }
 
@@ -82,7 +92,9 @@ public class Model {
 
 
     void setPosForThisBloc(float x,float y){
-        thisBloc.setX(x-thisBloc.getWidth()/2);
+        if(Math.abs(centers-x)<100)
+        thisBloc.setX(centers-thisBloc.getWidth()/2);
+        else  thisBloc.setX(x-thisBloc.getWidth()/2);
         thisBloc.setY(y-thisBloc.getHeight()/2);
     }
 
@@ -163,12 +175,13 @@ public class Model {
             calcway(x,y);
         }else {
             searchThisBlocCrossing();
-
-          if(thisArrows.get(thisArrows.size()-1).isHorizontal())
+           if(thisArrows.size()>=1)
+           if(thisArrows.get(thisArrows.size()-1).isHorizontal())
                 thisArrows.get(thisArrows.size()-1).setX_to(thisBloc.getIn_Point().getX());
                 else
                 thisArrows.get(thisArrows.size()-1).setY_to(thisBloc.getIn_Point().getY());
 
+            else calcThreeArrows();
 
             thisLinc.setId_to(thisBloc.getId());
 
@@ -185,7 +198,7 @@ public class Model {
 
 
     void drawnewLineIn(float begin_x, float begin_y,float end_x, float end_y,ArrayList<SimpleArrow> sa){
-
+     if(sa.size()>=1){
 
       if(sa.get(sa.size()-1).isHorizontal())
           corectHorizontalEnd(end_x,sa);
@@ -197,10 +210,10 @@ public class Model {
          corectHorizontalBegin(begin_x,sa);
         }else corectVerticalBegin(begin_y,sa);
 
-    }
+    }}
     private void corectHorizontalEnd(float end_x,ArrayList<SimpleArrow> sa){
 
-        if(sa.size()>=2) {
+        if(sa.size()>=1) {
             sa.get(sa.size() - 1).setX_to(end_x);
          
         }
@@ -209,7 +222,7 @@ public class Model {
     }
 
     private void corectVerticalEnd(float end_y,ArrayList<SimpleArrow> sa){
-        if(sa.size()>=2) {
+        if(sa.size()>=1) {
 
             sa.get(sa.size() - 1).setY_to(end_y);
         }
@@ -217,20 +230,16 @@ public class Model {
         }
     private void corectHorizontalBegin(float begin_x,ArrayList<SimpleArrow> sa){
 
-        if(sa.size()>=2) {
+        if(sa.size()>=1){
             sa.get(0).setX_from(begin_x);
 
         }
 
-
     }
 
     private void corectVerticalBegin( float begin_y,ArrayList<SimpleArrow> sa){
-        if(sa.size()>=2) {
-
+        if(sa.size()>=1) {
             sa.get(0).setY_from(begin_y);
-
-
         }
 
     }
@@ -250,5 +259,22 @@ public  void  clear(){
     id_counter=0;
     IdCrossing=0;
 }
-    
+
+
+    private void calcThreeArrows(){
+
+        float  newy=(thisSimpleArrow.getY_from()+thisBloc.getIn_Point().getY())/2;
+
+
+            thisSimpleArrow =new SimpleArrow(thisBloc.getIn_Point().getX(),newy,thisBloc.getIn_Point().getX(),thisBloc.getIn_Point().getY());
+            thisSimpleArrow.setHorizontal(false);
+            thisArrows.add(thisSimpleArrow);
+
+
+    }
+
+
+
+
+
 }

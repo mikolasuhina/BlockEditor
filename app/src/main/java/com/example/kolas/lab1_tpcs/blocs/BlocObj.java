@@ -117,13 +117,13 @@ public class BlocObj {
 
 
 
-   public void getInLink(){
+   private void getInLink(){
        in_Point.setX(getX()+getWidth()/2);
        in_Point.setY(getY()-getHeight()/4);
 
    }
 
-    public void getOutLink(){
+    private void getOutLink(){
         out_Point.setX(getX()+getWidth()/2);
         out_Point.setY(getY()+getHeight()+getHeight()/4);
 

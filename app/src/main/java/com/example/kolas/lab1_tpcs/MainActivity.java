@@ -50,9 +50,9 @@ FrameLayout frame;
         fsurface.setLayoutParams(new ActionBar.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
         frame.addView(fsurface);
         fsurface.setOnTouchListener(this);
-       // thisObj=b1;
         allBlocs=new ArrayList<>();
         context=this;
+
 
     }
 
@@ -117,6 +117,7 @@ FrameLayout frame;
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     @Override
     public void onClick(View v) {
+        model.setCenters(frame.getWidth()/2);
         switch (v.getId()){
             case R.id.line:{
 
