@@ -1,5 +1,7 @@
 package com.example.kolas.lab1_tpcs;
 
+import android.graphics.Color;
+
 import com.example.kolas.lab1_tpcs.blocs.BeginBlock;
 import com.example.kolas.lab1_tpcs.blocs.BlocObj;
 import com.example.kolas.lab1_tpcs.blocs.EndBloc;
@@ -43,6 +45,8 @@ public class Model {
     }
 
     void addingNewBloc(String type, float x, float y, int w, int h){
+      if(thisBloc!=null)
+          thisBloc.setColor(Color.WHITE);
         switch (type){
             case "rect":{thisBloc = new ReckBloc(x-w/2,y-h/2,w,h);
                 break;}
@@ -54,6 +58,7 @@ public class Model {
                 break;}
         }
         setIdforBloc();
+        coloring();
         addNewBloc(thisBloc);
 
     }
@@ -65,6 +70,22 @@ public class Model {
 
     }
 
+
+    private void coloring(){
+        for (BlocObj obj:allBlocs) {
+            if(obj.equals(thisBloc)){
+                obj.setColor(Color.GREEN);
+
+            }else obj.setColor(Color.WHITE);
+
+        }
+    }
+
+    private void setColorForBloc(int color){
+
+        thisBloc.setColor(color);
+
+    }
     void setPosForThisBloc(float x,float y){
         thisBloc.setX(x-thisBloc.getWidth()/2);
         thisBloc.setY(y-thisBloc.getHeight()/2);
@@ -82,6 +103,7 @@ public class Model {
 
     void checkThisBloc(float x, float y){
         if(col(x,y)){
+//            setColorForBloc(Color.WHITE);
             searchThisBlocCrossing();
         }
 
@@ -89,6 +111,7 @@ public class Model {
 
     private  void  searchThisBlocCrossing(){
       thisBloc=allBlocs.get(IdCrossing);
+       coloring();
     }
     
     void  addingNewLinc(){

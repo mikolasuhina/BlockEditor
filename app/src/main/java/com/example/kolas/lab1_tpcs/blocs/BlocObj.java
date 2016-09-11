@@ -12,6 +12,15 @@ public class BlocObj {
     private int id;
     private float x,y;
     private  int width,height;
+    int color;
+
+    public int getColor() {
+        return color;
+    }
+
+    public void setColor(int color) {
+        this.color = color;
+    }
 
     public PointLink getIn_Point() {
         return in_Point;

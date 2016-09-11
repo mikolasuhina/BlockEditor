@@ -26,10 +26,12 @@ public class MySurfaceView extends SurfaceView implements
 
 
     for (BlocObj blocObj : model.allBlocs) {
+        p.setColor(blocObj.getColor());
         canvas.drawRect(blocObj.getX(), blocObj.getY(), blocObj.getX() + blocObj.getWidth(), blocObj.getY() + blocObj.getHeight(), p);
         canvas.drawLine(blocObj.getIn_Point().getX(),blocObj.getIn_Point().getY(),blocObj.getIn_Point().getX(),blocObj.getIn_Point().getY()+blocObj.getHeight()/4,p);
         canvas.drawLine(blocObj.getOut_Point().getX(),blocObj.getOut_Point().getY(),blocObj.getOut_Point().getX(),blocObj.getOut_Point().getY()-blocObj.getHeight()/4,p);
     }
+        p.setColor(Color.YELLOW);
 
     if (MainActivity.arrow && MainActivity.isblocfrom) {
         for (SimpleArrow s : model.thisArrows
