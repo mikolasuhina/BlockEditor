@@ -14,7 +14,7 @@ public class MySurfaceThread extends Thread {
     private MySurfaceView myThreadSurfaceView;
     private boolean myThreadRun = false;
     boolean pause;
-int x;
+
     public MySurfaceThread(SurfaceHolder surfaceHolder,
                            MySurfaceView surfaceView) {
         myThreadSurfaceHolder = surfaceHolder;

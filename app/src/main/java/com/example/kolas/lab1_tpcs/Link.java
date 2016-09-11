@@ -25,7 +25,12 @@ public class Link {
         this.id_to = id_to;
     }
 
+    public Link(int id_from) {
+        this.id_from = id_from;
+    }
+
     public ArrayList<SimpleArrow> getArrows() {
+
         return arrows;
     }
 
