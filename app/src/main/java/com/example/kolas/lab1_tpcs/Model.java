@@ -21,6 +21,7 @@ public class Model {
     ArrayList<Link> allLinks;
     BlocObj thisBloc;
     Link thisLinc;
+    public static final String TAG="Mylogs";
     ArrayList<SimpleArrow> thisArrows;
     SimpleArrow thisSimpleArrow;
     MySurfaceView mySurfaceView;
@@ -118,13 +119,17 @@ public class Model {
 
     private  void  searchThisBlocCrossing(){
       thisBloc=allBlocs.get(IdCrossing);
+
        coloring();
+        if(thisBloc.getType()==BlocTypes.RHOMB && mainActivity.arrow)
+            mainActivity.showDialogRhomb();
     }
     
     void  addingNewLinc(){
         PointLink pl =thisBloc.getOut_Point();
         thisSimpleArrow = new SimpleArrow(pl.getX(),pl.getY());
         thisArrows=new ArrayList<>();
+        if(thisBloc.getType()!=BlocTypes.RHOMB)
         thisLinc =new Link(thisBloc.getId())   ;
 
         flag=false;
@@ -133,7 +138,9 @@ public class Model {
     
     boolean setBlocFrom(float x, float y){
         if(thisBloc!=null){
+            if(thisBloc.getType()!=BlocTypes.RHOMB)
             mainActivity.isblocfrom=true;
+            flag=true;
         return true;}
         else 
            checkThisBloc(x,y);
@@ -143,7 +150,7 @@ public class Model {
     
     void setLinkParam(){
         thisBloc=null;
-        flag=true;
+      //  flag=true;
     }
 
     private  void calcway(float x, float y){
@@ -174,6 +181,7 @@ public class Model {
         if(!col(x,y)||IdCrossing==thisBloc.getId()){
             calcway(x,y);
         }else {
+            mainActivity.setArrow(false);
             searchThisBlocCrossing();
            if(thisArrows.size()>=1)
            if(thisArrows.get(thisArrows.size()-1).isHorizontal())
@@ -189,7 +197,7 @@ public class Model {
             thisLinc.setArrows(thisArrows);
             addNewLinc(thisLinc);
 
-            mainActivity.setArrow(false);
+
             mainActivity.setIsblocfrom(false);
 
         }

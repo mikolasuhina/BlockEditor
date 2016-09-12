@@ -10,6 +10,9 @@ import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
 import com.example.kolas.lab1_tpcs.blocs.BlocObj;
+import com.example.kolas.lab1_tpcs.blocs.BlocTypes;
+import com.example.kolas.lab1_tpcs.blocs.ReckBloc;
+import com.example.kolas.lab1_tpcs.blocs.RhombBloc;
 
 import java.util.ArrayList;
 
@@ -42,9 +45,13 @@ public class MySurfaceView extends SurfaceView implements
                 canvas.rotate(-45,blocObj.getX()+blocObj.getWidth()/2,blocObj.getY()+blocObj.getHeight()/2);
             if(blocObj.getIn_Point()!=null)
                 canvas.drawLine(blocObj.getIn_Point().getX(),blocObj.getIn_Point().getY(),blocObj.getIn_Point().getX(),blocObj.getIn_Point().getY()+blocObj.getHeight()/4,p);
-            if(blocObj.getOut_Point()!=null)
-                canvas.drawLine(blocObj.getOut_Point().getX(),blocObj.getOut_Point().getY(),blocObj.getOut_Point().getX(),blocObj.getOut_Point().getY()-blocObj.getHeight()/4,p);
 
+
+                RhombBloc rb = (RhombBloc) blocObj;
+               // canvas.drawLine(blocObj.getOut_Point().getX(),blocObj.getOut_Point().getY(),blocObj.getOut_Point().getX(),blocObj.getOut_Point().getY()-blocObj.getHeight()/4,p);
+                canvas.drawLine(rb.getOutPoints().get(0).getX(),rb.getOutPoints().get(0).getY(),rb.getOutPoints().get(0).getX(),rb.getOutPoints().get(0).getY()-blocObj.getHeight()/4,p);
+                canvas.drawLine(rb.getOutPoints().get(1).getX(),rb.getOutPoints().get(1).getY(),rb.getOutPoints().get(1).getX()-blocObj.getHeight()/4,rb.getOutPoints().get(1).getY(),p);
+                canvas.drawLine(rb.getOutPoints().get(2).getX(),rb.getOutPoints().get(2).getY(),rb.getOutPoints().get(2).getX()+blocObj.getHeight()/4,rb.getOutPoints().get(2).getY(),p);
                 break; }
             default :{  p.setColor(blocObj.getColor());
                 final RectF rect = new RectF();
@@ -71,8 +78,19 @@ public class MySurfaceView extends SurfaceView implements
 
 
     for (Link sarrow : model.allLinks) {
-        model.drawnewLineIn(model.allBlocs.get(sarrow.getId_from()).getOut_Point().getX(), model.allBlocs.get(sarrow.getId_from()).getOut_Point().getY(), model.allBlocs.get(sarrow.getId_to()).getIn_Point().getX(), model.allBlocs.get(sarrow.getId_to()).getIn_Point().getY(),sarrow.getArrows());
-       canvas.drawLine(model.allBlocs.get(sarrow.getId_from()).getOut_Point().getX(), model.allBlocs.get(sarrow.getId_from()).getOut_Point().getY(), sarrow.arrows.get(0).getX_from(), sarrow.arrows.get(0).getY_from(), p);
+        if (model.allBlocs.get(sarrow.getId_from()).getType() == BlocTypes.RHOMB){
+
+if((sarrow.f_point)) {
+    ((RhombBloc) (model.allBlocs.get(sarrow.getId_from()))).setNuberPointLink(((RhombBloc) (model.allBlocs.get(sarrow.getId_from()))).getFirst());
+
+}else
+    if(((RhombBloc) (model.allBlocs.get(sarrow.getId_from()))).getSecond()!=100) {
+        ((RhombBloc) (model.allBlocs.get(sarrow.getId_from()))).setNuberPointLink(((RhombBloc) (model.allBlocs.get(sarrow.getId_from()))).getSecond());
+    }
+        }
+
+        model.drawnewLineIn(model.allBlocs.get(sarrow.getId_from()).getOut_Point().getX(), model.allBlocs.get(sarrow.getId_from()).getOut_Point().getY(), model.allBlocs.get(sarrow.getId_to()).getIn_Point().getX(), model.allBlocs.get(sarrow.getId_to()).getIn_Point().getY(), sarrow.getArrows());
+        canvas.drawLine(model.allBlocs.get(sarrow.getId_from()).getOut_Point().getX(), model.allBlocs.get(sarrow.getId_from()).getOut_Point().getY(), sarrow.arrows.get(0).getX_from(), sarrow.arrows.get(0).getY_from(), p);
 
 
         for (SimpleArrow sa : sarrow.getArrows()) {
@@ -80,9 +98,9 @@ public class MySurfaceView extends SurfaceView implements
             canvas.drawLine(sa.getX_from(), sa.getY_from(), sa.getX_to(), sa.getY_to(), p);
         }
 
-      canvas.drawLine(sarrow.arrows.get(sarrow.arrows.size() - 1).getX_to(), sarrow.arrows.get(sarrow.arrows.size() - 1).getY_to(), model.allBlocs.get(sarrow.getId_to()).getIn_Point().getX(), model.allBlocs.get(sarrow.getId_to()).getIn_Point().getY(), p);
-
+        canvas.drawLine(sarrow.arrows.get(sarrow.arrows.size() - 1).getX_to(), sarrow.arrows.get(sarrow.arrows.size() - 1).getY_to(), model.allBlocs.get(sarrow.getId_to()).getIn_Point().getX(), model.allBlocs.get(sarrow.getId_to()).getIn_Point().getY(), p);
     }
+
 
 
     }

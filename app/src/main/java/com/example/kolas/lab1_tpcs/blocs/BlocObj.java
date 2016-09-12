@@ -25,7 +25,9 @@ public class BlocObj {
         this.color = color;
         this.type = type;
         in_Point =new PointLink(getX()+getWidth()/2,getY(),true);
+        in_Point.setUse(false);
         out_Point=new PointLink(getX()+getWidth()/2,getY()+getHeight(),false);
+        out_Point.setUse(false);
     }
 
     public int getColor() {

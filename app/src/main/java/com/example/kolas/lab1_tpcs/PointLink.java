@@ -6,8 +6,17 @@ package com.example.kolas.lab1_tpcs;
 public class PointLink {
     private float x;
     private float y;
-    private boolean in_out_type;   //true-in;false -out
+    private boolean in_out_type;//true-in;false -out
 
+    public boolean isUse() {
+        return use;
+    }
+
+    public void setUse(boolean use) {
+        this.use = use;
+    }
+
+    private boolean use;
     public PointLink() {
     }
 

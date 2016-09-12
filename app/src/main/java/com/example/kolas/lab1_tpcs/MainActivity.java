@@ -89,19 +89,7 @@ FrameLayout frame;
                 model.searchBtocTo(x,y);
 
             }
-        /*    Log.d(TAG,"arrow=true");
-         if(!col(x,y))   {
-             Log.d(TAG,"col=true");
-             calcway(x,y);}
-             else{
-             Log.d(TAG,"col=false");
 
-                 arrow=false;
-             thisObj = allBlocs.get(thisid);
-             thisLink.setId_to(thisid);
-             thisLink.setArrows(lines);
-             MySurfaceView.allArrows.add(thisLink);
-             }*/
 
         }else {
 
@@ -123,7 +111,7 @@ FrameLayout frame;
 
                 model.setLinkParam();
 
-               arrow=true;
+                arrow=true;
              /*   thisLink =new Link(thisObj.getId());
                 PointLink pl =thisObj.getOut_Point();
                 sa= new SimpleArrow(pl.getX(),pl.getY());
@@ -133,11 +121,13 @@ FrameLayout frame;
             }
             case R.id.addrect: {
                 model.addingNewBloc(BlocTypes.RECT,0,0,100,100);
+
                 break;
 
             }
             case R.id.rhomb: {
                 model.addingNewBloc(BlocTypes.RHOMB,0,0,100,100);
+
                 break;
 
             }
@@ -163,7 +153,10 @@ FrameLayout frame;
     }
 
 
-
+public void showDialogRhomb(){
+    DialogSelPointRhomb dialogSelPointRhomb = new DialogSelPointRhomb(this);
+    dialogSelPointRhomb.show(getFragmentManager(),"dialog");
+}
 
 
 }
