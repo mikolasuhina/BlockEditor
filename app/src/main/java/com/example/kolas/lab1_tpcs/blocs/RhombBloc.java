@@ -10,13 +10,12 @@ import java.util.ArrayList;
 public class RhombBloc extends BlocObj {
 
     ArrayList<PointLink> outPoints;
-    private  PointLink pointL;
-    private  PointLink pointR;
-    private  int first;
+    private PointLink pointL;
+    private PointLink pointR;
+    private int first;
 
 
-
-    private  int second;
+    private int second;
     int nuberPointLink;
 
     public int getNuberPointLink() {
@@ -42,15 +41,16 @@ public class RhombBloc extends BlocObj {
     }
 
 
-    private void updateL(){
-        pointR.setX(getX()-getHeight()/4);
-        pointR.setY((float) (getY()+getHeight()/2));
+    private void updateL() {
+        pointR.setX(getX() - getHeight() / 4);
+        pointR.setY((float) (getY() + getHeight() / 2));
     }
 
-    private void updateR(){
-        pointL.setX(getX()+getWidth()+getHeight()/4);
-        pointL.setY((float) (getY()+getHeight()/2));
+    private void updateR() {
+        pointL.setX(getX() + getWidth() + getHeight() / 4);
+        pointL.setY((float) (getY() + getHeight() / 2));
     }
+
     public void setPointR(PointLink pointR) {
         this.pointR = pointR;
     }
@@ -82,15 +82,15 @@ public class RhombBloc extends BlocObj {
 
     public RhombBloc(float x, float y, int width, int height, int color, BlocTypes type) {
         super(x, y, width, height, color, type);
-        pointR=new PointLink(x+height/4, (float) (y+height/2),false);
-        pointL=new PointLink(x-width/4, (float) (y+height/2),false);
-        outPoints=new ArrayList<>();
+        pointR = new PointLink(x + height / 4, (float) (y + height / 2), false);
+        pointL = new PointLink(x - width / 4, (float) (y + height / 2), false);
+        outPoints = new ArrayList<>();
         outPoints.add(super.getOut_Point());
         outPoints.add(pointL);
         outPoints.add(pointR);
-        first=100;
-        second=100;
-
+        first = 100;
+        second = 100;
+        setText("X");
 
     }
 
@@ -102,7 +102,7 @@ public class RhombBloc extends BlocObj {
     }
 
 
-    private void update(){
+    private void update() {
         super.getOut_Point();
         updateL();
         updateR();

@@ -18,16 +18,17 @@ import com.example.kolas.lab1_tpcs.blocs.RhombBloc;
  */
 public class MyView extends View {
     RhombBloc obj;
-     float w_h;
-    float a=400;
+    float w_h;
+    float a = 400;
     float x_y;
     int thisPointNumber;
+
     public MyView(Context context, BlocObj obj) {
-          super(context);
-            this.obj = (RhombBloc) obj;
-          w_h= (float) (a/Math.sqrt(2));
-          x_y=(float) (a*Math.sqrt(2)-a)/2;
-        thisPointNumber=getNotUsePointBloc();
+        super(context);
+        this.obj = (RhombBloc) obj;
+        w_h = (float) (a / Math.sqrt(2));
+        x_y = (float) (a * Math.sqrt(2) - a) / 2;
+        thisPointNumber = getNotUsePointBloc();
         setLayoutParams(new ActionBar.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
     }
 
@@ -48,33 +49,32 @@ public class MyView extends View {
 
         switch (thisPointNumber) {
             case 0: {
-                canvas.rotate(225,a/2,a/2);
+                canvas.rotate(225, a / 2, a / 2);
                 break;
             }
             case 1: {
-                canvas.rotate(135,a/2,a/2);
+                canvas.rotate(135, a / 2, a / 2);
                 break;
             }
             case 2: {
-                canvas.rotate(315,a/2,a/2);
+                canvas.rotate(315, a / 2, a / 2);
                 break;
             }
         }
 
-        canvas.drawRect(x_y,x_y,w_h,w_h,p);
+        canvas.drawRect(x_y, x_y, w_h, w_h, p);
         p.setColor(Color.GREEN);
 
         canvas.drawCircle(x_y, x_y, 10, p);
 
 
+        // canvas.rotate(45,a/2,a/2);
 
-       // canvas.rotate(45,a/2,a/2);
-        
     }
 
-    private int getNotUsePointBloc(){
-        for (int i=0;i<obj.getOutPoints().size();i++) {
-            if(!obj.getOutPoints().get(i).isUse())
+    private int getNotUsePointBloc() {
+        for (int i = 0; i < obj.getOutPoints().size(); i++) {
+            if (!obj.getOutPoints().get(i).isUse())
                 return i;
 
         }

@@ -19,7 +19,7 @@ import java.util.ArrayList;
 public class MySurfaceView extends SurfaceView implements
         SurfaceHolder.Callback {
 
-    private MySurfaceThread thread;
+
 
     Model model;
 
@@ -29,79 +29,93 @@ public class MySurfaceView extends SurfaceView implements
         p.setColor(Color.WHITE);
 
 
-    for (BlocObj blocObj : model.allBlocs) {
-        switch (blocObj.getType()){
-            case RECT:{  p.setColor(blocObj.getColor());
-        canvas.drawRect(blocObj.getX(), blocObj.getY(), blocObj.getX() + blocObj.getWidth(), blocObj.getY() + blocObj.getHeight(), p);
-        if(blocObj.getIn_Point()!=null)
-        canvas.drawLine(blocObj.getIn_Point().getX(),blocObj.getIn_Point().getY(),blocObj.getIn_Point().getX(),blocObj.getIn_Point().getY()+blocObj.getHeight()/4,p);
-        if(blocObj.getOut_Point()!=null)
-        canvas.drawLine(blocObj.getOut_Point().getX(),blocObj.getOut_Point().getY(),blocObj.getOut_Point().getX(),blocObj.getOut_Point().getY()-blocObj.getHeight()/4,p);
-       break; }
-            case RHOMB:{
-                p.setColor(blocObj.getColor());
-                canvas.rotate(45,blocObj.getX()+blocObj.getWidth()/2,blocObj.getY()+blocObj.getHeight()/2);
-            canvas.drawRect(blocObj.getX(), blocObj.getY(), blocObj.getX() + blocObj.getWidth(), blocObj.getY() + blocObj.getHeight(), p);
-                canvas.rotate(-45,blocObj.getX()+blocObj.getWidth()/2,blocObj.getY()+blocObj.getHeight()/2);
-            if(blocObj.getIn_Point()!=null)
-                canvas.drawLine(blocObj.getIn_Point().getX(),blocObj.getIn_Point().getY(),blocObj.getIn_Point().getX(),blocObj.getIn_Point().getY()+blocObj.getHeight()/4,p);
+        for (BlocObj blocObj : model.allBlocs) {
+            if (!blocObj.isDelete()) {
+
+                switch (blocObj.getType()) {
+                    case RECT: {
+                        p.setColor(blocObj.getColor());
+                        canvas.drawRect(blocObj.getX(), blocObj.getY(), blocObj.getX() + blocObj.getWidth(), blocObj.getY() + blocObj.getHeight(), p);
+                        if (blocObj.getIn_Point() != null)
+                            canvas.drawLine(blocObj.getIn_Point().getX(), blocObj.getIn_Point().getY(), blocObj.getIn_Point().getX(), blocObj.getIn_Point().getY() + blocObj.getHeight() / 4, p);
+                        if (blocObj.getOut_Point() != null)
+                            canvas.drawLine(blocObj.getOut_Point().getX(), blocObj.getOut_Point().getY(), blocObj.getOut_Point().getX(), blocObj.getOut_Point().getY() - blocObj.getHeight() / 4, p);
+                        break;
+                    }
+                    case RHOMB: {
+                        p.setColor(blocObj.getColor());
+                        canvas.rotate(45, blocObj.getX() + blocObj.getWidth() / 2, blocObj.getY() + blocObj.getHeight() / 2);
+                        canvas.drawRect(blocObj.getX(), blocObj.getY(), blocObj.getX() + blocObj.getWidth(), blocObj.getY() + blocObj.getHeight(), p);
+                        canvas.rotate(-45, blocObj.getX() + blocObj.getWidth() / 2, blocObj.getY() + blocObj.getHeight() / 2);
+                        if (blocObj.getIn_Point() != null)
+                            canvas.drawLine(blocObj.getIn_Point().getX(), blocObj.getIn_Point().getY(), blocObj.getIn_Point().getX(), blocObj.getIn_Point().getY() + blocObj.getHeight() / 4, p);
 
 
-                RhombBloc rb = (RhombBloc) blocObj;
-               // canvas.drawLine(blocObj.getOut_Point().getX(),blocObj.getOut_Point().getY(),blocObj.getOut_Point().getX(),blocObj.getOut_Point().getY()-blocObj.getHeight()/4,p);
-                canvas.drawLine(rb.getOutPoints().get(0).getX(),rb.getOutPoints().get(0).getY(),rb.getOutPoints().get(0).getX(),rb.getOutPoints().get(0).getY()-blocObj.getHeight()/4,p);
-                canvas.drawLine(rb.getOutPoints().get(1).getX(),rb.getOutPoints().get(1).getY(),rb.getOutPoints().get(1).getX()-blocObj.getHeight()/4,rb.getOutPoints().get(1).getY(),p);
-                canvas.drawLine(rb.getOutPoints().get(2).getX(),rb.getOutPoints().get(2).getY(),rb.getOutPoints().get(2).getX()+blocObj.getHeight()/4,rb.getOutPoints().get(2).getY(),p);
-                break; }
-            default :{  p.setColor(blocObj.getColor());
-                final RectF rect = new RectF();
-                rect.set(blocObj.getX(), blocObj.getY(), blocObj.getX() + blocObj.getWidth(), blocObj.getY() + blocObj.getHeight());
-                canvas.drawRoundRect(rect, 20, 20, p);
-                if(blocObj.getIn_Point()!=null)
-                    canvas.drawLine(blocObj.getIn_Point().getX(),blocObj.getIn_Point().getY(),blocObj.getIn_Point().getX(),blocObj.getIn_Point().getY()+blocObj.getHeight()/4,p);
-                if(blocObj.getOut_Point()!=null)
-                    canvas.drawLine(blocObj.getOut_Point().getX(),blocObj.getOut_Point().getY(),blocObj.getOut_Point().getX(),blocObj.getOut_Point().getY()-blocObj.getHeight()/4,p);
-                break; }
+                        RhombBloc rb = (RhombBloc) blocObj;
+                        // canvas.drawLine(blocObj.getOut_Point().getX(),blocObj.getOut_Point().getY(),blocObj.getOut_Point().getX(),blocObj.getOut_Point().getY()-blocObj.getHeight()/4,p);
+                        canvas.drawLine(rb.getOutPoints().get(0).getX(), rb.getOutPoints().get(0).getY(), rb.getOutPoints().get(0).getX(), rb.getOutPoints().get(0).getY() - blocObj.getHeight() / 4, p);
+                        canvas.drawLine(rb.getOutPoints().get(1).getX(), rb.getOutPoints().get(1).getY(), rb.getOutPoints().get(1).getX() - blocObj.getHeight() / 4, rb.getOutPoints().get(1).getY(), p);
+                        canvas.drawLine(rb.getOutPoints().get(2).getX(), rb.getOutPoints().get(2).getY(), rb.getOutPoints().get(2).getX() + blocObj.getHeight() / 4, rb.getOutPoints().get(2).getY(), p);
+                        break;
+                    }
+                    default: {
+                        p.setColor(blocObj.getColor());
+                        final RectF rect = new RectF();
+                        rect.set(blocObj.getX(), blocObj.getY(), blocObj.getX() + blocObj.getWidth(), blocObj.getY() + blocObj.getHeight());
+                        canvas.drawRoundRect(rect, 20, 20, p);
+                        if (blocObj.getIn_Point() != null)
+                            canvas.drawLine(blocObj.getIn_Point().getX(), blocObj.getIn_Point().getY(), blocObj.getIn_Point().getX(), blocObj.getIn_Point().getY() + blocObj.getHeight() / 4, p);
+                        if (blocObj.getOut_Point() != null)
+                            canvas.drawLine(blocObj.getOut_Point().getX(), blocObj.getOut_Point().getY(), blocObj.getOut_Point().getX(), blocObj.getOut_Point().getY() - blocObj.getHeight() / 4, p);
+                        break;
+                    }
 
 
-    }}
+                }
+                p.setColor(Color.RED);
+                p.setTextAlign(Paint.Align.CENTER);
+                p.setTextSize(20);
+                canvas.drawText(blocObj.getText(), blocObj.getX() + blocObj.getWidth() / 2, blocObj.getY() + blocObj.getHeight() / 2, p);
+            }
+        }
         p.setColor(Color.YELLOW);
 
-    if (MainActivity.arrow && MainActivity.isblocfrom) {
-        for (SimpleArrow s : model.thisArrows
-                ) {
-            canvas.drawLine(s.getX_from(), s.getY_from(), s.getX_to(), s.getY_to(), p);
+        if (MainActivity.arrow && MainActivity.isblocfrom) {
+            for (SimpleArrow s : model.thisArrows
+                    ) {
+                canvas.drawLine(s.getX_from(), s.getY_from(), s.getX_to(), s.getY_to(), p);
 
-        }
-        canvas.drawLine(model.thisSimpleArrow.getX_from(), model.thisSimpleArrow.getY_from(), MainActivity.nx, MainActivity.ny, p);
-    }
-
-
-    for (Link sarrow : model.allLinks) {
-        if (model.allBlocs.get(sarrow.getId_from()).getType() == BlocTypes.RHOMB){
-
-if((sarrow.f_point)) {
-    ((RhombBloc) (model.allBlocs.get(sarrow.getId_from()))).setNuberPointLink(((RhombBloc) (model.allBlocs.get(sarrow.getId_from()))).getFirst());
-
-}else
-    if(((RhombBloc) (model.allBlocs.get(sarrow.getId_from()))).getSecond()!=100) {
-        ((RhombBloc) (model.allBlocs.get(sarrow.getId_from()))).setNuberPointLink(((RhombBloc) (model.allBlocs.get(sarrow.getId_from()))).getSecond());
-    }
+            }
+            canvas.drawLine(model.thisSimpleArrow.getX_from(), model.thisSimpleArrow.getY_from(), MainActivity.nx, MainActivity.ny, p);
         }
 
-        model.drawnewLineIn(model.allBlocs.get(sarrow.getId_from()).getOut_Point().getX(), model.allBlocs.get(sarrow.getId_from()).getOut_Point().getY(), model.allBlocs.get(sarrow.getId_to()).getIn_Point().getX(), model.allBlocs.get(sarrow.getId_to()).getIn_Point().getY(), sarrow.getArrows());
-        canvas.drawLine(model.allBlocs.get(sarrow.getId_from()).getOut_Point().getX(), model.allBlocs.get(sarrow.getId_from()).getOut_Point().getY(), sarrow.arrows.get(0).getX_from(), sarrow.arrows.get(0).getY_from(), p);
+
+        for (Link sarrow : model.allLinks) {
+            if(!sarrow.isDeleted()){
+
+            if (model.allBlocs.get(sarrow.getId_from()).getType() == BlocTypes.RHOMB) {
+
+                if ((sarrow.f_point)) {
+                    ((RhombBloc) (model.allBlocs.get(sarrow.getId_from()))).setNuberPointLink(((RhombBloc) (model.allBlocs.get(sarrow.getId_from()))).getFirst());
+
+                } else if (((RhombBloc) (model.allBlocs.get(sarrow.getId_from()))).getSecond() != 100) {
+                    ((RhombBloc) (model.allBlocs.get(sarrow.getId_from()))).setNuberPointLink(((RhombBloc) (model.allBlocs.get(sarrow.getId_from()))).getSecond());
+                }
+            }
+
+            model.drawnewLineIn(model.allBlocs.get(sarrow.getId_from()).getOut_Point().getX(), model.allBlocs.get(sarrow.getId_from()).getOut_Point().getY(), model.allBlocs.get(sarrow.getId_to()).getIn_Point().getX(), model.allBlocs.get(sarrow.getId_to()).getIn_Point().getY(), sarrow.getArrows());
+            canvas.drawLine(model.allBlocs.get(sarrow.getId_from()).getOut_Point().getX(), model.allBlocs.get(sarrow.getId_from()).getOut_Point().getY(), sarrow.arrows.get(0).getX_from(), sarrow.arrows.get(0).getY_from(), p);
 
 
-        for (SimpleArrow sa : sarrow.getArrows()) {
+            for (SimpleArrow sa : sarrow.getArrows()) {
 
-            canvas.drawLine(sa.getX_from(), sa.getY_from(), sa.getX_to(), sa.getY_to(), p);
+                canvas.drawLine(sa.getX_from(), sa.getY_from(), sa.getX_to(), sa.getY_to(), p);
+            }
+
+            canvas.drawLine(sarrow.arrows.get(sarrow.arrows.size() - 1).getX_to(), sarrow.arrows.get(sarrow.arrows.size() - 1).getY_to(), model.allBlocs.get(sarrow.getId_to()).getIn_Point().getX(), model.allBlocs.get(sarrow.getId_to()).getIn_Point().getY(), p);
         }
 
-        canvas.drawLine(sarrow.arrows.get(sarrow.arrows.size() - 1).getX_to(), sarrow.arrows.get(sarrow.arrows.size() - 1).getY_to(), model.allBlocs.get(sarrow.getId_to()).getIn_Point().getX(), model.allBlocs.get(sarrow.getId_to()).getIn_Point().getY(), p);
     }
-
-
 
     }
 
@@ -124,29 +138,18 @@ if((sarrow.f_point)) {
     @Override
     public void surfaceCreated(SurfaceHolder holder) {
         // TODO Auto-generated method stub
-        thread = new MySurfaceThread(getHolder(), this);
-        thread.setRunning(true);
-     //   thread.start();
 
     }
 
     @Override
     public void surfaceDestroyed(SurfaceHolder holder) {
         // TODO Auto-generated method stub
-        boolean retry = true;
-        thread.setRunning(false);
-        while (retry) {
-            try {
-                thread.join();
-                retry = false;
-            } catch (InterruptedException e) {
-            }
-        }
+
     }
 
 
 
-public void drawajjej(){
+public void draw(){
     Canvas c = null;
     try {
         c = getHolder().lockCanvas(null);

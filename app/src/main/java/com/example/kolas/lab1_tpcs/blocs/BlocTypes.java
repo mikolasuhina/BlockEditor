@@ -5,5 +5,5 @@ package com.example.kolas.lab1_tpcs.blocs;
  */
 public enum BlocTypes {
 
-    BEGIN,END,RECT,RHOMB
+    BEGIN, END, RECT, RHOMB
 }

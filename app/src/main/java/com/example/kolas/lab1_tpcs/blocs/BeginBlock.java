@@ -9,6 +9,7 @@ public class BeginBlock extends BlocObj {
 
     public BeginBlock(float x, float y, int width, int height, int color, BlocTypes type) {
         super(x, y, width, height, color, type);
+        setText("Початок");
     }
 
     @Override

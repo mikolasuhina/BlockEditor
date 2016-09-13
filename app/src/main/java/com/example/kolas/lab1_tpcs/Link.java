@@ -7,8 +7,17 @@ import java.util.ArrayList;
  */
 public class Link {
     ArrayList<SimpleArrow> arrows;
-    int id_from,id_to;
+    int id_from, id_to;
     PointLink first_point;
+    boolean deleted;
+
+    public boolean isDeleted() {
+        return deleted;
+    }
+
+    public void setDeleted(boolean deleted) {
+        this.deleted = deleted;
+    }
 
     public Link(int id_from, boolean f_point) {
         this.id_from = id_from;
@@ -42,7 +51,6 @@ public class Link {
     public void setSecond_point(PointLink second_point) {
         this.second_point = second_point;
     }
-
 
 
     PointLink second_point;
@@ -81,11 +89,12 @@ public class Link {
         this.arrows = arrows;
     }
 
-    public Link(int id_from, int id_to, ArrayList<SimpleArrow>arrows) {
+    public Link(int id_from, int id_to, ArrayList<SimpleArrow> arrows) {
 
         this.id_from = id_from;
         this.id_to = id_to;
-        this.arrows=arrows;
+        this.arrows = arrows;
+        deleted = false;
 
     }
 }

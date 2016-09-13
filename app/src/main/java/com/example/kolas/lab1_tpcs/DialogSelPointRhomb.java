@@ -21,15 +21,15 @@ import com.example.kolas.lab1_tpcs.blocs.RhombBloc;
  */
 public class DialogSelPointRhomb extends DialogFragment {
 
-MyView myView;
+    MyView myView;
 
     MainActivity mainActivity;
-    public static final String TAG="Mylogs";
+    public static final String TAG = "Mylogs";
+
     @Override
 
 
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-
 
 
         Dialog dialog = new Dialog(getActivity(), R.style.MyCustomThemeEat);
@@ -42,37 +42,33 @@ MyView myView;
 
         dialog.setContentView(R.layout.gialog_sel_point_rhomb);
 
-myView=new MyView(this.mainActivity,mainActivity.model.thisBloc);
-       FrameLayout frameLayout = (FrameLayout) dialog.findViewById(R.id.cava_for_rhomb);
+        myView = new MyView(this.mainActivity, mainActivity.model.thisBloc);
+        FrameLayout frameLayout = (FrameLayout) dialog.findViewById(R.id.cava_for_rhomb);
         frameLayout.addView(myView);
         frameLayout.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
 
 
-                myView.setThisPointNumber(myView.getThisPointNumber()+1);
+                myView.setThisPointNumber(myView.getThisPointNumber() + 1);
 
-                if(myView.getThisPointNumber()>2)
+                if (myView.getThisPointNumber() > 2)
                     myView.setThisPointNumber(0);
 
-                if(myView.obj.getSecond()!=100l && myView.obj.getFirst()!=100){
+                if (myView.obj.getSecond() != 100l && myView.obj.getFirst() != 100) {
                     dismiss();
                 }
 
-                while (myView.obj.getOutPoints().get(myView.getThisPointNumber()).isUse()){
+                while (myView.obj.getOutPoints().get(myView.getThisPointNumber()).isUse()) {
 
-                    myView.setThisPointNumber(myView.getThisPointNumber()+1);
+                    myView.setThisPointNumber(myView.getThisPointNumber() + 1);
 
-                if(myView.getThisPointNumber()>2)
-                    myView.setThisPointNumber(0);}
-
-
-
+                    if (myView.getThisPointNumber() > 2)
+                        myView.setThisPointNumber(0);
+                }
 
 
-
-
-                Log.d(TAG,"numberlink="+myView.getThisPointNumber());
+                Log.d(TAG, "numberlink=" + myView.getThisPointNumber());
                 myView.invalidate();
 
                 return false;
@@ -88,26 +84,24 @@ myView=new MyView(this.mainActivity,mainActivity.model.thisBloc);
             public void onClick(View v) {
 
                 myView.obj.setNuberPointLink(myView.thisPointNumber);
-                if(myView.obj.getFirst()==100){
+                if (myView.obj.getFirst() == 100) {
 
-                    myView.obj.setFirst( myView.thisPointNumber);
-                mainActivity.model.thisLinc=new Link(myView.obj.getId(),true);}
-                else
-                if(myView.obj.getSecond()==100 ){
+                    myView.obj.setFirst(myView.thisPointNumber);
+                    mainActivity.model.thisLinc = new Link(myView.obj.getId(), true);
+                } else if (myView.obj.getSecond() == 100) {
                     myView.obj.setSecond(myView.thisPointNumber);
-                    mainActivity.model.thisLinc=new Link(myView.obj.getId(),false);
-                }
-                else mainActivity.setArrow(false);
+                    mainActivity.model.thisLinc = new Link(myView.obj.getId(), false);
+                } else mainActivity.setArrow(false);
 
                 myView.obj.getOutPoints().get(myView.thisPointNumber).setUse(true);
 
-                if(myView.obj.getSecond()!=100l && myView.obj.getFirst()!=100){
+                if (myView.obj.getSecond() != 100l && myView.obj.getFirst() != 100) {
                     dismiss();
                 }
 
 
-                mainActivity.isblocfrom=true;
-                mainActivity.model.flag=true;
+                mainActivity.isblocfrom = true;
+                mainActivity.model.flag = true;
 
                 dismiss();
 
@@ -121,7 +115,7 @@ myView=new MyView(this.mainActivity,mainActivity.model.thisBloc);
     }
 
 
-    public DialogSelPointRhomb (MainActivity  mainActivity) {
+    public DialogSelPointRhomb(MainActivity mainActivity) {
         this.mainActivity = mainActivity;
     }
 }

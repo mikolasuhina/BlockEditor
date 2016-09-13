@@ -10,12 +10,32 @@ import java.util.ArrayList;
  */
 public class BlocObj {
     private int id;
-    private float x,y;
-    private  int width,height;
+    private float x, y;
+    private int width, height;
     int color;
+    String text;
+    boolean delete;
+
+    public boolean isDelete() {
+
+        return delete;
+    }
+
+    public void setDelete(boolean delete) {
+        this.delete = delete;
+    }
+
     BlocTypes type;
     private PointLink in_Point;
     private PointLink out_Point;
+
+    public String getText() {
+        return text;
+    }
+
+    public void setText(String text) {
+        this.text = text;
+    }
 
     public BlocObj(float x, float y, int width, int height, int color, BlocTypes type) {
         this.x = x;
@@ -24,10 +44,12 @@ public class BlocObj {
         this.height = height;
         this.color = color;
         this.type = type;
-        in_Point =new PointLink(getX()+getWidth()/2,getY(),true);
+        in_Point = new PointLink(getX() + getWidth() / 2, getY(), true);
         in_Point.setUse(false);
-        out_Point=new PointLink(getX()+getWidth()/2,getY()+getHeight(),false);
+        out_Point = new PointLink(getX() + getWidth() / 2, getY() + getHeight(), false);
         out_Point.setUse(false);
+        delete = false;
+
     }
 
     public int getColor() {
@@ -72,11 +94,6 @@ public class BlocObj {
     }
 
 
-
-
-
-
-
     public int getId() {
         return id;
     }
@@ -118,21 +135,20 @@ public class BlocObj {
     }
 
 
+    private void getInLink() {
+        in_Point.setX(getX() + getWidth() / 2);
+        in_Point.setY(getY() - getHeight() / 4);
 
-   private void getInLink(){
-       in_Point.setX(getX()+getWidth()/2);
-       in_Point.setY(getY()-getHeight()/4);
+    }
 
-   }
-
-    private void getOutLink(){
-        out_Point.setX(getX()+getWidth()/2);
-        out_Point.setY(getY()+getHeight()+getHeight()/4);
+    private void getOutLink() {
+        out_Point.setX(getX() + getWidth() / 2);
+        out_Point.setY(getY() + getHeight() + getHeight() / 4);
 
     }
 
 
-    }
+}
 
 
 

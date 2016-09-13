@@ -13,6 +13,7 @@ public class ReckBloc extends BlocObj {
 
     public ReckBloc(float x, float y, int width, int height, int color, BlocTypes type) {
         super(x, y, width, height, color, type);
+        setText("Y");
 
     }
 

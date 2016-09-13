@@ -3,9 +3,8 @@ package com.example.kolas.lab1_tpcs;
 /**
  * Created by kolas on 09.09.16.
  */
-public class SimpleArrow
-{
-    float x_from,x_to,y_from,y_to;
+public class SimpleArrow {
+    float x_from, x_to, y_from, y_to;
     boolean horizontal;
 
     public boolean isHorizontal() {

@@ -17,6 +17,7 @@ public class PointLink {
     }
 
     private boolean use;
+
     public PointLink() {
     }
 
@@ -48,7 +49,7 @@ public class PointLink {
     }
 
     public boolean isIn_out_type() {
-    
+
         return in_out_type;
     }
 
