@@ -13,7 +13,7 @@ public class RhombBloc extends BlocObj {
     private PointLink pointL;
     private PointLink pointR;
     private int first;
-
+     public static final int FREE=100;
 
     private int second;
     int nuberPointLink;
@@ -88,8 +88,8 @@ public class RhombBloc extends BlocObj {
         outPoints.add(super.getOut_Point());
         outPoints.add(pointL);
         outPoints.add(pointR);
-        first = 100;
-        second = 100;
+        first = FREE;
+        second = FREE;
         setText("X");
 
     }

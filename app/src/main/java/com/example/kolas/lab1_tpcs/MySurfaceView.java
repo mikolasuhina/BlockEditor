@@ -1,13 +1,17 @@
 package com.example.kolas.lab1_tpcs;
 
 import android.content.Context;
+import android.content.res.Resources;
+import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Picture;
 import android.graphics.PorterDuff;
 import android.graphics.RectF;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
+import android.widget.Switch;
 
 import com.example.kolas.lab1_tpcs.blocs.BlocObj;
 import com.example.kolas.lab1_tpcs.blocs.BlocTypes;
@@ -29,8 +33,8 @@ public class MySurfaceView extends SurfaceView implements
         p.setColor(Color.WHITE);
 
 
-        for (BlocObj blocObj : model.allBlocs) {
-            if (!blocObj.isDelete()) {
+        for (BlocObj blocObj : model.allBlocs.values()) {
+
 
                 switch (blocObj.getType()) {
                     case RECT: {
@@ -77,7 +81,7 @@ public class MySurfaceView extends SurfaceView implements
                 p.setTextSize(20);
                 canvas.drawText(blocObj.getText(), blocObj.getX() + blocObj.getWidth() / 2, blocObj.getY() + blocObj.getHeight() / 2, p);
             }
-        }
+
         p.setColor(Color.YELLOW);
 
         if (MainActivity.arrow && MainActivity.isblocfrom) {
@@ -90,8 +94,8 @@ public class MySurfaceView extends SurfaceView implements
         }
 
 
-        for (Link sarrow : model.allLinks) {
-            if(!sarrow.isDeleted()){
+        for (Link sarrow : model.allLinks.values()) {
+
 
             if (model.allBlocs.get(sarrow.getId_from()).getType() == BlocTypes.RHOMB) {
 
@@ -112,9 +116,11 @@ public class MySurfaceView extends SurfaceView implements
                 canvas.drawLine(sa.getX_from(), sa.getY_from(), sa.getX_to(), sa.getY_to(), p);
             }
 
-            canvas.drawLine(sarrow.arrows.get(sarrow.arrows.size() - 1).getX_to(), sarrow.arrows.get(sarrow.arrows.size() - 1).getY_to(), model.allBlocs.get(sarrow.getId_to()).getIn_Point().getX(), model.allBlocs.get(sarrow.getId_to()).getIn_Point().getY(), p);
-        }
 
+            drawArrow(model.allBlocs.get(sarrow.getId_to()).getIn_Point().getX(), model.allBlocs.get(sarrow.getId_to()).getIn_Point().getY(),5,model.allBlocs.get(sarrow.getId_to()).getHeight()/4,model.allBlocs.get(sarrow.getId_to()).getType(),canvas,p);
+            canvas.drawLine(sarrow.arrows.get(sarrow.arrows.size() - 1).getX_to(), sarrow.arrows.get(sarrow.arrows.size() - 1).getY_to(), model.allBlocs.get(sarrow.getId_to()).getIn_Point().getX(), model.allBlocs.get(sarrow.getId_to()).getIn_Point().getY(), p);
+            // canvas.drawLine( model.allBlocs.get(sarrow.getId_to()).getIn_Point().getX(), model.allBlocs.get(sarrow.getId_to()).getIn_Point().getY(), model.allBlocs.get(sarrow.getId_to()).getIn_Point().getX()-10, model.allBlocs.get(sarrow.getId_to()).getIn_Point().getY()-10,p);
+            //.drawLine( model.allBlocs.get(sarrow.getId_to()).getIn_Point().getX(), model.allBlocs.get(sarrow.getId_to()).getIn_Point().getY(), model.allBlocs.get(sarrow.getId_to()).getIn_Point().getX()+10, model.allBlocs.get(sarrow.getId_to()).getIn_Point().getY()-10,p);
     }
 
     }
@@ -168,6 +174,21 @@ public void draw(){
     }
 }
 
-
+private void drawArrow(float x ,float y, float dx, float dy, BlocTypes type ,Canvas c,Paint p){
+    switch(type) {
+        case END:
+            c.drawLine(x, y + dy, x - dx, y, p);
+            c.drawLine(x, y + dy, x + dx, y, p);
+            break;
+        case RECT:
+            c.drawLine(x, y + dy, x - dx, y + dy / 2, p);
+            c.drawLine(x, y + dy, x + dx, y + dy / 2, p);
+            break;
+        case RHOMB:
+            c.drawLine(x, y , x - dx, y - dy / 2, p);
+            c.drawLine(x, y , x + dx, y - dy / 2, p);
+            break;
+    }
+}
 
 }

@@ -16,14 +16,7 @@ public class BlocObj {
     String text;
     boolean delete;
 
-    public boolean isDelete() {
 
-        return delete;
-    }
-
-    public void setDelete(boolean delete) {
-        this.delete = delete;
-    }
 
     BlocTypes type;
     private PointLink in_Point;
@@ -48,7 +41,7 @@ public class BlocObj {
         in_Point.setUse(false);
         out_Point = new PointLink(getX() + getWidth() / 2, getY() + getHeight(), false);
         out_Point.setUse(false);
-        delete = false;
+
 
     }
 

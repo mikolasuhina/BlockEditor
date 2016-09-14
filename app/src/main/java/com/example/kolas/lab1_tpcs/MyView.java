@@ -60,6 +60,7 @@ public class MyView extends View {
                 canvas.rotate(315, a / 2, a / 2);
                 break;
             }
+
         }
 
         canvas.drawRect(x_y, x_y, w_h, w_h, p);

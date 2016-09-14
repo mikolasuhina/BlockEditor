@@ -2,11 +2,7 @@ package com.example.kolas.lab1_tpcs;
 
 
 import android.content.Context;
-import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.Paint;
-import android.net.Uri;
-import android.os.Build;
+
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -17,6 +13,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.example.kolas.lab1_tpcs.blocs.BlocObj;
@@ -31,11 +28,12 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
     FrameLayout frame;
     Button b;
     Button b1;
+    Button button;
     public static boolean isblocfrom;
     public static final String TAG = "Mylogs";
     EditText text;
     public static float nx, ny = 0;
-    public static ArrayList<BlocObj> allBlocs;
+LinearLayout bar;
     Context context;
 
     public static boolean arrow = false;
@@ -55,8 +53,10 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
         fsurface.setLayoutParams(new ActionBar.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
         frame.addView(fsurface);
         fsurface.setOnTouchListener(this);
-        allBlocs = new ArrayList<>();
         context = this;
+
+         bar = (LinearLayout) findViewById(R.id.bar);
+
 
 
     }
@@ -97,9 +97,10 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
 
 
         } else {
-
+            if(model.thisBloc!=null){
             model.checkThisBloc(x, y);
             model.setPosForThisBloc(x, y);
+            }
 
         }
         fsurface.draw();
@@ -110,13 +111,13 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
     @Override
     public void onClick(View v) {
         model.setCenters(frame.getWidth() / 2);
+        model.setCenterL(model.getCenters()-150);
+        model.setCenterR(model.getCenters()+150);
         switch (v.getId()) {
             case R.id.line: {
 
                 model.setLinkParam();
-
                 arrow = true;
-
 
                 break;
             }
@@ -157,10 +158,26 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
                 break;
 
             }
+            case R.id.d_linc: {
+                model.deleteLink();
+
+                fsurface.draw();
+                break;
+
+            }
             case R.id.settext: {
                 model.setText(String.valueOf(text.getText()));
 
                 fsurface.draw();
+                break;
+
+            }
+            case R.id.menu: {
+                if(bar.isShown()){
+                    bar.setVisibility(View.GONE);
+
+                }
+                else bar.setVisibility(View.VISIBLE);
                 break;
 
             }
@@ -172,6 +189,8 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
         DialogSelPointRhomb dialogSelPointRhomb = new DialogSelPointRhomb(this);
         dialogSelPointRhomb.show(getFragmentManager(), "dialog");
     }
+
+
 
 
 }

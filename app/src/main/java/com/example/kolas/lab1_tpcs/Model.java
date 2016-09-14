@@ -11,6 +11,11 @@ import com.example.kolas.lab1_tpcs.blocs.ReckBloc;
 import com.example.kolas.lab1_tpcs.blocs.RhombBloc;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Random;
 
 /**
  * Created by kolas on 10.09.16.
@@ -18,8 +23,8 @@ import java.util.ArrayList;
 public class Model {
     int id_counter;
     int IdCrossing;
-    ArrayList<BlocObj> allBlocs;
-    ArrayList<Link> allLinks;
+    HashMap<Integer,BlocObj> allBlocs;
+     HashMap<Integer, Link> allLinks;
     BlocObj thisBloc;
     Link thisLinc;
     public static final String TAG = "Mylogs";
@@ -31,6 +36,25 @@ public class Model {
 
     float centers;
 
+    public float getCenterL() {
+        return centerL;
+    }
+
+    public void setCenterL(float centerL) {
+        this.centerL = centerL;
+    }
+
+    public float getCenterR() {
+        return centerR;
+    }
+
+    public void setCenterR(float centerR) {
+        this.centerR = centerR;
+    }
+
+    float centerL;
+    float centerR;
+
     public float getCenters() {
         return centers;
     }
@@ -41,8 +65,8 @@ public class Model {
 
     public Model(MainActivity mainActivity) {
         this.mainActivity = mainActivity;
-        allBlocs = new ArrayList<>();
-        allLinks = new ArrayList<>();
+        allBlocs = new HashMap<>();
+        allLinks = new HashMap<>();
         thisArrows = new ArrayList<>();
         mySurfaceView = mainActivity.fsurface;
 
@@ -50,11 +74,11 @@ public class Model {
     }
 
     private void addNewBloc(BlocObj newBloc) {
-        allBlocs.add(newBloc);
+        allBlocs.put(newBloc.getId(),newBloc);
     }
 
     private void addNewLinc(Link newLinc) {
-        allLinks.add(newLinc);
+        allLinks.put(newLinc.getId(),newLinc);
     }
 
     void addingNewBloc(BlocTypes type, float x, float y, int w, int h) {
@@ -93,7 +117,7 @@ public class Model {
 
 
     private void coloring() {
-        for (BlocObj obj : allBlocs) {
+        for (BlocObj obj : allBlocs.values()) {
             if (!obj.equals(thisBloc))
                 obj.setColor(Color.WHITE);
             else obj.setColor(Color.GREEN);
@@ -106,12 +130,21 @@ public class Model {
     void setPosForThisBloc(float x, float y) {
         if (Math.abs(centers - x) < 100)
             thisBloc.setX(centers - thisBloc.getWidth() / 2);
-        else thisBloc.setX(x - thisBloc.getWidth() / 2);
+        else
+
+        if (Math.abs(centerR - x) < 100)
+            thisBloc.setX(centerR - thisBloc.getWidth() / 2);
+        else
+        if (Math.abs(centerL - x) < 100)
+            thisBloc.setX(centerL - thisBloc.getWidth() / 2);
+        else
+            thisBloc.setX(x - thisBloc.getWidth() / 2);
+
         thisBloc.setY(y - thisBloc.getHeight() / 2);
     }
 
     private boolean col(float x, float y) {
-        for (BlocObj obj : allBlocs) {
+        for (BlocObj obj : allBlocs.values()) {
             if (x > obj.getX() && x < obj.getX() + obj.getWidth() && y > obj.getY() && y < obj.getY() + obj.getHeight()) {
                 IdCrossing = obj.getId();
                 return true;
@@ -129,7 +162,7 @@ public class Model {
 
     private void searchThisBlocCrossing() {
 
-        thisBloc = getCollBloc(IdCrossing);
+        thisBloc = allBlocs.get(IdCrossing);
 
         coloring();
         if (thisBloc.getType() == BlocTypes.RHOMB && flag)
@@ -137,7 +170,7 @@ public class Model {
     }
 
     BlocObj getCollBloc(int id) {
-        for (BlocObj blok : allBlocs) {
+        for (BlocObj blok : allBlocs.values()) {
             if (blok.getId() == id)
                 return blok;
         }
@@ -175,7 +208,9 @@ public class Model {
 
     private void calcway(float x, float y) {
         if (Math.abs((double) (thisSimpleArrow.getX_from() - x)) > 50) {
-
+         if(thisSimpleArrow.getX_from() - x<0)
+             thisSimpleArrow.setType(TypeLines.HORISONTAL_LEFT);else
+             thisSimpleArrow.setType(TypeLines.HORISONTAL_R);
             thisSimpleArrow.setX_to(x);
             thisSimpleArrow.setY_to(thisSimpleArrow.getY_from());
             thisSimpleArrow.setHorizontal(true);
@@ -186,6 +221,10 @@ public class Model {
 
 
         } else if (Math.abs((double) (thisSimpleArrow.getY_from() - y)) > 50) {
+
+            if(thisSimpleArrow.getY_from() - y>0)
+                thisSimpleArrow.setType(TypeLines.VERTICAL_TOP);
+            else     thisSimpleArrow.setType(TypeLines.vERTICAL_BOT);
             thisSimpleArrow.setX_to(thisSimpleArrow.getX_from());
             thisSimpleArrow.setY_to(y);
             thisSimpleArrow.setHorizontal(false);
@@ -213,7 +252,7 @@ public class Model {
 
             thisLinc.setId_to(thisBloc.getId());
 
-
+            thisLinc.setId(id_counter++);
             thisLinc.setArrows(thisArrows);
             addNewLinc(thisLinc);
 
@@ -307,24 +346,21 @@ public class Model {
 
     public void delete() {
         if (thisBloc != null) {
+            Iterator<Map.Entry<Integer,Link>> linc =allLinks.entrySet().iterator();
+            while (linc.hasNext()) {
+                Map.Entry<Integer, Link> ilinc = linc.next();
+                if (ilinc.getValue().getId_from() == thisBloc.getId() || ilinc.getValue().getId_to() == thisBloc.getId())
+                    linc.remove();
 
-            for (Link link : allLinks) {
-                if (link.getId_from() == thisBloc.getId() || link.getId_to() == thisBloc.getId())
-                    link.setDeleted(true);
             }
 
 
-            for (BlocObj blok : allBlocs) {
-                if (blok.getId() == thisBloc.getId()) {
-                    allBlocs.get(blok.getId()).setDelete(true);
-                    break;
-                }
-            }
+             allBlocs.remove(thisBloc.getId());
 
-
-            if (allBlocs.size() >= 1)
-                thisBloc = allBlocs.get(0);
-            else thisBloc = null;
+           if(!allBlocs.isEmpty()){
+            List<BlocObj >keys = new ArrayList<BlocObj>(allBlocs.values());
+            thisBloc=keys.get(0);
+            coloring();}else thisBloc=null;
 
         }
     }
@@ -332,5 +368,21 @@ public class Model {
     public void setText(String s) {
         if (thisBloc.getType() != BlocTypes.END && thisBloc.getType() != BlocTypes.BEGIN)
             thisBloc.setText(s);
+    }
+
+    public void deleteLink(){
+        if (thisBloc != null) {
+
+            if(thisBloc.getType()!=BlocTypes.RHOMB){
+            Iterator<Map.Entry<Integer,Link>> linc =allLinks.entrySet().iterator();
+            while (linc.hasNext()) {
+                Map.Entry<Integer, Link> ilinc = linc.next();
+                if (ilinc.getValue().getId_from() == thisBloc.getId())
+                    linc.remove();
+
+            }
+            }
+            else new DialogSelPointRhombDelete(mainActivity).show(mainActivity.getFragmentManager(),"dhsaj");
+        }
     }
 }

@@ -6,6 +6,15 @@ package com.example.kolas.lab1_tpcs;
 public class SimpleArrow {
     float x_from, x_to, y_from, y_to;
     boolean horizontal;
+    TypeLines type;
+
+    public TypeLines getType() {
+        return type;
+    }
+
+    public void setType(TypeLines type) {
+        this.type = type;
+    }
 
     public boolean isHorizontal() {
         return horizontal;

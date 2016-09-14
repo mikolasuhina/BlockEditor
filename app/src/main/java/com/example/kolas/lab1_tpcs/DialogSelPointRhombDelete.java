@@ -16,11 +16,14 @@ import android.widget.Toast;
 
 import com.example.kolas.lab1_tpcs.blocs.RhombBloc;
 
+import java.util.Iterator;
+import java.util.Map;
+
 
 /**
  * Created  on 23.03.2016.
  */
-public class DialogSelPointRhomb extends DialogFragment {
+public class DialogSelPointRhombDelete extends DialogFragment {
 
     MyView myView;
 
@@ -43,13 +46,12 @@ public class DialogSelPointRhomb extends DialogFragment {
 
         dialog.setContentView(R.layout.gialog_sel_point_rhomb);
 
-
         myView = new MyView(this.mainActivity, mainActivity.model.thisBloc);
         FrameLayout frameLayout = (FrameLayout) dialog.findViewById(R.id.cava_for_rhomb);
         frameLayout.addView(myView);
-        if (myView.obj.getSecond() != 100 && myView.obj.getFirst() != 100) {
-            Toast.makeText(mainActivity,"Всі вихідні з'єднання використовуються. /n  Видаліть непотрібне",Toast.LENGTH_LONG).show();
+        if (myView.obj.getSecond() == RhombBloc.FREE && myView.obj.getFirst() == RhombBloc.FREE) {
             dismiss();
+            Toast.makeText(mainActivity,"В даного блоку всі вихідні з'єднання вільні",Toast.LENGTH_LONG).show();
         }
         frameLayout.setOnTouchListener(new View.OnTouchListener() {
             @Override
@@ -63,16 +65,15 @@ public class DialogSelPointRhomb extends DialogFragment {
 
 
 
-                while (myView.obj.getOutPoints().get(myView.getThisPointNumber()).isUse()) {
+                while (!myView.obj.getOutPoints().get(myView.getThisPointNumber()).isUse()) {
 
                     myView.setThisPointNumber(myView.getThisPointNumber() + 1);
+
 
                     if (myView.getThisPointNumber() > 2)
                         myView.setThisPointNumber(0);
                 }
 
-
-                Log.d(TAG, "numberlink=" + myView.getThisPointNumber());
                 myView.invalidate();
 
                 return false;
@@ -87,27 +88,33 @@ public class DialogSelPointRhomb extends DialogFragment {
 
             public void onClick(View v) {
 
+
                 myView.obj.setNuberPointLink(myView.thisPointNumber);
-                if (myView.obj.getFirst() == 100) {
 
-                    myView.obj.setFirst(myView.thisPointNumber);
-                    mainActivity.model.thisLinc = new Link(myView.obj.getId(), true);
-                } else if (myView.obj.getSecond() == 100) {
-                    myView.obj.setSecond(myView.thisPointNumber);
-                    mainActivity.model.thisLinc = new Link(myView.obj.getId(), false);
-                } else mainActivity.setArrow(false);
 
-                myView.obj.getOutPoints().get(myView.thisPointNumber).setUse(true);
+                myView.obj.getOutPoints().get(myView.thisPointNumber).setUse(false);
 
-                if (myView.obj.getSecond() != 100l && myView.obj.getFirst() != 100) {
-                    dismiss();
+                Iterator<Map.Entry<Integer,Link>> linc =mainActivity.model.allLinks.entrySet().iterator();
+                while (linc.hasNext()) {
+                    Map.Entry<Integer, Link> ilinc = linc.next();
+                    if (ilinc.getValue().getId_from() == mainActivity.model.thisBloc.getId()){
+                        if(myView.obj.getFirst()==myView.getThisPointNumber())
+                            if(ilinc.getValue().isF_point()){
+                            linc.remove();
+                            myView.obj.setFirst(RhombBloc.FREE);
+                        }
+                            if(myView.obj.getSecond()==myView.getThisPointNumber())
+                                if(!ilinc.getValue().isF_point()){
+                                linc.remove();
+                                myView.obj.setSecond(RhombBloc.FREE);
+                            }
+
+                        }
+
                 }
-
-
-                mainActivity.isblocfrom = true;
-                mainActivity.model.flag = true;
-
+                mainActivity.fsurface.draw();
                 dismiss();
+
 
             }
 
@@ -119,7 +126,7 @@ public class DialogSelPointRhomb extends DialogFragment {
     }
 
 
-    public DialogSelPointRhomb(MainActivity mainActivity) {
+    public DialogSelPointRhombDelete(MainActivity mainActivity) {
         this.mainActivity = mainActivity;
     }
 }
