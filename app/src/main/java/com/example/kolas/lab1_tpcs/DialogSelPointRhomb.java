@@ -14,8 +14,6 @@ import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.Toast;
 
-import com.example.kolas.lab1_tpcs.blocs.RhombBloc;
-
 
 /**
  * Created  on 23.03.2016.
@@ -121,5 +119,12 @@ public class DialogSelPointRhomb extends DialogFragment {
 
     public DialogSelPointRhomb(MainActivity mainActivity) {
         this.mainActivity = mainActivity;
+    }
+
+    /**
+     * Created by mikola on 27.09.2016.
+     */
+
+    public static class Parser {
     }
 }

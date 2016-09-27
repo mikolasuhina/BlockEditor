@@ -1,12 +1,19 @@
 package com.example.kolas.lab1_tpcs;
 
 
+import android.app.Activity;
+import android.app.DialogFragment;
 import android.content.Context;
 
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.net.Uri;
+import android.os.Environment;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,21 +28,26 @@ import com.example.kolas.lab1_tpcs.blocs.BlocTypes;
 import com.example.kolas.lab1_tpcs.blocs.ReckBloc;
 import com.example.kolas.lab1_tpcs.blocs.RhombBloc;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.logging.Logger;
 
 
 public class MainActivity extends AppCompatActivity implements View.OnTouchListener, View.OnClickListener {
     FrameLayout frame;
     Button b;
-    Button b1;
-    Button button;
+    DialogEditName editName;
+    final String LOG_TAG = "myLogs";
     public static boolean isblocfrom;
-    public static final String TAG = "Mylogs";
-    EditText text;
     public static float nx, ny = 0;
-LinearLayout bar;
+    LinearLayout bar;
     Context context;
-
     public static boolean arrow = false;
     MySurfaceView fsurface;
 
@@ -48,15 +60,14 @@ LinearLayout bar;
         setContentView(R.layout.activity_main);
         frame = (FrameLayout) findViewById(R.id.frame);
         model = new Model(this);
-        text = (EditText) findViewById(R.id.editText);
+
         fsurface = new MySurfaceView(this, model);
         fsurface.setLayoutParams(new ActionBar.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
         frame.addView(fsurface);
         fsurface.setOnTouchListener(this);
         context = this;
 
-         bar = (LinearLayout) findViewById(R.id.bar);
-
+        bar = (LinearLayout) findViewById(R.id.bar);
 
 
     }
@@ -97,9 +108,9 @@ LinearLayout bar;
 
 
         } else {
-            if(model.thisBloc!=null){
-            model.checkThisBloc(x, y);
-            model.setPosForThisBloc(x, y);
+            if (model.thisBloc != null) {
+                model.checkThisBloc(x, y);
+                model.setPosForThisBloc(x, y);
             }
 
         }
@@ -111,8 +122,8 @@ LinearLayout bar;
     @Override
     public void onClick(View v) {
         model.setCenters(frame.getWidth() / 2);
-        model.setCenterL(model.getCenters()-150);
-        model.setCenterR(model.getCenters()+150);
+        model.setCenterL(model.getCenters() - 150);
+        model.setCenterR(model.getCenters() + 150);
         switch (v.getId()) {
             case R.id.line: {
 
@@ -122,31 +133,45 @@ LinearLayout bar;
                 break;
             }
             case R.id.addrect: {
-                model.addingNewBloc(BlocTypes.RECT, 0, 0, 100, 100);
+                model.addingNewBloc(BlocTypes.RECT, 0, 0);
 
                 break;
 
             }
             case R.id.rhomb: {
-                model.addingNewBloc(BlocTypes.RHOMB, 0, 0, 100, 100);
+                model.addingNewBloc(BlocTypes.RHOMB, 0, 0);
 
                 break;
 
             }
             case R.id.end: {
-                model.addingNewBloc(BlocTypes.END, 0, 0, 100, 50);
+                model.addingNewBloc(BlocTypes.END, 0, 0);
                 break;
 
             }
             case R.id.begin: {
-                model.addingNewBloc(BlocTypes.BEGIN, 0, 0, 100, 50);
+                model.addingNewBloc(BlocTypes.BEGIN, 0, 0);
+                break;
+
+            }
+            case R.id.save: {
+                new DialogSave(model.saveToFile()).show(getFragmentManager(), "DialogSave");
+                ;
+                break;
+
+            }
+            case R.id.open: {
+                Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+                intent.setType("file/*");
+                startActivityForResult(intent, 5);
+                fsurface.draw();
+                ;
                 break;
 
             }
 
             case R.id.clear: {
                 model.clear();
-
                 fsurface.draw();
                 break;
 
@@ -166,18 +191,16 @@ LinearLayout bar;
 
             }
             case R.id.settext: {
-                model.setText(String.valueOf(text.getText()));
-
-                fsurface.draw();
+                editName = new DialogEditName(model.thisBloc);
+                editName.show(getFragmentManager(), "Dialognew Name");
                 break;
 
             }
             case R.id.menu: {
-                if(bar.isShown()){
+                if (bar.isShown()) {
                     bar.setVisibility(View.GONE);
 
-                }
-                else bar.setVisibility(View.VISIBLE);
+                } else bar.setVisibility(View.VISIBLE);
                 break;
 
             }
@@ -190,7 +213,57 @@ LinearLayout bar;
         dialogSelPointRhomb.show(getFragmentManager(), "dialog");
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == Activity.RESULT_OK) {
+            final Intent d = data;
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    model.parseFile(readFileSD(d.getData()));
+                    fsurface.draw();
+                }
+            }).start();
 
+
+        } else if (resultCode == Activity.RESULT_CANCELED) {
+            Toast.makeText(MainActivity.this, "EROR", Toast.LENGTH_LONG).show();
+        }
+
+    }
+
+    String readFileSD(Uri path) {
+        String str = "";
+        // проверяем доступность SD
+        if (!Environment.getExternalStorageState().equals(
+                Environment.MEDIA_MOUNTED)) {
+            Log.d(LOG_TAG, "SD-карта не доступна: " + Environment.getExternalStorageState());
+            return null;
+        }
+        // получаем путь к SD
+
+        // добавляем свой каталог к пути
+
+        // формируем объект File, который содержит путь к файлу
+        File sdFile = new File(path.getPath());
+        try {
+            // открываем поток для чтения
+            BufferedReader br = new BufferedReader(new FileReader(sdFile));
+
+            // читаем содержимое
+            String tmp = "";
+            while ((tmp = br.readLine()) != null) {
+                str += tmp;
+                Log.d("tag", tmp);
+            }
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return str;
+    }
 
 
 }

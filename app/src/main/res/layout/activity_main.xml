@@ -4,144 +4,158 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
 
-android:orientation="vertical"
-     tools:context="com.example.kolas.lab1_tpcs.MainActivity">
+    android:orientation="vertical"
+    tools:context="com.example.kolas.lab1_tpcs.MainActivity">
 
     <LinearLayout
+        android:id="@+id/bar"
         style="@style/MyCustomThemeEat"
-        android:visibility="gone"
-        android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="#2efe17"
-        android:id="@+id/bar">
-
-        <Button
-            android:layout_width="wrap_content"
+        android:orientation="vertical">
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Clear"
+            android:orientation="horizontal">
+            <Button
+                android:id="@+id/save"
+                android:drawableLeft="@drawable/save"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:onClick="onClick"
+                android:text="Save" />
+
+            <Button
+                android:id="@+id/open"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:onClick="onClick"
+                android:drawableLeft="@drawable/open"
+                android:text="Open" />
+        </LinearLayout>
+<LinearLayout
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+        <Button
             android:id="@+id/clear"
-            android:onClick="onClick"
-            android:drawableRight="@drawable/clear"/>
-
-        <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="D_Bloc"
+            android:drawableRight="@drawable/clear"
+            android:onClick="onClick"
+            android:text="Clear" />
+
+        <Button
+
             android:id="@+id/delete"
-            android:onClick="onClick"
-            android:drawableRight="@drawable/delete"/>
-
-        <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="D_Link"
+            android:drawableRight="@drawable/delete"
+            android:onClick="onClick"
+            android:text="D_Bloc" />
+
+        <Button
             android:id="@+id/d_linc"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:drawableRight="@drawable/delete_link"
             android:onClick="onClick"
-            android:drawableRight="@drawable/delete_link"/>
+            android:text="D_Link" />
 
         <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Text"
             android:id="@+id/settext"
-            android:onClick="onClick"
-            android:drawableRight="@drawable/text"/>
-
-        <EditText
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/editText"
-            android:layout_weight="1"
-            android:text="text"
+            android:drawableRight="@drawable/text"
+            android:onClick="onClick"
+            android:text="Text" />
 
-            android:gravity="center_vertical|center_horizontal" />
+</LinearLayout>
     </LinearLayout>
 
     <LinearLayout
-        android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="#000000"
-        android:gravity="center_vertical">
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
 
         <LinearLayout
-            android:orientation="horizontal"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
+            android:layout_margin="10dp"
             android:gravity="center_vertical|center_horizontal"
-            android:layout_margin="10dp">
+            android:orientation="horizontal">
 
             <Button
 
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Rect"
                 android:id="@+id/addrect"
-                android:onClick="onClick"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:drawableBottom="@drawable/rect"
-                />
+                android:onClick="onClick"
+                android:text="Rect" />
 
             <Button
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="rhomb"
                 android:id="@+id/rhomb"
-                android:onClick="onClick"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:drawableBottom="@drawable/rhomb"
-             />
+                android:onClick="onClick"
+                android:text="rhomb" />
 
             <Button
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="begin"
                 android:id="@+id/begin"
-                android:onClick="onClick"
-                android:drawableBottom="@drawable/oval"/>
-
-            <Button
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="end"
+                android:drawableBottom="@drawable/oval"
+                android:onClick="onClick"
+                android:text="begin" />
+
+            <Button
                 android:id="@+id/end"
-                android:onClick="onClick"
-                android:drawableBottom="@drawable/oval"/>
-
-            <Button
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="link"
-                android:id="@+id/line"
+                android:drawableBottom="@drawable/oval"
                 android:onClick="onClick"
-                android:drawableBottom="@drawable/link"/>
+                android:text="end" />
+
+            <Button
+                android:id="@+id/line"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:drawableBottom="@drawable/link"
+                android:onClick="onClick"
+                android:text="link" />
 
             <FrameLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
                 <Button
+                    android:id="@+id/menu"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Menu"
-                    android:id="@+id/menu"
-                    android:onClick="onClick"
                     android:layout_gravity="right"
-                    android:drawableRight="@drawable/menu"/>
+                    android:drawableRight="@drawable/menu"
+                    android:onClick="onClick"
+                    android:text="Menu" />
             </FrameLayout>
         </LinearLayout>
 
     </LinearLayout>
 
     <LinearLayout
-        android:orientation="horizontal"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-        <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/frame">
+        android:orientation="horizontal">
+
+        <FrameLayout
+            android:id="@+id/frame"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
 
         </FrameLayout>
     </LinearLayout>

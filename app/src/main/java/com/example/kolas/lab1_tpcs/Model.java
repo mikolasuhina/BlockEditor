@@ -2,6 +2,7 @@ package com.example.kolas.lab1_tpcs;
 
 import android.graphics.Color;
 import android.text.Editable;
+import android.util.Log;
 
 import com.example.kolas.lab1_tpcs.blocs.BeginBlock;
 import com.example.kolas.lab1_tpcs.blocs.BlocObj;
@@ -23,8 +24,8 @@ import java.util.Random;
 public class Model {
     int id_counter;
     int IdCrossing;
-    HashMap<Integer,BlocObj> allBlocs;
-     HashMap<Integer, Link> allLinks;
+    HashMap<Integer, BlocObj> allBlocs;
+    HashMap<Integer, Link> allLinks;
     BlocObj thisBloc;
     Link thisLinc;
     public static final String TAG = "Mylogs";
@@ -74,14 +75,16 @@ public class Model {
     }
 
     private void addNewBloc(BlocObj newBloc) {
-        allBlocs.put(newBloc.getId(),newBloc);
+        allBlocs.put(newBloc.getId(), newBloc);
     }
 
     private void addNewLinc(Link newLinc) {
-        allLinks.put(newLinc.getId(),newLinc);
+        allLinks.put(newLinc.getId(), newLinc);
     }
 
-    void addingNewBloc(BlocTypes type, float x, float y, int w, int h) {
+    void addingNewBloc(BlocTypes type, float x, float y) {
+        int w = 100;
+        int h = 100;
         if (thisBloc != null)
             thisBloc.setColor(Color.WHITE);
         switch (type) {
@@ -90,11 +93,11 @@ public class Model {
                 break;
             }
             case BEGIN: {
-                thisBloc = new BeginBlock(x, y, w, h, Color.GREEN, type);
+                thisBloc = new BeginBlock(x, y, w, h / 2, Color.GREEN, type);
                 break;
             }
             case END: {
-                thisBloc = new EndBloc(x, y, w, h, Color.GREEN, type);
+                thisBloc = new EndBloc(x, y, w, h / 2, Color.GREEN, type);
                 break;
             }
             case RHOMB: {
@@ -130,12 +133,9 @@ public class Model {
     void setPosForThisBloc(float x, float y) {
         if (Math.abs(centers - x) < 100)
             thisBloc.setX(centers - thisBloc.getWidth() / 2);
-        else
-
-        if (Math.abs(centerR - x) < 100)
+        else if (Math.abs(centerR - x) < 100)
             thisBloc.setX(centerR - thisBloc.getWidth() / 2);
-        else
-        if (Math.abs(centerL - x) < 100)
+        else if (Math.abs(centerL - x) < 100)
             thisBloc.setX(centerL - thisBloc.getWidth() / 2);
         else
             thisBloc.setX(x - thisBloc.getWidth() / 2);
@@ -208,9 +208,10 @@ public class Model {
 
     private void calcway(float x, float y) {
         if (Math.abs((double) (thisSimpleArrow.getX_from() - x)) > 50) {
-         if(thisSimpleArrow.getX_from() - x<0)
-             thisSimpleArrow.setType(TypeLines.HORISONTAL_LEFT);else
-             thisSimpleArrow.setType(TypeLines.HORISONTAL_R);
+            if (thisSimpleArrow.getX_from() - x < 0)
+                thisSimpleArrow.setType(TypeLines.HORISONTAL_LEFT);
+            else
+                thisSimpleArrow.setType(TypeLines.HORISONTAL_R);
             thisSimpleArrow.setX_to(x);
             thisSimpleArrow.setY_to(thisSimpleArrow.getY_from());
             thisSimpleArrow.setHorizontal(true);
@@ -222,9 +223,9 @@ public class Model {
 
         } else if (Math.abs((double) (thisSimpleArrow.getY_from() - y)) > 50) {
 
-            if(thisSimpleArrow.getY_from() - y>0)
+            if (thisSimpleArrow.getY_from() - y > 0)
                 thisSimpleArrow.setType(TypeLines.VERTICAL_TOP);
-            else     thisSimpleArrow.setType(TypeLines.vERTICAL_BOT);
+            else thisSimpleArrow.setType(TypeLines.vERTICAL_BOT);
             thisSimpleArrow.setX_to(thisSimpleArrow.getX_from());
             thisSimpleArrow.setY_to(y);
             thisSimpleArrow.setHorizontal(false);
@@ -346,7 +347,7 @@ public class Model {
 
     public void delete() {
         if (thisBloc != null) {
-            Iterator<Map.Entry<Integer,Link>> linc =allLinks.entrySet().iterator();
+            Iterator<Map.Entry<Integer, Link>> linc = allLinks.entrySet().iterator();
             while (linc.hasNext()) {
                 Map.Entry<Integer, Link> ilinc = linc.next();
                 if (ilinc.getValue().getId_from() == thisBloc.getId() || ilinc.getValue().getId_to() == thisBloc.getId())
@@ -355,12 +356,13 @@ public class Model {
             }
 
 
-             allBlocs.remove(thisBloc.getId());
+            allBlocs.remove(thisBloc.getId());
 
-           if(!allBlocs.isEmpty()){
-            List<BlocObj >keys = new ArrayList<BlocObj>(allBlocs.values());
-            thisBloc=keys.get(0);
-            coloring();}else thisBloc=null;
+            if (!allBlocs.isEmpty()) {
+                List<BlocObj> keys = new ArrayList<BlocObj>(allBlocs.values());
+                thisBloc = keys.get(0);
+                coloring();
+            } else thisBloc = null;
 
         }
     }
@@ -370,19 +372,296 @@ public class Model {
             thisBloc.setText(s);
     }
 
-    public void deleteLink(){
+    public void deleteLink() {
         if (thisBloc != null) {
 
-            if(thisBloc.getType()!=BlocTypes.RHOMB){
-            Iterator<Map.Entry<Integer,Link>> linc =allLinks.entrySet().iterator();
-            while (linc.hasNext()) {
-                Map.Entry<Integer, Link> ilinc = linc.next();
-                if (ilinc.getValue().getId_from() == thisBloc.getId())
-                    linc.remove();
+            if (thisBloc.getType() != BlocTypes.RHOMB) {
+                Iterator<Map.Entry<Integer, Link>> linc = allLinks.entrySet().iterator();
+                while (linc.hasNext()) {
+                    Map.Entry<Integer, Link> ilinc = linc.next();
+                    if (ilinc.getValue().getId_from() == thisBloc.getId())
+                        linc.remove();
 
-            }
-            }
-            else new DialogSelPointRhombDelete(mainActivity).show(mainActivity.getFragmentManager(),"dhsaj");
+                }
+            } else
+                new DialogSelPointRhombDelete(mainActivity).show(mainActivity.getFragmentManager(), "dhsaj");
         }
     }
+
+
+    String saveToFile() {
+        saveBlocks();
+        saveLinks();
+        return saveBlocks() + saveLinks();
+    }
+
+    String saveBlocks() {
+        String res;
+        res = "<blocs>\n";
+        res += getTagBlocs();
+        res += "</blocs>\n";
+
+        return res;
+    }
+
+    String saveLinks() {
+        String res;
+        res = "<links>\n";
+        res += getTagLinks();
+        res += "</links>";
+
+        return res;
+
+    }
+
+    String getTagLinks() {
+        String res = "";
+        for (Link link : allLinks.values()) {
+            res += getTagLink(link);
+        }
+        return res + "\n";
+    }
+
+    String getTagLink(Link link) {
+        String res = "<link>\n";
+        res += "<id>" + link.getId() + "</id>\n";
+        res += "<to>" + link.getId_to() + "</to>\n";
+        res += "<from>" + link.getId_from() + "</from>\n";
+        res += "<f_point>" + link.isF_point() + "</f_point>\n";
+        res += getArrowsTag(link.getArrows()) + '\n';
+        res += "</link>\n";
+
+        return res;
+    }
+
+
+    String getArrowsTag(ArrayList<SimpleArrow> arrows) {
+        String res = "<arrows>\n";
+        for (SimpleArrow arrow : arrows) {
+            res += getSimpleArrowTag(arrow) + '\n';
+        }
+        res += "</arrows>\n";
+        return res;
+    }
+
+    String getSimpleArrowTag(SimpleArrow arrow) {
+        String res = "<arrow>\n";
+        res += " <x_from>" + arrow.getX_from() + "</x_from>\n";
+        res += "<y_from>" + arrow.getY_from() + "</y_from>\n";
+        res += "<x_to>" + arrow.getX_to() + "</x_to>\n";
+        res += "<y_to>" + arrow.getY_to() + "</y_to>\n";
+        res += "<horisontal>" + arrow.isHorizontal() + "</horisontal>\n";
+
+        res += "</arrow>\n";
+        return res;
+    }
+
+    String getTagBlocs() {
+        String res = "";
+        for (BlocObj o : allBlocs.values()) {
+            res += "   " + getBlocTag(o);
+        }
+        return res + "\n";
+    }
+
+    String getBlocTag(BlocObj o) {
+        String res = "<bloc>\n";
+        res += "        <type>" + o.getType() + "</type>\n";
+        res += "        <x>" + o.getX() + "</x>\n";
+        res += "        <y>" + o.getY() + "</y>\n";
+        res += "        <id>" + o.getId() + "</id>\n";
+        res += "        <text>" + o.getText() + "</text>\n";
+        if (o.getType() != BlocTypes.BEGIN) {
+            res += "        <in>" + o.getIn_Point().isUse() + "</in>\n";
+        }
+        if (o.getType() != BlocTypes.END) {
+            res += "        <out>" + getOutPoint(o) + "</out>\n";
+        }
+
+        res += "   </bloc>\n";
+
+
+        return res;
+    }
+
+    String getOutPoint(BlocObj o) {
+        String res = "\n";
+        if (o.getType() == BlocTypes.RHOMB) {
+            res += "<first>" + ((RhombBloc) o).getFirst() + "</first>\n";
+            res += "<second>" + ((RhombBloc) o).getSecond() + "</second>\n";
+            res += "<number>" + ((RhombBloc) o).getNuberPointLink() + "</number>\n";
+            res += "<useR>" + ((RhombBloc) o).getPointR().isUse() + "</useR>\n";
+            res += "<useL>" + ((RhombBloc) o).getPointL().isUse() + "</useL>\n";
+            res += "<useB>" + ((RhombBloc) o).getOutPoints().get(0).isUse() + "</useB>\n";
+        }
+        return res += "<use>" + o.getOut_Point().isUse() + "</use>\n";
+
+    }
+
+    void parseFile(String text) {
+        if(text.contains("<blocs>")){
+        parseBlocs(getTagString(text, "<blocs>"));
+        parseLincs(getTagString(text, "<links>"));
+        };
+
+    }
+
+    void parseBlocs(String s) {
+        ArrayList<String> strings = getTagsArray(s, "<bloc>");
+        for (String tmp : strings) {
+            parseBloc(tmp);
+
+        }
+    }
+
+
+    void parseBloc(String bloc) {
+        float x = Float.parseFloat(getTagString(bloc, "<x>"));
+        float y = Float.parseFloat(getTagString(bloc, "<y>"));
+        int id = Integer.parseInt(getTagString(bloc, "<id>"));
+        BlocTypes type = getTypeBloc(getTagString(bloc, "<type>"));
+        String text = getTagString(bloc, "<text>");
+
+
+        int w = 100;
+        int h = 100;
+        if (thisBloc != null)
+            thisBloc.setColor(Color.WHITE);
+        switch (type) {
+            case RECT: {
+                thisBloc = new ReckBloc(x, y, w, h, Color.GREEN, type);
+                break;
+            }
+            case BEGIN: {
+                thisBloc = new BeginBlock(x, y, w, h / 2, Color.GREEN, type);
+                break;
+            }
+            case END: {
+                thisBloc = new EndBloc(x, y, w, h / 2, Color.GREEN, type);
+                break;
+            }
+            case RHOMB: {
+                thisBloc = new RhombBloc(x, y, w, h, Color.GREEN, type);
+                break;
+            }
+        }
+
+        coloring();
+
+        if (id_counter <= id)
+            id_counter++;
+        thisBloc.setId(id);
+        thisBloc.setText(text);
+        if (type != BlocTypes.BEGIN) {
+            boolean in = Boolean.parseBoolean(getTagString(bloc, "<in>"));
+            thisBloc.getIn_Point().setUse(in);
+        }
+
+        if (type != BlocTypes.END) {
+            String out = getTagString(bloc, "<out>");
+            boolean use = Boolean.parseBoolean(getTagString(out, "<use>"));
+            thisBloc.getOut_Point().setUse(use);
+            if (type == BlocTypes.RHOMB) {
+                int second = Integer.parseInt(getTagString(out, "<second>"));
+                int fisrs = Integer.parseInt(getTagString(out, "<first>"));
+                int use_numper = Integer.parseInt(getTagString(out, "<number>"));
+                boolean useR = Boolean.parseBoolean(getTagString(out, "<useR>"));
+                boolean useL = Boolean.parseBoolean(getTagString(out, "<useL>"));
+                boolean useB = Boolean.parseBoolean(getTagString(out, "<useB>"));
+                ((RhombBloc) thisBloc).setFirst(fisrs);
+                ((RhombBloc) thisBloc).setSecond(second);
+                ((RhombBloc) thisBloc).setNuberPointLink(use_numper);
+                ((RhombBloc) thisBloc).getPointR().setUse(useR);
+                ((RhombBloc) thisBloc).getPointL().setUse(useL);
+                ((RhombBloc) thisBloc).getOutPoints().get(0).setUse(useB);
+            }
+        }
+
+        addNewBloc(thisBloc);
+
+    }
+
+    BlocTypes getTypeBloc(String s) {
+        s.trim();
+        if (s.equals(BlocTypes.BEGIN.toString()))
+            return BlocTypes.BEGIN;
+        if (s.equals(BlocTypes.END.toString()))
+            return BlocTypes.END;
+        if (s.equals(BlocTypes.RECT.toString()))
+            return BlocTypes.RECT;
+        if (s.equals(BlocTypes.RHOMB.toString()))
+            return BlocTypes.RHOMB;
+        return null;
+
+    }
+
+    void parseLincs(String s) {
+        ArrayList<String> strings = getTagsArray(s, "<link>");
+        for (String tmp : strings) {
+            parseLink(tmp);
+
+        }
+    }
+
+
+    void parseLink(String bloc) {
+        int id = Integer.parseInt(getTagString(bloc, "<id>"));
+        int to = Integer.parseInt(getTagString(bloc, "<to>"));
+        int from = Integer.parseInt(getTagString(bloc, "<from>"));
+        boolean f_point = Boolean.parseBoolean(getTagString(bloc, "<f_point>"));
+        ArrayList<SimpleArrow> simpleArrows = new ArrayList<>();
+        ArrayList<String> strings = getTagsArray(getTagString(bloc, "<arrows>"), "<arrow>");
+        for (String tmp : strings) {
+            simpleArrows.add(parseArrow(tmp));
+        }
+        Link newLink = new Link(from, to, simpleArrows);
+        newLink.setId(id);
+        newLink.setF_point(f_point);
+        if (id_counter <= id) ;
+        id_counter++;
+        addNewLinc(newLink);
+
+    }
+
+    SimpleArrow parseArrow(String link) {
+        float x_to = Float.parseFloat(getTagString(link, "<x_to>"));
+        float y_to = Float.parseFloat(getTagString(link, "<y_to>"));
+        float x_from = Float.parseFloat(getTagString(link, "<x_from>"));
+        float y_from = Float.parseFloat(getTagString(link, "<y_from>"));
+        boolean horisontal = Boolean.parseBoolean(getTagString(link, "<horisontal>"));
+        SimpleArrow sa = new SimpleArrow(x_from, y_from, x_to, y_to);
+        sa.setHorizontal(horisontal);
+        return sa;
+    }
+
+    String getTagString(String text, String tag) {
+        String newText;
+
+        String openTag = tag;
+        String closeTag = new StringBuffer(tag).insert(1, '/').toString();
+        int start = text.indexOf(openTag) + openTag.length();
+        int end = text.indexOf(closeTag);
+        newText = new String(text.substring(start, end));
+        return newText;
+
+    }
+
+    ArrayList<String> getTagsArray(String text, String tag) {
+        ArrayList<String> newText = new ArrayList<>();
+        String bufer = new String(text);
+        String closeTag = new StringBuffer(tag).insert(1, '/').toString();
+        int end = 0;
+        while (bufer.contains(closeTag)) {
+            end = bufer.indexOf(closeTag);
+            newText.add(new String(bufer.substring(closeTag.length(), end)));
+            bufer = new String(bufer.substring(end + closeTag.length()));
+            if (bufer.length() <= closeTag.length())
+                break;
+        }
+
+        return newText;
+
+    }
+
 }
+

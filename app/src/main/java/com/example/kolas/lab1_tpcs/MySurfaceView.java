@@ -161,7 +161,7 @@ public void draw(){
         c = getHolder().lockCanvas(null);
         synchronized (getHolder()) {
             c.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR);
-           drawline(c);
+            drawline(c);
 
         }
     } finally {
