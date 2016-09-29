@@ -22,13 +22,14 @@ public class MyView extends View {
     float a = 400;
     float x_y;
     int thisPointNumber;
+    boolean firstStart;
 
     public MyView(Context context, BlocObj obj) {
         super(context);
         this.obj = (RhombBloc) obj;
         w_h = (float) (a / Math.sqrt(2));
         x_y = (float) (a * Math.sqrt(2) - a) / 2;
-        thisPointNumber = getNotUsePointBloc();
+        thisPointNumber = -1;
         setLayoutParams(new ActionBar.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
     }
 
@@ -50,24 +51,30 @@ public class MyView extends View {
         switch (thisPointNumber) {
             case 0: {
                 canvas.rotate(225, a / 2, a / 2);
+
                 break;
             }
             case 1: {
                 canvas.rotate(135, a / 2, a / 2);
+
                 break;
             }
             case 2: {
                 canvas.rotate(315, a / 2, a / 2);
+
                 break;
             }
+            default:
+                canvas.rotate(225, a / 2, a / 2);
+
 
         }
 
         canvas.drawRect(x_y, x_y, w_h, w_h, p);
         p.setColor(Color.GREEN);
-
-        canvas.drawCircle(x_y, x_y, 10, p);
-
+        if (firstStart)
+            canvas.drawCircle(x_y, x_y, 10, p);
+        else firstStart = !firstStart;
 
         // canvas.rotate(45,a/2,a/2);
 

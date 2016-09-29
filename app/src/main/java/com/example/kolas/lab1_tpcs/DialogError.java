@@ -1,49 +1,57 @@
 package com.example.kolas.lab1_tpcs;
 
 import android.app.DialogFragment;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.support.annotation.RequiresApi;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
-import android.widget.Toast;
+import android.widget.ListView;
 
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by mikola on 27.09.2016.
  */
 
-public class DialogSave extends DialogFragment {
-    String file;
+public class DialogError extends DialogFragment {
+    ArrayList<String> file;
 
-    public DialogSave(String file) {
+    public DialogError(ArrayList<String> file) {
 this.file=file;
     }
 
 
     final String LOG_TAG = "myLogs";
 
+    @RequiresApi(api = Build.VERSION_CODES.M)
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        getDialog().setTitle("Введіть iм'я файлу");
-        View v = inflater.inflate(R.layout.dialog1, null);
-        final EditText editText = (EditText) v.findViewById(R.id.newNameFile);
+        getDialog().setTitle("ПОМИЛКИ");
+        View v = inflater.inflate(R.layout.dialog_eror, null);
+        String [] errors = new String[file.size()];
+        file.toArray(errors);
+        Window window = getDialog().getWindow();
+        window.setGravity(Gravity.TOP);
+        final ListView editText = (ListView) v.findViewById(R.id.list_error);
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(),
+                android.R.layout.simple_list_item_1, errors);
+        editText.setAdapter(adapter);
         v.findViewById(R.id.btnSave).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String name =String.valueOf(editText.getText());
-                if(name.equals(""))
-                    name="newFile";
-                name.trim();
-
-
-                writeFileSD(file, String.valueOf(name)+".txt");
                 dismiss();
             }
         });

@@ -6,6 +6,16 @@ package com.example.kolas.lab1_tpcs;
 public class PointLink {
     private float x;
     private float y;
+    boolean type_for_rhomh;
+
+    public boolean isType_for_rhomh() {
+        return type_for_rhomh;
+    }
+
+    public void setType_for_rhomh(boolean type_for_rhomh) {
+        this.type_for_rhomh = type_for_rhomh;
+    }
+
     private boolean in_out_type;//true-in;false -out
 
     public boolean isUse() {

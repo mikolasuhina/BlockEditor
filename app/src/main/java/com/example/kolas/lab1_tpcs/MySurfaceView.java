@@ -56,11 +56,27 @@ public class MySurfaceView extends SurfaceView implements
 
 
                         RhombBloc rb = (RhombBloc) blocObj;
+
                         // canvas.drawLine(blocObj.getOut_Point().getX(),blocObj.getOut_Point().getY(),blocObj.getOut_Point().getX(),blocObj.getOut_Point().getY()-blocObj.getHeight()/4,p);
                         canvas.drawLine(rb.getOutPoints().get(0).getX(), rb.getOutPoints().get(0).getY(), rb.getOutPoints().get(0).getX(), rb.getOutPoints().get(0).getY() - blocObj.getHeight() / 4, p);
                         canvas.drawLine(rb.getOutPoints().get(1).getX(), rb.getOutPoints().get(1).getY(), rb.getOutPoints().get(1).getX() - blocObj.getHeight() / 4, rb.getOutPoints().get(1).getY(), p);
                         canvas.drawLine(rb.getOutPoints().get(2).getX(), rb.getOutPoints().get(2).getY(), rb.getOutPoints().get(2).getX() + blocObj.getHeight() / 4, rb.getOutPoints().get(2).getY(), p);
+                       p.setColor(Color.RED);
+                        p.setTextSize(14);
+                        if(rb.getPointL().isUse()) {
+                            p.setTextAlign(Paint.Align.LEFT);
+                            canvas.drawText(String.valueOf(rb.getPointL().isType_for_rhomh()), rb.getPointL().getX(), rb.getPointL().getY(), p);
+                        }
+                        if(rb.getPointR().isUse()) {
+                            p.setTextAlign(Paint.Align.RIGHT);
+                            canvas.drawText(String.valueOf(rb.getPointR().isType_for_rhomh()), rb.getPointR().getX(), rb.getPointR().getY(), p);
+                        }
+                        if(rb.getPointB().isUse())
+                            canvas.drawText(String.valueOf(rb.getPointB().isType_for_rhomh()),rb.getPointB().getX(),rb.getPointB().getY(),p);
+                        p.setTextAlign(Paint.Align.CENTER);
+                        p.setTextSize(20);
                         break;
+
                     }
                     default: {
                         p.setColor(blocObj.getColor());
@@ -85,8 +101,7 @@ public class MySurfaceView extends SurfaceView implements
         p.setColor(Color.YELLOW);
 
         if (MainActivity.arrow && MainActivity.isblocfrom) {
-            for (SimpleArrow s : model.thisArrows
-                    ) {
+            for (SimpleArrow s : model.thisArrows) {
                 canvas.drawLine(s.getX_from(), s.getY_from(), s.getX_to(), s.getY_to(), p);
 
             }
@@ -160,6 +175,8 @@ public void draw(){
     try {
         c = getHolder().lockCanvas(null);
         synchronized (getHolder()) {
+
+
             c.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR);
             drawline(c);
 
@@ -173,6 +190,7 @@ public void draw(){
         }
     }
 }
+
 
 private void drawArrow(float x ,float y, float dx, float dy, BlocTypes type ,Canvas c,Paint p){
     switch(type) {

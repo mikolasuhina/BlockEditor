@@ -12,7 +12,22 @@ public class RhombBloc extends BlocObj {
     ArrayList<PointLink> outPoints;
     private PointLink pointL;
     private PointLink pointR;
-    private int first;
+
+    public PointLink getPointB() {
+        return pointB;
+    }
+
+    public void setPointB(PointLink pointB) {
+        this.pointB = pointB;
+    }
+
+    public static int getFREE() {
+        return FREE;
+    }
+
+    private PointLink pointB;
+
+     private int first;
      public static final int FREE=100;
 
     private int second;
@@ -44,6 +59,10 @@ public class RhombBloc extends BlocObj {
     private void updateL() {
         pointR.setX(getX() - getHeight() / 4);
         pointR.setY((float) (getY() + getHeight() / 2));
+    }
+    private void updateB() {
+        pointB.setX(getX()  + getHeight()/2);
+        pointB.setY((float) (getY() + getHeight()+ getHeight() / 4));
     }
 
     private void updateR() {
@@ -84,8 +103,9 @@ public class RhombBloc extends BlocObj {
         super(x, y, width, height, color, type);
         pointR = new PointLink(x + height / 4, (float) (y + height / 2), false);
         pointL = new PointLink(x - width / 4, (float) (y + height / 2), false);
+        pointB = new PointLink(x + width /2, (float) (y + height +height/4), false);
         outPoints = new ArrayList<>();
-        outPoints.add(super.getOut_Point());
+        outPoints.add(pointB);
         outPoints.add(pointL);
         outPoints.add(pointR);
         first = FREE;
@@ -103,7 +123,7 @@ public class RhombBloc extends BlocObj {
 
 
     private void update() {
-        super.getOut_Point();
+        updateB();
         updateL();
         updateR();
 

@@ -167,6 +167,8 @@ public class Model {
         coloring();
         if (thisBloc.getType() == BlocTypes.RHOMB && flag)
             mainActivity.showDialogRhomb();
+
+
     }
 
     BlocObj getCollBloc(int id) {
@@ -190,16 +192,32 @@ public class Model {
     }
 
     boolean setBlocFrom(float x, float y) {
-        if (thisBloc != null) {
-            if (thisBloc.getType() != BlocTypes.RHOMB)
+
+        if (thisBloc != null && thisBloc.getType() != BlocTypes.END) {
+            if (thisBloc.getType() != BlocTypes.RHOMB) {
                 mainActivity.isblocfrom = true;
+                if (!thisBloc.getOut_Point().isUse())
+                    thisBloc.getOut_Point().setUse(true);
+            }
+
             //  flag = true;
             return true;
         } else
             checkThisBloc(x, y);
+        if (thisBloc != null)
+            if (thisBloc.getOut_Point().isUse() && thisBloc.getType() != BlocTypes.RHOMB)
+                thisBloc = null;
         return false;
     }
 
+    void searshBlocForConnect() {
+        for (BlocObj block : allBlocs.values()) {
+            if (block.getType() != BlocTypes.END) {
+                if (!block.getOut_Point().isUse())
+                    block.setColor(Color.YELLOW);
+            }
+        }
+    }
 
     void setLinkParam() {
         thisBloc = null;
@@ -243,6 +261,7 @@ public class Model {
         } else {
 
             searchThisBlocCrossing();
+            thisBloc.getIn_Point().setUse(true);
             if (thisArrows.size() >= 1)
                 if (thisArrows.get(thisArrows.size() - 1).isHorizontal())
                     thisArrows.get(thisArrows.size() - 1).setX_to(thisBloc.getIn_Point().getX());
@@ -295,7 +314,9 @@ public class Model {
         if (sa.size() >= 1) {
 
             sa.get(sa.size() - 1).setY_to(end_y);
+           
         }
+
 
     }
 
@@ -346,16 +367,56 @@ public class Model {
     }
 
     public void delete() {
+        int id = -1;
+        int idrhomb = -1;
         if (thisBloc != null) {
             Iterator<Map.Entry<Integer, Link>> linc = allLinks.entrySet().iterator();
             while (linc.hasNext()) {
                 Map.Entry<Integer, Link> ilinc = linc.next();
-                if (ilinc.getValue().getId_from() == thisBloc.getId() || ilinc.getValue().getId_to() == thisBloc.getId())
+                if (ilinc.getValue().getId_from() == thisBloc.getId() || ilinc.getValue().getId_to() == thisBloc.getId()) {
                     linc.remove();
+                    if (ilinc.getValue().getId_from() == thisBloc.getId()) {
+                        if (id == -1)
+                            id = ilinc.getValue().getId_to();
+                        else
+                            idrhomb = ilinc.getValue().getId_to();
+                    }
+                    if (allBlocs.get(ilinc.getValue().getId_from()).getType() == BlocTypes.RHOMB) {
+
+                        if (ilinc.getValue().isF_point()) {
+                            int first = ((RhombBloc) allBlocs.get(ilinc.getValue().getId_from())).getFirst();
+                            ((RhombBloc) allBlocs.get(ilinc.getValue().getId_from())).setFirst(RhombBloc.FREE);
+                            ((RhombBloc) allBlocs.get(ilinc.getValue().getId_from())).getOutPoints().get(first).setUse(false);
+                        } else {
+                            int first = ((RhombBloc) allBlocs.get(ilinc.getValue().getId_from())).getSecond();
+                            ((RhombBloc) allBlocs.get(ilinc.getValue().getId_from())).setSecond(RhombBloc.FREE);
+                            ((RhombBloc) allBlocs.get(ilinc.getValue().getId_from())).getOutPoints().get(first).setUse(false);
+                        }
+
+
+                    } else
+                        allBlocs.get(ilinc.getValue().getId_from()).getOut_Point().setUse(false);
+                }
+
 
             }
 
+            boolean useOutPoin = false;
+            if (idrhomb != -1){
+                for (Link link : allLinks.values()) {
+                if (link.getId_to() == id)
+                    useOutPoin = true;
+            }
 
+            allBlocs.get(id).getIn_Point().setUse(useOutPoin);}
+            if (idrhomb != -1) {
+                useOutPoin = false;
+                for (Link link : allLinks.values()) {
+                    if (link.getId_to() == idrhomb)
+                        useOutPoin = true;
+                }
+                allBlocs.get(idrhomb).getIn_Point().setUse(useOutPoin);
+            }
             allBlocs.remove(thisBloc.getId());
 
             if (!allBlocs.isEmpty()) {
@@ -367,24 +428,43 @@ public class Model {
         }
     }
 
+
     public void setText(String s) {
         if (thisBloc.getType() != BlocTypes.END && thisBloc.getType() != BlocTypes.BEGIN)
             thisBloc.setText(s);
     }
 
     public void deleteLink() {
+        int id = 0;
         if (thisBloc != null) {
 
             if (thisBloc.getType() != BlocTypes.RHOMB) {
                 Iterator<Map.Entry<Integer, Link>> linc = allLinks.entrySet().iterator();
                 while (linc.hasNext()) {
                     Map.Entry<Integer, Link> ilinc = linc.next();
-                    if (ilinc.getValue().getId_from() == thisBloc.getId())
+                    if (ilinc.getValue().getId_from() == thisBloc.getId()) {
+
                         linc.remove();
+                        id = ilinc.getValue().getId_to();
+                        if (thisBloc.getType() != BlocTypes.END)
+                            thisBloc.getOut_Point().setUse(false);
+
+                    }
 
                 }
             } else
                 new DialogSelPointRhombDelete(mainActivity).show(mainActivity.getFragmentManager(), "dhsaj");
+
+
+            if (thisBloc.getType() != BlocTypes.RHOMB) {
+                boolean useOutPoin = false;
+                for (Link link : allLinks.values()) {
+                    if (link.getId_to() == id)
+                        useOutPoin = true;
+                }
+
+                allBlocs.get(id).getIn_Point().setUse(useOutPoin);
+            }
         }
     }
 
@@ -492,17 +572,21 @@ public class Model {
             res += "<number>" + ((RhombBloc) o).getNuberPointLink() + "</number>\n";
             res += "<useR>" + ((RhombBloc) o).getPointR().isUse() + "</useR>\n";
             res += "<useL>" + ((RhombBloc) o).getPointL().isUse() + "</useL>\n";
-            res += "<useB>" + ((RhombBloc) o).getOutPoints().get(0).isUse() + "</useB>\n";
+            res += "<useB>" + ((RhombBloc) o).getPointB().isUse() + "</useB>\n";
+            res += "<tfR>" + ((RhombBloc) o).getPointR().isType_for_rhomh() + "</tfR>\n";
+            res += "<tfL>" + ((RhombBloc) o).getPointL().isType_for_rhomh() + "</tfL>\n";
+            res += "<tfB>" + ((RhombBloc) o).getPointB().isType_for_rhomh() + "</tfB>\n";
         }
         return res += "<use>" + o.getOut_Point().isUse() + "</use>\n";
 
     }
 
     void parseFile(String text) {
-        if(text.contains("<blocs>")){
-        parseBlocs(getTagString(text, "<blocs>"));
-        parseLincs(getTagString(text, "<links>"));
-        };
+        if (text.contains("<blocs>")) {
+            parseBlocs(getTagString(text, "<blocs>"));
+            parseLincs(getTagString(text, "<links>"));
+        }
+        ;
 
     }
 
@@ -548,7 +632,7 @@ public class Model {
 
         coloring();
 
-        if (id_counter <= id)
+        while (id_counter <= id)
             id_counter++;
         thisBloc.setId(id);
         thisBloc.setText(text);
@@ -568,12 +652,22 @@ public class Model {
                 boolean useR = Boolean.parseBoolean(getTagString(out, "<useR>"));
                 boolean useL = Boolean.parseBoolean(getTagString(out, "<useL>"));
                 boolean useB = Boolean.parseBoolean(getTagString(out, "<useB>"));
+
+                boolean tfR = Boolean.parseBoolean(getTagString(out, "<tfR>"));
+                boolean tfL = Boolean.parseBoolean(getTagString(out, "<tfL>"));
+                boolean tfB = Boolean.parseBoolean(getTagString(out, "<tfB>"));
                 ((RhombBloc) thisBloc).setFirst(fisrs);
                 ((RhombBloc) thisBloc).setSecond(second);
+
                 ((RhombBloc) thisBloc).setNuberPointLink(use_numper);
+
                 ((RhombBloc) thisBloc).getPointR().setUse(useR);
                 ((RhombBloc) thisBloc).getPointL().setUse(useL);
-                ((RhombBloc) thisBloc).getOutPoints().get(0).setUse(useB);
+                ((RhombBloc) thisBloc).getPointB().setUse(useB);
+
+                ((RhombBloc) thisBloc).getPointR().setType_for_rhomh(tfR);
+                ((RhombBloc) thisBloc).getPointL().setType_for_rhomh(tfL);
+                ((RhombBloc) thisBloc).getPointB().setType_for_rhomh(tfB);
             }
         }
 
@@ -617,7 +711,7 @@ public class Model {
         Link newLink = new Link(from, to, simpleArrows);
         newLink.setId(id);
         newLink.setF_point(f_point);
-        if (id_counter <= id) ;
+        while (id_counter <= id) ;
         id_counter++;
         addNewLinc(newLink);
 
@@ -661,6 +755,83 @@ public class Model {
 
         return newText;
 
+    }
+
+    boolean contentBloc(BlocTypes type) {
+        for (BlocObj bloc : allBlocs.values()
+                ) {
+            if (bloc.getType() == type)
+                return true;
+
+        }
+        return false;
+    }
+
+    ArrayList<String> searchError() {
+        ArrayList<String> arrayList = new ArrayList<>();
+        if (!contentBloc(BlocTypes.BEGIN))
+            arrayList.add("Відсутній блок \"Початок\"");
+        if (!contentBloc(BlocTypes.END))
+            arrayList.add("Відсутній блок \"Кінець\"");
+        for (BlocObj bloc : allBlocs.values()) {
+            switch (bloc.getType()) {
+                case BEGIN: {
+                    if (!bloc.getOut_Point().isUse()) {
+                        arrayList.add("Блок " + BlocTypes.BEGIN + "(" + bloc.getText() + ") висячий");
+                        bloc.setColor(Color.RED);
+                    }
+                    break;
+                }
+                case END: {
+                    if (!bloc.getIn_Point().isUse()) {
+                        arrayList.add("Блок " + BlocTypes.END + "(" + bloc.getText() + ") недосяжний");
+                        bloc.setColor(Color.RED);
+                    }
+                    break;
+                }
+                case RECT: {
+                    if (!bloc.getOut_Point().isUse()) {
+                        arrayList.add("Блок " + BlocTypes.RECT + "(" + bloc.getText() + ") висячий");
+                        bloc.setColor(Color.RED);
+                    }
+
+                    if (!bloc.getIn_Point().isUse()) {
+                        arrayList.add("Блок " + BlocTypes.RECT + "(" + bloc.getText() + ") недосяжний");
+                        bloc.setColor(Color.RED);
+                    }
+                    break;
+                }
+                case RHOMB: {
+                    int use = 0;
+                    for (PointLink point : ((RhombBloc) bloc).getOutPoints()
+                            ) {
+                        if (point.isUse())
+                            use++;
+
+                    }
+                    if (use < 1) {
+                        arrayList.add("Блок " + BlocTypes.RHOMB + "(" + bloc.getText() + ") не містить жодного виходу");
+                        bloc.setColor(Color.RED);
+                    }
+                    if (use == 1) {
+                        arrayList.add("Блок " + BlocTypes.RHOMB + "(" + bloc.getText() + ")  містить тільки 1  вихід");
+                        bloc.setColor(Color.RED);
+                    }
+                    if (!bloc.getIn_Point().isUse()) {
+                        arrayList.add("Блок " + BlocTypes.RHOMB + "(" + bloc.getText() + ") недосяжний");
+                        bloc.setColor(Color.RED);
+                    }
+                    break;
+                }
+
+
+            }
+        }
+
+
+        if (arrayList.size() == 0)
+            arrayList.add("Помилки відсутні");
+        return arrayList;
     }
 
 }

@@ -51,7 +51,7 @@ public class DialogSelPointRhombDelete extends DialogFragment {
         frameLayout.addView(myView);
         if (myView.obj.getSecond() == RhombBloc.FREE && myView.obj.getFirst() == RhombBloc.FREE) {
             dismiss();
-            Toast.makeText(mainActivity,"В даного блоку всі вихідні з'єднання вільні",Toast.LENGTH_LONG).show();
+            Toast.makeText(mainActivity, "В даного блоку всі вихідні з'єднання вільні", Toast.LENGTH_LONG).show();
         }
         frameLayout.setOnTouchListener(new View.OnTouchListener() {
             @Override
@@ -62,7 +62,6 @@ public class DialogSelPointRhombDelete extends DialogFragment {
 
                 if (myView.getThisPointNumber() > 2)
                     myView.setThisPointNumber(0);
-
 
 
                 while (!myView.obj.getOutPoints().get(myView.getThisPointNumber()).isUse()) {
@@ -90,28 +89,36 @@ public class DialogSelPointRhombDelete extends DialogFragment {
 
 
                 myView.obj.setNuberPointLink(myView.thisPointNumber);
-
-
                 myView.obj.getOutPoints().get(myView.thisPointNumber).setUse(false);
-
-                Iterator<Map.Entry<Integer,Link>> linc =mainActivity.model.allLinks.entrySet().iterator();
+                int id = 0;
+                Iterator<Map.Entry<Integer, Link>> linc = mainActivity.model.allLinks.entrySet().iterator();
                 while (linc.hasNext()) {
                     Map.Entry<Integer, Link> ilinc = linc.next();
-                    if (ilinc.getValue().getId_from() == mainActivity.model.thisBloc.getId()){
-                        if(myView.obj.getFirst()==myView.getThisPointNumber())
-                            if(ilinc.getValue().isF_point()){
-                            linc.remove();
-                            myView.obj.setFirst(RhombBloc.FREE);
-                        }
-                            if(myView.obj.getSecond()==myView.getThisPointNumber())
-                                if(!ilinc.getValue().isF_point()){
+                    if (ilinc.getValue().getId_from() == mainActivity.model.thisBloc.getId()) {
+                        if (myView.obj.getFirst() == myView.getThisPointNumber())
+                            if (ilinc.getValue().isF_point()) {
                                 linc.remove();
+                                id = ilinc.getValue().getId_to();
+                                myView.obj.setFirst(RhombBloc.FREE);
+
+                            }
+                        if (myView.obj.getSecond() == myView.getThisPointNumber())
+                            if (!ilinc.getValue().isF_point()) {
+                                linc.remove();
+                                id = ilinc.getValue().getId_to();
                                 myView.obj.setSecond(RhombBloc.FREE);
                             }
 
-                        }
+                    }
 
                 }
+                boolean useOutPoin = false;
+                for (Link link : mainActivity.model.allLinks.values()) {
+                    if (link.getId_to() == id)
+                        useOutPoin = true;
+                }
+
+                mainActivity.model.allBlocs.get(id).getIn_Point().setUse(useOutPoin);
                 mainActivity.fsurface.draw();
                 dismiss();
 

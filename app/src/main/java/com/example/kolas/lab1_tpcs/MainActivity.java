@@ -126,10 +126,10 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
         model.setCenterR(model.getCenters() + 150);
         switch (v.getId()) {
             case R.id.line: {
-
+                model.searshBlocForConnect();
                 model.setLinkParam();
                 arrow = true;
-
+                fsurface.draw();
                 break;
             }
             case R.id.addrect: {
@@ -145,20 +145,30 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
 
             }
             case R.id.end: {
-                model.addingNewBloc(BlocTypes.END, 0, 0);
+                if (model.contentBloc(BlocTypes.END))
+                    Toast.makeText(this, "Блок такого типу вже додано", Toast.LENGTH_LONG).show();
+                else
+                    model.addingNewBloc(BlocTypes.END, 0, 0);
                 break;
 
             }
             case R.id.begin: {
-                model.addingNewBloc(BlocTypes.BEGIN, 0, 0);
+                if (model.contentBloc(BlocTypes.BEGIN))
+                    Toast.makeText(this, "Блок такого типу вже додано", Toast.LENGTH_LONG).show();
+                else
+                    model.addingNewBloc(BlocTypes.BEGIN, 0, 0);
                 break;
 
             }
             case R.id.save: {
                 new DialogSave(model.saveToFile()).show(getFragmentManager(), "DialogSave");
-                ;
                 break;
 
+            }
+            case R.id.error: {
+                new DialogError(model.searchError()).show(getFragmentManager(), "dialog");
+                fsurface.draw();
+                break;
             }
             case R.id.open: {
                 Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
@@ -185,7 +195,6 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
             }
             case R.id.d_linc: {
                 model.deleteLink();
-
                 fsurface.draw();
                 break;
 

@@ -11,8 +11,13 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.FrameLayout;
+import android.widget.Spinner;
 import android.widget.Toast;
+
+import java.util.ArrayList;
 
 
 /**
@@ -21,7 +26,9 @@ import android.widget.Toast;
 public class DialogSelPointRhomb extends DialogFragment {
 
     MyView myView;
-
+    boolean select;
+    Spinner spinner;
+    ArrayAdapter<String> adapter;
     MainActivity mainActivity;
     public static final String TAG = "Mylogs";
 
@@ -41,12 +48,40 @@ public class DialogSelPointRhomb extends DialogFragment {
 
         dialog.setContentView(R.layout.gialog_sel_point_rhomb);
 
-
         myView = new MyView(this.mainActivity, mainActivity.model.thisBloc);
+
+        if(getTrueFalse().size()==0)
+            adapter= new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, new String[]{"false", "true"});
+        else if(getTrueFalse().size()==1)
+            adapter= new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, new String[]{String.valueOf(getTrueFalse().get(0))});
+        else  adapter= new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, new String[]{""});
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
+         spinner = (Spinner)dialog.findViewById(R.id.spinner);
+        spinner.setAdapter(adapter);
+        // заголовок
+        spinner.setPrompt("Title");
+        // выделяем элемент
+        spinner.setSelection(0);
+        // устанавливаем обработчик нажатия
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view,
+                                       int position, long id) {
+            select= Boolean.parseBoolean(spinner.getAdapter().getItem(position).toString());
+            }
+            @Override
+            public void onNothingSelected(AdapterView<?> arg0) {
+            }
+        });
+
         FrameLayout frameLayout = (FrameLayout) dialog.findViewById(R.id.cava_for_rhomb);
         frameLayout.addView(myView);
         if (myView.obj.getSecond() != 100 && myView.obj.getFirst() != 100) {
-            Toast.makeText(mainActivity,"Всі вихідні з'єднання використовуються. /n  Видаліть непотрібне",Toast.LENGTH_LONG).show();
+            Toast.makeText(mainActivity, "Всі вихідні з'єднання використовуються. \n  Видаліть непотрібне", Toast.LENGTH_SHORT).show();
+            mainActivity.arrow = false;
+            mainActivity.isblocfrom = false;
+            mainActivity.model.flag = false;
             dismiss();
         }
         frameLayout.setOnTouchListener(new View.OnTouchListener() {
@@ -58,7 +93,6 @@ public class DialogSelPointRhomb extends DialogFragment {
 
                 if (myView.getThisPointNumber() > 2)
                     myView.setThisPointNumber(0);
-
 
 
                 while (myView.obj.getOutPoints().get(myView.getThisPointNumber()).isUse()) {
@@ -87,7 +121,6 @@ public class DialogSelPointRhomb extends DialogFragment {
 
                 myView.obj.setNuberPointLink(myView.thisPointNumber);
                 if (myView.obj.getFirst() == 100) {
-
                     myView.obj.setFirst(myView.thisPointNumber);
                     mainActivity.model.thisLinc = new Link(myView.obj.getId(), true);
                 } else if (myView.obj.getSecond() == 100) {
@@ -96,11 +129,11 @@ public class DialogSelPointRhomb extends DialogFragment {
                 } else mainActivity.setArrow(false);
 
                 myView.obj.getOutPoints().get(myView.thisPointNumber).setUse(true);
+                myView.obj.getOutPoints().get(myView.thisPointNumber).setType_for_rhomh(select);
 
-                if (myView.obj.getSecond() != 100l && myView.obj.getFirst() != 100) {
+                if (myView.obj.getSecond() != 100 && myView.obj.getFirst() != 100) {
                     dismiss();
                 }
-
 
                 mainActivity.isblocfrom = true;
                 mainActivity.model.flag = true;
@@ -121,10 +154,14 @@ public class DialogSelPointRhomb extends DialogFragment {
         this.mainActivity = mainActivity;
     }
 
-    /**
-     * Created by mikola on 27.09.2016.
-     */
+  ArrayList<Boolean> getTrueFalse() {
+      ArrayList<Boolean> true_false = new ArrayList<>();
+      for (PointLink p : myView.obj.getOutPoints()) {
+          if (p.isUse()) {
+              true_false.add((!p.type_for_rhomh));
+          }
 
-    public static class Parser {
-    }
+      }
+      return true_false;
+  }
 }
