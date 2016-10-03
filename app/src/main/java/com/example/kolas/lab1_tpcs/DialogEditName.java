@@ -43,7 +43,7 @@ BlocObj obj;
             @Override
             public void onClick(View v) {
                  obj.setText(String.valueOf(editText.getText()));
-                ((MainActivity)getActivity()).fsurface.draw();
+                ((MainActivity)getActivity()).fsurface.draw(MySurfaceView.DRAW_DIAGRAM);
                 dismiss();
 
             }

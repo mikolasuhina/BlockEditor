@@ -119,7 +119,7 @@ public class DialogSelPointRhombDelete extends DialogFragment {
                 }
 
                 mainActivity.model.allBlocs.get(id).getIn_Point().setUse(useOutPoin);
-                mainActivity.fsurface.draw();
+                mainActivity.fsurface.draw(MySurfaceView.DRAW_DIAGRAM);
                 dismiss();
 
 

@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/BlolEditor.iml" filepath="$PROJECT_DIR$/BlolEditor.iml" />
+      <module fileurl="file://$PROJECT_DIR$/BlockEditor.iml" filepath="$PROJECT_DIR$/BlockEditor.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
     </modules>
   </component>

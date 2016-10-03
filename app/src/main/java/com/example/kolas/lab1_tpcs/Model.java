@@ -8,6 +8,7 @@ import com.example.kolas.lab1_tpcs.blocs.BeginBlock;
 import com.example.kolas.lab1_tpcs.blocs.BlocObj;
 import com.example.kolas.lab1_tpcs.blocs.BlocTypes;
 import com.example.kolas.lab1_tpcs.blocs.EndBloc;
+import com.example.kolas.lab1_tpcs.blocs.GraphLink;
 import com.example.kolas.lab1_tpcs.blocs.ReckBloc;
 import com.example.kolas.lab1_tpcs.blocs.RhombBloc;
 
@@ -26,6 +27,9 @@ public class Model {
     int IdCrossing;
     HashMap<Integer, BlocObj> allBlocs;
     HashMap<Integer, Link> allLinks;
+    HashMap<Integer, GraphObj> allGraphsObjs;
+    HashMap<Integer, GraphLink> allGraphLinks;
+
     BlocObj thisBloc;
     Link thisLinc;
     public static final String TAG = "Mylogs";
@@ -68,6 +72,8 @@ public class Model {
         this.mainActivity = mainActivity;
         allBlocs = new HashMap<>();
         allLinks = new HashMap<>();
+        allGraphLinks = new HashMap<>();
+        allGraphsObjs = new HashMap<>();
         thisArrows = new ArrayList<>();
         mySurfaceView = mainActivity.fsurface;
 
@@ -305,6 +311,7 @@ public class Model {
         if (sa.size() >= 1) {
             sa.get(sa.size() - 1).setX_to(end_x);
 
+
         }
 
 
@@ -314,7 +321,8 @@ public class Model {
         if (sa.size() >= 1) {
 
             sa.get(sa.size() - 1).setY_to(end_y);
-           
+
+
         }
 
 
@@ -332,6 +340,7 @@ public class Model {
     private void corectVerticalBegin(float begin_y, ArrayList<SimpleArrow> sa) {
         if (sa.size() >= 1) {
             sa.get(0).setY_from(begin_y);
+
         }
 
     }
@@ -402,13 +411,14 @@ public class Model {
             }
 
             boolean useOutPoin = false;
-            if (idrhomb != -1){
+            if (idrhomb != -1) {
                 for (Link link : allLinks.values()) {
-                if (link.getId_to() == id)
-                    useOutPoin = true;
-            }
+                    if (link.getId_to() == id)
+                        useOutPoin = true;
+                }
 
-            allBlocs.get(id).getIn_Point().setUse(useOutPoin);}
+                allBlocs.get(id).getIn_Point().setUse(useOutPoin);
+            }
             if (idrhomb != -1) {
                 useOutPoin = false;
                 for (Link link : allLinks.values()) {
@@ -833,6 +843,105 @@ public class Model {
             arrayList.add("Помилки відсутні");
         return arrayList;
     }
+
+    int id_to_from_rhombs = 0;
+    int idgraph = 1;
+
+    void createGraph() {
+
+        for (BlocObj block : allBlocs.values()) {
+            if (block.getType() != BlocTypes.RHOMB) {
+                if (block.getType() == BlocTypes.RECT)
+                    allGraphsObjs.put(block.getId(), new GraphObj(block.getId(), "Z" + idgraph, block.getText()));
+                else
+                    allGraphsObjs.put(block.getId(), new GraphObj(block.getId(), "Z1", "0"));
+
+                idgraph++;
+            }
+
+        }
+
+        int radius = 300;
+        float x;
+        float y;
+        int count = allGraphsObjs.size();
+        int i = 0;
+        for (GraphObj o : allGraphsObjs.values())
+
+        {
+            y = ((float) (centers + radius * Math.sin((2 * Math.PI / count) * i)));
+            x = ((float) (centers + radius * Math.cos((2 * Math.PI / count) * i)));
+            o.setCenter_x(x);
+            o.setCenter_y(y);
+            o.setRadius(50);
+            i++;
+
+        }
+
+        idgraph = 0;
+        for (Link linc : allLinks.values()) {
+            if (allBlocs.get(linc.getId_from()).getType() == BlocTypes.RECT && allBlocs.get(linc.getId_to()).getType() == BlocTypes.RECT) {
+                allGraphLinks.put(idgraph, new GraphLink(idgraph, linc.getId_from(), linc.getId_to(), "―"));
+                idgraph++;
+            }
+            if (allBlocs.get(linc.getId_from()).getType() == BlocTypes.BEGIN && allBlocs.get(linc.getId_to()).getType() == BlocTypes.RECT) {
+                allGraphLinks.put(idgraph, new GraphLink(idgraph, linc.getId_from(), linc.getId_to(), "―"));
+                idgraph++;
+            }
+            if (allBlocs.get(linc.getId_from()).getType() == BlocTypes.RECT&& allBlocs.get(linc.getId_to()).getType() == BlocTypes.END) {
+                allGraphLinks.put(idgraph, new GraphLink(idgraph, linc.getId_from(), linc.getId_to(), "―"));
+                idgraph++;
+            }
+
+
+            if ((allBlocs.get(linc.getId_from()).getType() == BlocTypes.RECT || allBlocs.get(linc.getId_from()).getType() == BlocTypes.BEGIN) && allBlocs.get(linc.getId_to()).getType() == BlocTypes.RHOMB) {
+                searchRectBloc(linc.getId_to(), linc.getId_from(), "");
+                idgraph++;
+            }
+        }
+    }
+
+    void searchRectBloc(int to, int from, String t) {
+        int id_to = to;
+        String text = t;
+        Link link;
+
+
+        if (allBlocs.get(to).getType() == BlocTypes.RHOMB) {
+            link = searchLinc(id_to, true);
+
+            if (allBlocs.get(link.getId_to()).getType() == BlocTypes.RECT) {
+
+                id_to_from_rhombs = id_to;
+                allGraphLinks.put(idgraph, new GraphLink(idgraph, from, link.getId_to(), text + "(not "+allBlocs.get(to).getText()+")"));
+                idgraph++;
+            } else searchRectBloc(link.getId_to(), from, text+ "(not"+allBlocs.get(to).getText()+")");
+
+
+            link = searchLinc(id_to, false);
+
+            if (allBlocs.get(link.getId_to()).getType() == BlocTypes.RECT) {
+                allGraphLinks.put(idgraph, new GraphLink(idgraph, from, link.getId_to(), text + allBlocs.get(to).getText()));
+                id_to_from_rhombs = id_to;
+                idgraph++;
+
+            } else
+                searchRectBloc(link.getId_to(), from, text+ allBlocs.get(to).getText());
+        } else {
+            allGraphLinks.put(idgraph, new GraphLink(idgraph, from, to, text + allBlocs.get(to).getText()));
+            idgraph++;
+        }
+
+    }
+
+    Link searchLinc(int id_to, boolean f_point) {
+        for (Link link : allLinks.values()) {
+            if (link.getId_from() == id_to && link.isF_point() == f_point)
+                return link;
+        }
+        return null;
+    }
+
 
 }
 

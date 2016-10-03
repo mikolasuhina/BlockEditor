@@ -114,7 +114,7 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
             }
 
         }
-        fsurface.draw();
+        fsurface.draw(MySurfaceView.DRAW_DIAGRAM);
         return true;
 
     }
@@ -129,7 +129,7 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
                 model.searshBlocForConnect();
                 model.setLinkParam();
                 arrow = true;
-                fsurface.draw();
+                fsurface.draw(MySurfaceView.DRAW_DIAGRAM);
                 break;
             }
             case R.id.addrect: {
@@ -167,14 +167,19 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
             }
             case R.id.error: {
                 new DialogError(model.searchError()).show(getFragmentManager(), "dialog");
-                fsurface.draw();
+                fsurface.draw(MySurfaceView.DRAW_DIAGRAM);
+                break;
+            }
+            case R.id.graph: {
+                model.createGraph();
+                fsurface.draw(MySurfaceView.DRAW_GRAPH);
                 break;
             }
             case R.id.open: {
                 Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
                 intent.setType("file/*");
                 startActivityForResult(intent, 5);
-                fsurface.draw();
+                fsurface.draw(MySurfaceView.DRAW_DIAGRAM);
                 ;
                 break;
 
@@ -182,20 +187,20 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
 
             case R.id.clear: {
                 model.clear();
-                fsurface.draw();
+                fsurface.draw(MySurfaceView.DRAW_DIAGRAM);
                 break;
 
             }
             case R.id.delete: {
                 model.delete();
 
-                fsurface.draw();
+                fsurface.draw(MySurfaceView.DRAW_DIAGRAM);
                 break;
 
             }
             case R.id.d_linc: {
                 model.deleteLink();
-                fsurface.draw();
+                fsurface.draw(MySurfaceView.DRAW_DIAGRAM);
                 break;
 
             }
@@ -231,7 +236,7 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
                 @Override
                 public void run() {
                     model.parseFile(readFileSD(d.getData()));
-                    fsurface.draw();
+                    fsurface.draw(MySurfaceView.DRAW_DIAGRAM);
                 }
             }).start();
 
