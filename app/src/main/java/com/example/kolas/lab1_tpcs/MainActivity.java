@@ -3,16 +3,12 @@ package com.example.kolas.lab1_tpcs;
 
 import android.app.Activity;
 import android.app.DialogFragment;
-import android.content.ContentResolver;
 import android.content.Context;
 
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.database.Cursor;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Environment;
-import android.provider.MediaStore;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -21,7 +17,6 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.webkit.MimeTypeMap;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
@@ -99,7 +94,6 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
         float y = event.getY();
         nx = x;
         ny = y;
-        model.setShowGraph(false);
         if (arrow) {
             if (model.setBlocFrom(x, y)) {
                 if (model.flag)
@@ -127,7 +121,6 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
 
     @Override
     public void onClick(View v) {
-
         model.setCenters(frame.getWidth() / 2);
         model.setCenterL(model.getCenters() - 150);
         model.setCenterR(model.getCenters() + 150);
@@ -186,6 +179,8 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
                 Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
                 intent.setType("file/*");
                 startActivityForResult(intent, 5);
+                fsurface.draw(MySurfaceView.DRAW_DIAGRAM);
+                ;
                 break;
 
             }
@@ -235,9 +230,15 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode == Activity.RESULT_OK && data != null) {
+        if (resultCode == Activity.RESULT_OK) {
             final Intent d = data;
-            new Parsing().execute(readFileSD(d.getData()));
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    model.parseFile(readFileSD(d.getData()));
+                    fsurface.draw(MySurfaceView.DRAW_DIAGRAM);
+                }
+            }).start();
 
 
         } else if (resultCode == Activity.RESULT_CANCELED) {
@@ -248,29 +249,18 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
 
     String readFileSD(Uri path) {
         String str = "";
-
         // проверяем доступность SD
         if (!Environment.getExternalStorageState().equals(
                 Environment.MEDIA_MOUNTED)) {
-            Toast.makeText(context, "File not found SD-карта не доступна: " + Environment.getExternalStorageState(), Toast.LENGTH_SHORT).show();
+            Log.d(LOG_TAG, "SD-карта не доступна: " + Environment.getExternalStorageState());
             return null;
         }
-        ;
-        String spath;
-        Cursor c = getContentResolver().query(Uri.parse(path.toString()),null,null,null,null);
-        if(c!=null){
-        c.moveToNext();
-        spath = c.getString(c.getColumnIndex(MediaStore.MediaColumns.DATA));
-        c.close();}
-        else spath = path.getPath();
+        // получаем путь к SD
 
+        // добавляем свой каталог к пути
 
-
-        Toast.makeText(this, spath, Toast.LENGTH_SHORT).show();
-
-        File sdFile = new File((spath));
-
-        Log.d(LOG_TAG, (path) + "  - absolute path");
+        // формируем объект File, который содержит путь к файлу
+        File sdFile = new File(path.getPath());
         try {
             // открываем поток для чтения
             BufferedReader br = new BufferedReader(new FileReader(sdFile));
@@ -282,7 +272,6 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
                 Log.d("tag", tmp);
             }
         } catch (FileNotFoundException e) {
-            Toast.makeText(context, "File not found", Toast.LENGTH_SHORT).show();
             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
@@ -290,23 +279,6 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
         return str;
     }
 
-    public class Parsing extends AsyncTask<String,Void,Void>{
-
-        @Override
-        protected Void doInBackground(String... params) {
-            model.parseFile(params[0]);
-            return null;
-        }
-
-
-
-        @Override
-        protected void onPostExecute(Void aVoid) {
-            super.onPostExecute(aVoid);
-            fsurface.draw(MySurfaceView.DRAW_DIAGRAM);
-
-        }
-    }
 
 }
 
