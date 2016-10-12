@@ -612,10 +612,11 @@ public class Model {
         ;
 
     }
-
+    final String LOG_TAG = "myLogs";
     void parseBlocs(String s) {
         ArrayList<String> strings = getTagsArray(s, "<bloc>");
         for (String tmp : strings) {
+            Log.d(LOG_TAG, tmp);
             parseBloc(tmp);
 
         }
@@ -715,6 +716,7 @@ public class Model {
     void parseLincs(String s) {
         ArrayList<String> strings = getTagsArray(s, "<link>");
         for (String tmp : strings) {
+            Log.d(LOG_TAG, tmp);
             parseLink(tmp);
 
         }
@@ -734,7 +736,7 @@ public class Model {
         Link newLink = new Link(from, to, simpleArrows);
         newLink.setId(id);
         newLink.setF_point(f_point);
-        while (id_counter <= id) ;
+        while (id_counter <= id)
         id_counter++;
         addNewLinc(newLink);
 
@@ -770,7 +772,7 @@ public class Model {
         int end = 0;
         while (bufer.contains(closeTag)) {
             end = bufer.indexOf(closeTag);
-            newText.add(new String(bufer.substring(closeTag.length(), end)));
+            newText.add(new String(bufer.substring(tag.length(), end)));
             bufer = new String(bufer.substring(end + closeTag.length()));
             if (bufer.length() <= closeTag.length())
                 break;

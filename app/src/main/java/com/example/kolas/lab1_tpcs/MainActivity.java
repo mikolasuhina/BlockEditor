@@ -10,6 +10,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.v7.app.ActionBar;
@@ -185,8 +186,6 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
                 Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
                 intent.setType("file/*");
                 startActivityForResult(intent, 5);
-                fsurface.draw(MySurfaceView.DRAW_DIAGRAM);
-                ;
                 break;
 
             }
@@ -238,7 +237,7 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == Activity.RESULT_OK && data != null) {
             final Intent d = data;
-            model.parseFile(readFileSD(d.getData()));
+            new Parsing().execute(readFileSD(d.getData()));
 
 
         } else if (resultCode == Activity.RESULT_CANCELED) {
@@ -257,9 +256,13 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
             return null;
         }
         ;
+        String spath;
         Cursor c = getContentResolver().query(Uri.parse(path.toString()),null,null,null,null);
+        if(c!=null){
         c.moveToNext();
-        String spath = c.getString(c.getColumnIndex(MediaStore.MediaColumns.DATA));
+        spath = c.getString(c.getColumnIndex(MediaStore.MediaColumns.DATA));
+        c.close();}
+        else spath = path.getPath();
 
 
 
@@ -286,18 +289,22 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
         }
         return str;
     }
-    public static String getRealPathFromUri(Context context, Uri contentUri) {
-        Cursor cursor = null;
-        try {
-            String[] proj = { MediaStore.Images.Media.DATA };
-            cursor = context.getContentResolver().query(contentUri, proj, null, null, null);
-            int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
-            cursor.moveToFirst();
-            return cursor.getString(column_index);
-        } finally {
-            if (cursor != null) {
-                cursor.close();
-            }
+
+    public class Parsing extends AsyncTask<String,Void,Void>{
+
+        @Override
+        protected Void doInBackground(String... params) {
+            model.parseFile(params[0]);
+            return null;
+        }
+
+
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+            fsurface.draw(MySurfaceView.DRAW_DIAGRAM);
+
         }
     }
 

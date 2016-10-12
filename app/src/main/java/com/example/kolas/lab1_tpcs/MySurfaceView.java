@@ -34,6 +34,7 @@ public class MySurfaceView extends SurfaceView implements
 
     public static final int DRAW_DIAGRAM = 1;
     public static final int DRAW_GRAPH = 2;
+    public static final int DRAW_PARSING = 3;
     Model model;
 
     void drawline(Canvas canvas) {
@@ -203,6 +204,10 @@ public class MySurfaceView extends SurfaceView implements
                         drawline(c);
                         break;
                     }
+                    case DRAW_PARSING: {
+                        drawTextParsing(c);
+                        break;
+                    }
                     case DRAW_GRAPH: {
                         drawGraph(c);
                         break;
@@ -219,7 +224,15 @@ public class MySurfaceView extends SurfaceView implements
         }
     }
 
+void drawTextParsing(Canvas c){
+    Paint p = new Paint();
+    p.setColor(Color.WHITE);
 
+    p.setTextAlign(Paint.Align.CENTER);
+    p.setTextSize(20);
+    c.drawText("parsing",0,0, p);
+
+}
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     private void drawGraph(Canvas c) {
         Paint p = new Paint();
