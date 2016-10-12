@@ -1,6 +1,8 @@
 package com.example.kolas.lab1_tpcs;
 
 import android.graphics.Color;
+import android.os.Build;
+import android.support.annotation.RequiresApi;
 import android.text.Editable;
 import android.util.Log;
 
@@ -25,6 +27,16 @@ import java.util.Random;
 public class Model {
     int id_counter;
     int IdCrossing;
+
+    public static boolean isShowGraph() {
+        return showGraph;
+    }
+
+    public static void setShowGraph(boolean showGraph) {
+        Model.showGraph = showGraph;
+    }
+
+    public static boolean showGraph;
     HashMap<Integer, BlocObj> allBlocs;
     HashMap<Integer, Link> allLinks;
     HashMap<Integer, GraphObj> allGraphsObjs;
@@ -444,6 +456,7 @@ public class Model {
             thisBloc.setText(s);
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.HONEYCOMB)
     public void deleteLink() {
         int id = 0;
         if (thisBloc != null) {
@@ -848,13 +861,17 @@ public class Model {
     int idgraph = 1;
 
     void createGraph() {
-
+        showGraph = true;
+        idgraph = 1;
+        allGraphLinks.clear();
+        allGraphsObjs.clear();
         for (BlocObj block : allBlocs.values()) {
             if (block.getType() != BlocTypes.RHOMB) {
                 if (block.getType() == BlocTypes.RECT)
                     allGraphsObjs.put(block.getId(), new GraphObj(block.getId(), "Z" + idgraph, block.getText()));
                 else
-                    allGraphsObjs.put(block.getId(), new GraphObj(block.getId(), "Z1", "0"));
+
+                    allGraphsObjs.put(block.getId(), new GraphObj(block.getId(), "Z0", "0"));
 
                 idgraph++;
             }
@@ -864,17 +881,28 @@ public class Model {
         int radius = 300;
         float x;
         float y;
-        int count = allGraphsObjs.size();
-        int i = 0;
+        int count = allGraphsObjs.size() - 1;
+        int i = 1;
         for (GraphObj o : allGraphsObjs.values())
 
         {
-            y = ((float) (centers + radius * Math.sin((2 * Math.PI / count) * i)));
-            x = ((float) (centers + radius * Math.cos((2 * Math.PI / count) * i)));
-            o.setCenter_x(x);
-            o.setCenter_y(y);
-            o.setRadius(50);
-            i++;
+            if (allBlocs.get(o.getId()).getType() != BlocTypes.RECT) {
+                y = ((float) (centers + radius * Math.sin((2 * Math.PI / count) * 0)));
+                x = ((float) (centers + radius * Math.cos((2 * Math.PI / count) * 0)));
+                o.setCenter_x(x);
+                o.setCenter_y(y);
+                o.setRadius(50);
+                o.setAngle(0);
+
+            } else {
+                y = ((float) (centers + radius * Math.sin((2 * Math.PI / count) * i)));
+                x = ((float) (centers + radius * Math.cos((2 * Math.PI / count) * i)));
+                o.setCenter_x(x);
+                o.setCenter_y(y);
+                o.setRadius(50);
+                o.setAngle((float) ((float) ((2 * Math.PI / count) * i)));
+                i++;
+            }
 
         }
 
@@ -888,7 +916,7 @@ public class Model {
                 allGraphLinks.put(idgraph, new GraphLink(idgraph, linc.getId_from(), linc.getId_to(), "―"));
                 idgraph++;
             }
-            if (allBlocs.get(linc.getId_from()).getType() == BlocTypes.RECT&& allBlocs.get(linc.getId_to()).getType() == BlocTypes.END) {
+            if (allBlocs.get(linc.getId_from()).getType() == BlocTypes.RECT && allBlocs.get(linc.getId_to()).getType() == BlocTypes.END) {
                 allGraphLinks.put(idgraph, new GraphLink(idgraph, linc.getId_from(), linc.getId_to(), "―"));
                 idgraph++;
             }
@@ -899,6 +927,28 @@ public class Model {
                 idgraph++;
             }
         }
+
+
+        for (GraphLink gl1 : allGraphLinks.values()) {
+            for (GraphLink gl2 : allGraphLinks.values()) {
+                {
+                    if (gl1 != gl2) {
+                        if (gl1.getId_to() == gl2.getId_from() && gl1.getId_from() == gl2.getId_to()) {
+                            if (!gl1.isCycle() && !gl2.isCycle()) {
+                                gl1.setCycle(true);
+                                gl2.setCycle(true);
+                            }
+                        }
+
+                    }
+                }
+
+            }
+            if (allBlocs.get(gl1.getId_from()).getType() == BlocTypes.BEGIN || allBlocs.get(gl1.getId_from()).getType() == BlocTypes.END)
+                gl1.setCycle(true);
+
+        }
+
     }
 
     void searchRectBloc(int to, int from, String t) {
@@ -910,27 +960,29 @@ public class Model {
         if (allBlocs.get(to).getType() == BlocTypes.RHOMB) {
             link = searchLinc(id_to, true);
 
-            if (allBlocs.get(link.getId_to()).getType() == BlocTypes.RECT) {
+            if (allBlocs.get(link.getId_to()).getType() == BlocTypes.RECT || allBlocs.get(link.getId_to()).getType() == BlocTypes.END) {
 
                 id_to_from_rhombs = id_to;
-                allGraphLinks.put(idgraph, new GraphLink(idgraph, from, link.getId_to(), text + "(not "+allBlocs.get(to).getText()+")"));
+                allGraphLinks.put(idgraph, new GraphLink(idgraph, from, link.getId_to(), text + "(not " + allBlocs.get(to).getText() + ")"));
                 idgraph++;
-            } else searchRectBloc(link.getId_to(), from, text+ "(not"+allBlocs.get(to).getText()+")");
+            } else
+                searchRectBloc(link.getId_to(), from, text + "(not" + allBlocs.get(to).getText() + ")");
 
 
             link = searchLinc(id_to, false);
 
-            if (allBlocs.get(link.getId_to()).getType() == BlocTypes.RECT) {
+            if (allBlocs.get(link.getId_to()).getType() == BlocTypes.RECT || allBlocs.get(link.getId_to()).getType() == BlocTypes.END) {
                 allGraphLinks.put(idgraph, new GraphLink(idgraph, from, link.getId_to(), text + allBlocs.get(to).getText()));
                 id_to_from_rhombs = id_to;
                 idgraph++;
 
             } else
-                searchRectBloc(link.getId_to(), from, text+ allBlocs.get(to).getText());
+                searchRectBloc(link.getId_to(), from, text + allBlocs.get(to).getText());
         } else {
             allGraphLinks.put(idgraph, new GraphLink(idgraph, from, to, text + allBlocs.get(to).getText()));
             idgraph++;
         }
+
 
     }
 
@@ -942,6 +994,26 @@ public class Model {
         return null;
     }
 
+    void coddingFraph() {
+        int cellSize = 3;
+        String tmoCode = "";
+        for (int i = 0; i < cellSize; i++) {
+            tmoCode += '0';
+        }
+        for (GraphObj obj : allGraphsObjs.values()) {
+            if (allBlocs.get(obj.getId()).getType() == BlocTypes.BEGIN || allBlocs.get(obj.getId()).getType() == BlocTypes.END) {
+                obj.setCode(tmoCode);
+            }
 
+
+        }
+       HashMap<Integer,ArrayList<Integer>> cycle;
+        for (GraphLink obj:allGraphLinks.values()) {
+            if(obj.isCycle());
+
+        }
+
+
+    }
 }
 

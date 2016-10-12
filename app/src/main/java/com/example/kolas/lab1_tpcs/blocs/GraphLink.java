@@ -9,6 +9,15 @@ public class GraphLink {
     int id_from;
     int id_to;
     String text;
+    boolean cycle;
+
+    public boolean isCycle() {
+        return cycle;
+    }
+
+    public void setCycle(boolean cycle) {
+        this.cycle = cycle;
+    }
 
     public int getId() {
         return id;
