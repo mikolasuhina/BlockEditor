@@ -1,5 +1,6 @@
 package com.example.kolas.lab1_tpcs;
 
+import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
@@ -10,6 +11,8 @@ import android.graphics.Paint;
 import android.graphics.Picture;
 import android.graphics.PorterDuff;
 import android.graphics.RectF;
+import android.os.Build;
+import android.support.annotation.RequiresApi;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.widget.Switch;
@@ -50,6 +53,12 @@ public class MySurfaceView extends SurfaceView implements
                         canvas.drawLine(blocObj.getIn_Point().getX(), blocObj.getIn_Point().getY(), blocObj.getIn_Point().getX(), blocObj.getIn_Point().getY() + blocObj.getHeight() / 4, p);
                     if (blocObj.getOut_Point() != null)
                         canvas.drawLine(blocObj.getOut_Point().getX(), blocObj.getOut_Point().getY(), blocObj.getOut_Point().getX(), blocObj.getOut_Point().getY() - blocObj.getHeight() / 4, p);
+                    if (model.isShowGraph()) {
+                        p.setTextAlign(Paint.Align.LEFT);
+                        p.setTextSize(20);
+                        canvas.drawText(model.allGraphsObjs.get(blocObj.getId()).top_text, blocObj.getX() + blocObj.getWidth(), blocObj.getY() + blocObj.getHeight() / 2, p);
+
+                    }
                     break;
                 }
                 case RHOMB: {
@@ -77,10 +86,11 @@ public class MySurfaceView extends SurfaceView implements
                         p.setTextAlign(Paint.Align.RIGHT);
                         canvas.drawText(String.valueOf(rb.getPointR().isType_for_rhomh()), rb.getPointR().getX(), rb.getPointR().getY(), p);
                     }
-                    if (rb.getPointB().isUse())
+                    if (rb.getPointB().isUse()) {
+                        p.setTextAlign(Paint.Align.CENTER);
+                        p.setTextSize(20);
                         canvas.drawText(String.valueOf(rb.getPointB().isType_for_rhomh()), rb.getPointB().getX(), rb.getPointB().getY(), p);
-                    p.setTextAlign(Paint.Align.CENTER);
-                    p.setTextSize(20);
+                    }
                     break;
 
                 }
@@ -93,6 +103,11 @@ public class MySurfaceView extends SurfaceView implements
                         canvas.drawLine(blocObj.getIn_Point().getX(), blocObj.getIn_Point().getY(), blocObj.getIn_Point().getX(), blocObj.getIn_Point().getY() + blocObj.getHeight() / 4, p);
                     if (blocObj.getOut_Point() != null)
                         canvas.drawLine(blocObj.getOut_Point().getX(), blocObj.getOut_Point().getY(), blocObj.getOut_Point().getX(), blocObj.getOut_Point().getY() - blocObj.getHeight() / 4, p);
+                    if (model.isShowGraph()) {
+                        p.setTextAlign(Paint.Align.LEFT);
+                        p.setTextSize(20);
+                        canvas.drawText("Z0", blocObj.getX() + blocObj.getWidth(), blocObj.getY() + blocObj.getHeight() / 2, p);
+                    }
                     break;
                 }
 
@@ -205,6 +220,7 @@ public class MySurfaceView extends SurfaceView implements
     }
 
 
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     private void drawGraph(Canvas c) {
         Paint p = new Paint();
         p.setColor(Color.RED);
@@ -220,30 +236,58 @@ public class MySurfaceView extends SurfaceView implements
             c.drawText("―", o.center_x, o.center_y, p);
             c.drawText(o.getBottom_text(), o.center_x, o.center_y + p.getTextSize(), p);
         }
-        p.setColor(Color.RED);
+        p.setColor(Color.WHITE);
         for (GraphLink obj : model.allGraphLinks.values()) {
             Point p1 = new Point(model.allGraphsObjs.get(obj.getId_from()).center_x, model.allGraphsObjs.get(obj.getId_from()).center_y);
             Point p2 = new Point(model.allGraphsObjs.get(obj.getId_to()).center_x, model.allGraphsObjs.get(obj.getId_to()).center_y);
             Point p_from = getCircleLineIntersectionPoint(p1, p2, p1, 50).get(1);
             Point p_to = getCircleLineIntersectionPoint(p1, p2, p2, 50).get(0);
 
-            c.drawLine(p_from.x, p_from.y, p_to.x, p_to.y, p);
-            float center_x=ceneter(p_from.x,p_to.x);
-            float center_y=ceneter(p_from.y,p_to.y);
-            p.setColor(Color.WHITE);
-            c.drawText(obj.getText(),center_x,center_y,p);
-            p.setColor(Color.RED);
-            fillArrow(p, c, p_from.x, p_from.y, p_to.x, p_to.y);
+            if (obj.isCycle()) {
+                p_from = getCollCircleWithAngle(p1, p_from, (float) (Math.PI / 6));
+                p_to = getCollCircleWithAngle(p2, p_to, (float) (-Math.PI / 6));
+            }
+            if (obj.getId_from() == obj.getId_to()) {
+                float center_x = (float) (p1.x + model.allGraphsObjs.get(obj.getId_from()).getRadius() * Math.cos(model.allGraphsObjs.get(obj.getId_from()).getAngle()));
+                float center_y = (float) (p1.y + model.allGraphsObjs.get(obj.getId_from()).getRadius() * Math.sin(model.allGraphsObjs.get(obj.getId_from()).getAngle()));
+                c.drawCircle(center_x, center_y, 50, p);
+                p_to = getCollCircleWithAngle(p2, new Point(center_x, center_y), (float) (-Math.PI / 3));
+                p_from = getCollCircleWithAngle(p1, new Point(center_x, center_y), (float) (-Math.PI / 3));
+                c.rotate((float) ( 150+ Math.toDegrees(model.allGraphsObjs.get(obj.getId_from()).angle)), p_to.x, p_to.y);
+                fillArrow(p, c, p_from.x, p_from.y, p_to.x, p_to.y);
+                c.rotate((float) -(150+Math.toDegrees(model.allGraphsObjs.get(obj.getId_from()).angle)), p_to.x, p_to.y);
+                p.setColor(Color.RED);
+                c.drawText(obj.getText(), center_x, center_y, p);
+                p.setColor(Color.WHITE);
+
+            } else {
+                c.drawLine(p_from.x, p_from.y, p_to.x, p_to.y, p);
+                float center_x = ceneter(p_from.x, p_to.x);
+                float center_y = ceneter(p_from.y, p_to.y);
+                p.setColor(Color.RED);
+                c.drawText(obj.getText(), center_x, center_y, p);
+                p.setColor(Color.WHITE);
+                fillArrow(p, c, p_from.x, p_from.y, p_to.x, p_to.y);
+            }
         }
 
 
     }
 
-    float ceneter(float arg1 ,float arg2){
-      if(arg1>arg2){
-          return arg2+(arg1-arg2)/2;
-      }
-        else  return arg1+(arg2-arg1)/2;
+    Point getCollCircleWithAngle(Point center, Point point, float alpha) {
+        float rx = point.x - center.x;
+        float ry = point.y - center.y;
+        float cos = (float) Math.cos(alpha);
+        float sin = (float) Math.sin(alpha);
+        float x1 = center.x + rx * cos - ry * sin;
+        float y1 = center.y + rx * sin + ry * cos;
+        return new Point(x1, y1);
+    }
+
+    float ceneter(float arg1, float arg2) {
+        if (arg1 > arg2) {
+            return arg2 + (arg1 - arg2) / 2;
+        } else return arg1 + (arg2 - arg1) / 2;
     }
 
     private void fillArrow(Paint paint, Canvas canvas, float x0, float y0, float x1, float y1) {

@@ -5,8 +5,35 @@ package com.example.kolas.lab1_tpcs;
  */
 
 public class GraphObj {
+    String code;
+    String parrentCode;
+
+    public String getCode() {
+        return code;
+    }
+
+    public void setCode(String code) {
+        this.code = code;
+    }
+
+    public String getParrentCode() {
+        return parrentCode;
+    }
+
+    public void setParrentCode(String parrentCode) {
+        this.parrentCode = parrentCode;
+    }
+
+    public float getAngle() {
+        return angle;
+    }
+
+    public void setAngle(float angle) {
+        this.angle = angle;
+    }
 
     int id;
+    float angle;
     float radius;
     float center_x;
     float center_y;
