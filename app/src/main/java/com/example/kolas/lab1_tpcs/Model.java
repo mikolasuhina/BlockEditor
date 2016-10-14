@@ -3,23 +3,24 @@ package com.example.kolas.lab1_tpcs;
 import android.graphics.Color;
 import android.os.Build;
 import android.support.annotation.RequiresApi;
-import android.text.Editable;
 import android.util.Log;
 
 import com.example.kolas.lab1_tpcs.blocs.BeginBlock;
 import com.example.kolas.lab1_tpcs.blocs.BlocObj;
 import com.example.kolas.lab1_tpcs.blocs.BlocTypes;
 import com.example.kolas.lab1_tpcs.blocs.EndBloc;
-import com.example.kolas.lab1_tpcs.blocs.GraphLink;
 import com.example.kolas.lab1_tpcs.blocs.ReckBloc;
 import com.example.kolas.lab1_tpcs.blocs.RhombBloc;
 
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
 
 /**
  * Created by kolas on 10.09.16.
@@ -27,6 +28,7 @@ import java.util.Random;
 public class Model {
     int id_counter;
     int IdCrossing;
+    MyGraph graph;
 
     public static boolean isShowGraph() {
         return showGraph;
@@ -88,7 +90,7 @@ public class Model {
         allGraphsObjs = new HashMap<>();
         thisArrows = new ArrayList<>();
         mySurfaceView = mainActivity.fsurface;
-
+        graph = new MyGraph(allGraphsObjs, allGraphLinks);
 
     }
 
@@ -495,7 +497,18 @@ public class Model {
     String saveToFile() {
         saveBlocks();
         saveLinks();
-        return saveBlocks() + saveLinks();
+        String matrixLincs = "\n  ";
+        int[][] res = createMatrixLinc();
+        BlocObj[] blocs = new BlocObj[res.length];
+        allBlocs.values().toArray(blocs);
+        for (int i = 0; i < blocs.length; i++) {
+            matrixLincs += blocs[i].getId() + " ";
+        }
+        matrixLincs += '\n';
+        for (int i = 0; i < res.length; i++) {
+            matrixLincs += blocs[i].getId() + Arrays.toString(res[i]) + '\n';
+        }
+        return saveBlocks() + saveLinks() + matrixLincs;
     }
 
     String saveBlocks() {
@@ -612,7 +625,9 @@ public class Model {
         ;
 
     }
+
     final String LOG_TAG = "myLogs";
+
     void parseBlocs(String s) {
         ArrayList<String> strings = getTagsArray(s, "<bloc>");
         for (String tmp : strings) {
@@ -737,7 +752,7 @@ public class Model {
         newLink.setId(id);
         newLink.setF_point(f_point);
         while (id_counter <= id)
-        id_counter++;
+            id_counter++;
         addNewLinc(newLink);
 
     }
@@ -863,19 +878,20 @@ public class Model {
     int idgraph = 1;
 
     void createGraph() {
-        showGraph = true;
+
         idgraph = 1;
         allGraphLinks.clear();
         allGraphsObjs.clear();
         for (BlocObj block : allBlocs.values()) {
             if (block.getType() != BlocTypes.RHOMB) {
-                if (block.getType() == BlocTypes.RECT)
+                if (block.getType() == BlocTypes.RECT) {
                     allGraphsObjs.put(block.getId(), new GraphObj(block.getId(), "Z" + idgraph, block.getText()));
-                else
+                    idgraph++;
+                } else
 
                     allGraphsObjs.put(block.getId(), new GraphObj(block.getId(), "Z0", "0"));
 
-                idgraph++;
+
             }
 
         }
@@ -1009,13 +1025,51 @@ public class Model {
 
 
         }
-       HashMap<Integer,ArrayList<Integer>> cycle;
-        for (GraphLink obj:allGraphLinks.values()) {
-            if(obj.isCycle());
+        HashMap<Integer, ArrayList<Integer>> cycle;
+        for (GraphLink obj : allGraphLinks.values()) {
+            if (obj.isCycle()) ;
 
         }
 
 
     }
-}
 
+    int[][] createMatrixLinc() {
+        int size = allBlocs.size();
+        BlocObj[] blocs = new BlocObj[size];
+        int[][] matrix = new int[size][size];
+        allBlocs.values().toArray(blocs);
+        for (int i = 0; i < size; i++) {
+            for (Link link : allLinks.values()) {
+                if (link.getId_from() == blocs[i].getId()) {
+                    for (int j = 0; j < size; j++) {
+                        if (blocs[j].getId() == link.getId_to())
+                            matrix[i][j] = 1;
+                    }
+                }
+            }
+        }
+
+        return matrix;
+    }
+
+
+
+    public HashMap<Integer, GraphObj> getAllGraphsObjs() {
+        return allGraphsObjs;
+    }
+
+    public void setAllGraphsObjs(HashMap<Integer, GraphObj> allGraphsObjs) {
+        this.allGraphsObjs = allGraphsObjs;
+    }
+
+    public HashMap<Integer, GraphLink> getAllGraphLinks() {
+        return allGraphLinks;
+    }
+
+    public void setAllGraphLinks(HashMap<Integer, GraphLink> allGraphLinks) {
+        this.allGraphLinks = allGraphLinks;
+    }
+
+
+}

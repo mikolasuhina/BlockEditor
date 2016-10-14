@@ -1,15 +1,22 @@
-package com.example.kolas.lab1_tpcs.blocs;
+package com.example.kolas.lab1_tpcs;
+
+import android.os.Parcel;
+import android.os.Parcelable;
+
+import java.io.Serializable;
 
 /**
  * Created by mikola on 02.10.2016.
  */
 
-public class GraphLink {
+public class GraphLink implements Serializable {
     int id;
     int id_from;
     int id_to;
     String text;
     boolean cycle;
+
+
 
     public boolean isCycle() {
         return cycle;
@@ -58,4 +65,6 @@ public class GraphLink {
         this.id_to = id_to;
         this.text = text;
     }
+
+
 }

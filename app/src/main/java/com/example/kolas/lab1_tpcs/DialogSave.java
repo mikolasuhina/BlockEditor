@@ -15,8 +15,10 @@ import android.widget.Toast;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.ObjectOutputStream;
 import java.io.OutputStreamWriter;
 
 import static android.content.Context.MODE_PRIVATE;
@@ -26,11 +28,14 @@ import static android.content.Context.MODE_PRIVATE;
  */
 
 public class DialogSave extends DialogFragment {
-    String file;
+    Object file;
+    int what;
 
-    public DialogSave(String file) {
+    public DialogSave(Object file, int what) {
         this.file = file;
+        this.what=what;
     }
+
 
 
     final String LOG_TAG = "myLogs";
@@ -48,7 +53,14 @@ public class DialogSave extends DialogFragment {
                 if (name.equals(""))
                     name = "newFile";
                 name.trim();
-                writeFileSD( file, String.valueOf(name) + ".txt");
+                if(what==1)
+                writeFileSD( (String) file, String.valueOf(name) + ".txt");
+                if(what==2)
+                    try {
+                        saveGraph((MyGraph)file,String.valueOf(name) + ".graph");
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                 dismiss();
             }
         });
@@ -57,7 +69,12 @@ public class DialogSave extends DialogFragment {
     }
 
 
-
+    void saveGraph(MyGraph graph,String name) throws IOException {
+        ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream("/sdcard/"+name)); //Select where you wish to save the file...
+        oos.writeObject(graph);// write the class as an 'object'
+        oos.flush(); // flush the stream to insure all of the information was written to 'save_object.bin'
+        oos.close();// close the stream;
+    }
 
     void writeFileSD(String file, String name) {
         // проверяем доступность SD

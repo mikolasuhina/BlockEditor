@@ -2,41 +2,35 @@ package com.example.kolas.lab1_tpcs;
 
 
 import android.app.Activity;
-import android.app.DialogFragment;
 import android.content.Context;
 
-import android.content.DialogInterface;
 import android.content.Intent;
+import android.database.Cursor;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Environment;
+import android.provider.MediaStore;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
-import com.example.kolas.lab1_tpcs.blocs.BlocObj;
 import com.example.kolas.lab1_tpcs.blocs.BlocTypes;
-import com.example.kolas.lab1_tpcs.blocs.ReckBloc;
-import com.example.kolas.lab1_tpcs.blocs.RhombBloc;
 
 import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.logging.Logger;
+import java.io.ObjectInputStream;
 
 
 public class MainActivity extends AppCompatActivity implements View.OnTouchListener, View.OnClickListener {
@@ -161,12 +155,17 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
 
             }
             case R.id.save: {
-                new DialogSave(model.saveToFile()).show(getFragmentManager(), "DialogSave");
+                new DialogSave(model.saveToFile(),1).show(getFragmentManager(), "DialogSaveDiagram");
+                break;
+
+            }
+            case R.id.saveGraph: {
+                new DialogSave(model.graph,2).show(getFragmentManager(), "DialogSaveGraph");
                 break;
 
             }
             case R.id.error: {
-                new DialogError(model.searchError()).show(getFragmentManager(), "dialog");
+                new DialogError(model.searchError()).show(getFragmentManager(), "dialogError");
                 fsurface.draw(MySurfaceView.DRAW_DIAGRAM);
                 break;
             }
@@ -176,11 +175,19 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
                 break;
             }
             case R.id.open: {
+                WHAT_OPEN = 1;
                 Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
                 intent.setType("file/*");
-                startActivityForResult(intent, 5);
-                fsurface.draw(MySurfaceView.DRAW_DIAGRAM);
-                ;
+                startActivityForResult(intent, 1);
+
+                break;
+
+            }
+            case R.id.openGraph: {
+                WHAT_OPEN = 2;
+                Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+                intent.setType("file/*");
+                startActivityForResult(intent, 1);
                 break;
 
             }
@@ -195,6 +202,14 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
                 model.delete();
 
                 fsurface.draw(MySurfaceView.DRAW_DIAGRAM);
+                break;
+
+            }
+            case R.id.state: {
+                model.setShowGraph(true);
+                model.createGraph();
+                fsurface.draw(MySurfaceView.DRAW_DIAGRAM);
+                model.setShowGraph(false);
                 break;
 
             }
@@ -218,6 +233,14 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
                 break;
 
             }
+            case R.id.update: {
+                if (WHAT_OPEN == 1)
+                    fsurface.draw(MySurfaceView.DRAW_DIAGRAM);
+                if (WHAT_OPEN == 2)
+                    fsurface.draw(MySurfaceView.DRAW_GRAPH);
+                break;
+
+            }
         }
     }
 
@@ -227,18 +250,26 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
         dialogSelPointRhomb.show(getFragmentManager(), "dialog");
     }
 
+    static int WHAT_OPEN;
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == Activity.RESULT_OK) {
-            final Intent d = data;
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    model.parseFile(readFileSD(d.getData()));
-                    fsurface.draw(MySurfaceView.DRAW_DIAGRAM);
-                }
-            }).start();
+
+            String spath;
+            Cursor c = getContentResolver().query(Uri.parse(data.getData().toString()), null, null, null, null);
+            if (c != null) {
+                c.moveToNext();
+
+                spath = c.getString(c.getColumnIndex(MediaStore.MediaColumns.DATA));
+                c.close();
+            } else spath = data.getData().getPath();
+            Toast.makeText(context, spath, Toast.LENGTH_SHORT).show();
+            if (WHAT_OPEN == 1)
+                new Parsing().execute(readFileSD(spath));
+            if (WHAT_OPEN == 2)
+                new Parsing().execute(spath);
 
 
         } else if (resultCode == Activity.RESULT_CANCELED) {
@@ -247,7 +278,7 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
 
     }
 
-    String readFileSD(Uri path) {
+    String readFileSD(String path) {
         String str = "";
         // проверяем доступность SD
         if (!Environment.getExternalStorageState().equals(
@@ -255,12 +286,8 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
             Log.d(LOG_TAG, "SD-карта не доступна: " + Environment.getExternalStorageState());
             return null;
         }
-        // получаем путь к SD
 
-        // добавляем свой каталог к пути
-
-        // формируем объект File, который содержит путь к файлу
-        File sdFile = new File(path.getPath());
+        File sdFile = new File(path);
         try {
             // открываем поток для чтения
             BufferedReader br = new BufferedReader(new FileReader(sdFile));
@@ -279,7 +306,45 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
         return str;
     }
 
+    public class Parsing extends AsyncTask<String, Void, Void> {
 
+        @Override
+        protected Void doInBackground(String... params) {
+            if (WHAT_OPEN == 1)
+                model.parseFile(params[0]);
+            if (WHAT_OPEN == 2)
+                read(params[0]);
+            return null;
+        }
+
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+            if (WHAT_OPEN == 1)
+                fsurface.draw(MySurfaceView.DRAW_DIAGRAM);
+            if (WHAT_OPEN == 2)
+                fsurface.draw(MySurfaceView.DRAW_GRAPH);
+        }
+    }
+
+
+    void read(String path) {
+        ObjectInputStream is = null;
+        MyGraph myGraph = null;
+        try {
+            is = new ObjectInputStream(new FileInputStream(path));
+            myGraph = (MyGraph) is.readObject();
+            model.allGraphsObjs = myGraph.allGraphsObjs;
+            model.allGraphLinks = myGraph.allGraphLinks;
+            is.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+
+    }
 }
 
 

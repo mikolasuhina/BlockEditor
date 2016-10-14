@@ -1,12 +1,21 @@
 package com.example.kolas.lab1_tpcs;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
+import java.io.Serializable;
+
 /**
  * Created by mikola on 02.10.2016.
  */
 
-public class GraphObj {
+public class GraphObj implements Serializable{
     String code;
     String parrentCode;
+
+
+
+
 
     public String getCode() {
         return code;
@@ -103,4 +112,6 @@ public class GraphObj {
         this.top_text = top_text;
         this.bottom_text = bottom_text;
     }
+
+
 }

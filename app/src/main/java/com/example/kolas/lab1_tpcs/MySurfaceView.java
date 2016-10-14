@@ -2,28 +2,20 @@ package com.example.kolas.lab1_tpcs;
 
 import android.annotation.TargetApi;
 import android.content.Context;
-import android.content.res.Resources;
-import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.Paint;
-import android.graphics.Picture;
 import android.graphics.PorterDuff;
 import android.graphics.RectF;
 import android.os.Build;
-import android.support.annotation.RequiresApi;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
-import android.widget.Switch;
 
 import com.example.kolas.lab1_tpcs.blocs.BlocObj;
 import com.example.kolas.lab1_tpcs.blocs.BlocTypes;
-import com.example.kolas.lab1_tpcs.blocs.GraphLink;
-import com.example.kolas.lab1_tpcs.blocs.ReckBloc;
 import com.example.kolas.lab1_tpcs.blocs.RhombBloc;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
