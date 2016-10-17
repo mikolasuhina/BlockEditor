@@ -11,6 +11,7 @@ import android.graphics.RectF;
 import android.os.Build;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
+import android.widget.Toast;
 
 import com.example.kolas.lab1_tpcs.blocs.BlocObj;
 import com.example.kolas.lab1_tpcs.blocs.BlocTypes;
@@ -216,15 +217,16 @@ public class MySurfaceView extends SurfaceView implements
         }
     }
 
-void drawTextParsing(Canvas c){
-    Paint p = new Paint();
-    p.setColor(Color.WHITE);
+    void drawTextParsing(Canvas c) {
+        Paint p = new Paint();
+        p.setColor(Color.WHITE);
 
-    p.setTextAlign(Paint.Align.CENTER);
-    p.setTextSize(20);
-    c.drawText("parsing",0,0, p);
+        p.setTextAlign(Paint.Align.CENTER);
+        p.setTextSize(20);
+        c.drawText("parsing", 0, 0, p);
 
-}
+    }
+
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     private void drawGraph(Canvas c) {
         Paint p = new Paint();
@@ -232,7 +234,10 @@ void drawTextParsing(Canvas c){
         p.setTextAlign(Paint.Align.CENTER);
         p.setTextSize(20);
         p.setColor(Color.WHITE);
-        for (GraphObj o : model.allGraphsObjs.values()) {
+
+
+        GraphObj[] graphObjs = model.blocsUseInGraph;
+        for (GraphObj o : graphObjs) {
             p.setColor(Color.WHITE);
             c.drawCircle(o.center_x, o.center_y, o.radius, p);
             p.setColor(Color.BLACK);
@@ -240,42 +245,93 @@ void drawTextParsing(Canvas c){
             c.drawText(o.top_text, o.center_x, o.center_y - p.getTextSize(), p);
             c.drawText("―", o.center_x, o.center_y, p);
             c.drawText(o.getBottom_text(), o.center_x, o.center_y + p.getTextSize(), p);
+            if (o.code != null) {
+                c.drawText(o.code, o.center_x + o.radius, o.center_y - o.radius, p);
+            }
         }
         p.setColor(Color.WHITE);
-        for (GraphLink obj : model.allGraphLinks.values()) {
-            Point p1 = new Point(model.allGraphsObjs.get(obj.getId_from()).center_x, model.allGraphsObjs.get(obj.getId_from()).center_y);
-            Point p2 = new Point(model.allGraphsObjs.get(obj.getId_to()).center_x, model.allGraphsObjs.get(obj.getId_to()).center_y);
-            Point p_from = getCircleLineIntersectionPoint(p1, p2, p1, 50).get(1);
-            Point p_to = getCircleLineIntersectionPoint(p1, p2, p2, 50).get(0);
+        String[][] modernMatr  = model.matrixL.clone();
 
-            if (obj.isCycle()) {
-                p_from = getCollCircleWithAngle(p1, p_from, (float) (Math.PI / 6));
-                p_to = getCollCircleWithAngle(p2, p_to, (float) (-Math.PI / 6));
+        int indexH=-1;
+        for (int i = 0; i < graphObjs.length; i++) {
+            for (int j = 0; j < graphObjs.length; j++) {
+              if(!model.matrixL[i][j].equals(" ")) {
+                 break;
+              }
+                if(j==graphObjs.length-1)
+                    indexH=i;
             }
-            if (obj.getId_from() == obj.getId_to()) {
-                float center_x = (float) (p1.x + model.allGraphsObjs.get(obj.getId_from()).getRadius() * Math.cos(model.allGraphsObjs.get(obj.getId_from()).getAngle()));
-                float center_y = (float) (p1.y + model.allGraphsObjs.get(obj.getId_from()).getRadius() * Math.sin(model.allGraphsObjs.get(obj.getId_from()).getAngle()));
-                c.drawCircle(center_x, center_y, 50, p);
-                p_to = getCollCircleWithAngle(p2, new Point(center_x, center_y), (float) (-Math.PI / 3));
-                p_from = getCollCircleWithAngle(p1, new Point(center_x, center_y), (float) (-Math.PI / 3));
-                c.rotate((float) ( 150+ Math.toDegrees(model.allGraphsObjs.get(obj.getId_from()).angle)), p_to.x, p_to.y);
-                fillArrow(p, c, p_from.x, p_from.y, p_to.x, p_to.y);
-                c.rotate((float) -(150+Math.toDegrees(model.allGraphsObjs.get(obj.getId_from()).angle)), p_to.x, p_to.y);
-                p.setColor(Color.RED);
-                c.drawText(obj.getText(), center_x, center_y, p);
-                p.setColor(Color.WHITE);
+            if(indexH!=-1)
+                break;
+        };
 
-            } else {
-                c.drawLine(p_from.x, p_from.y, p_to.x, p_to.y, p);
-                float center_x = ceneter(p_from.x, p_to.x);
-                float center_y = ceneter(p_from.y, p_to.y);
-                p.setColor(Color.RED);
-                c.drawText(obj.getText(), center_x, center_y, p);
-                p.setColor(Color.WHITE);
-                fillArrow(p, c, p_from.x, p_from.y, p_to.x, p_to.y);
+
+
+
+        int indexV=-1;
+        for (int i = 0; i < graphObjs.length; i++) {
+            for (int j = 0; j < graphObjs.length; j++) {
+                if(!modernMatr[j][i].equals(" ")) {
+                    break;
+                }
+                if(j==graphObjs.length-1)
+                    indexV=i;
             }
+            if(indexV!=-1)
+                break;
+        };
+
+        Toast.makeText(getContext(), "indexV="+indexV+"indexh="+indexH, Toast.LENGTH_SHORT).show();
+
+        for (int i = 0; i < graphObjs.length; i++) {
+            for (int j = 0; j < graphObjs.length; j++) {
+                if (!modernMatr[i][j].equals(" ")) {
+                    Point p1 = new Point(graphObjs[i].center_x, graphObjs[i].center_y);
+                    Point p2 = new Point(graphObjs[j].center_x, graphObjs[j].center_y);
+                    Point p_from = getCircleLineIntersectionPoint(p1, p2, p1, 50).get(1);
+                    Point p_to = getCircleLineIntersectionPoint(p1, p2, p2, 50).get(0);
+
+                    if (!modernMatr[i][j].equals(" ")&&!modernMatr[j][i].equals(" ")) {
+                        p_from = getCollCircleWithAngle(p1, p_from, (float) (Math.PI / 6));
+                        p_to = getCollCircleWithAngle(p2, p_to, (float) (-Math.PI / 6));
+                    }
+
+                      if((i==indexV || j==indexH )&&!modernMatr[i][j].equals(" ")){
+
+                                p_from = getCollCircleWithAngle(p1, p_from, (float) (Math.PI / 6));
+                                p_to = getCollCircleWithAngle(p2, p_to, (float) (-Math.PI / 6));
+
+
+                      }
+
+
+                    if (i == j) {
+                        float center_x = (float) (p1.x + graphObjs[i].getRadius() * Math.cos(graphObjs[i].getAngle()));
+                        float center_y = (float) (p1.y + graphObjs[i].getRadius() * Math.sin(graphObjs[i].getAngle()));
+                        c.drawCircle(center_x, center_y, 50, p);
+                        p_to = getCollCircleWithAngle(p2, new Point(center_x, center_y), (float) (-Math.PI / 3));
+                        p_from = getCollCircleWithAngle(p1, new Point(center_x, center_y), (float) (-Math.PI / 3));
+                        c.rotate((float) (150 + Math.toDegrees(graphObjs[i].angle)), p_to.x, p_to.y);
+                        fillArrow(p, c, p_from.x, p_from.y, p_to.x, p_to.y);
+                        c.rotate((float) -(150 + Math.toDegrees(graphObjs[i].angle)), p_to.x, p_to.y);
+                        p.setColor(Color.RED);
+                        c.drawText(modernMatr[i][i], center_x, center_y, p);
+                        p.setColor(Color.WHITE);
+
+                    } else {
+                        c.drawLine(p_from.x, p_from.y, p_to.x, p_to.y, p);
+                        float center_x = ceneter(p_from.x, p_to.x);
+                        float center_y = ceneter(p_from.y, p_to.y);
+                        p.setColor(Color.RED);
+                        c.drawText(modernMatr[i][j], center_x, center_y, p);
+                        p.setColor(Color.WHITE);
+                        fillArrow(p, c, p_from.x, p_from.y, p_to.x, p_to.y);
+                    }
+                }
+
+            }
+
         }
-
 
     }
 

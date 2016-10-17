@@ -17,8 +17,10 @@ import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.FrameLayout;
+import android.widget.GridView;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
@@ -46,6 +48,7 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
     MySurfaceView fsurface;
 
     Model model;
+
 
 
     @Override
@@ -160,7 +163,13 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
 
             }
             case R.id.saveGraph: {
-                new DialogSave(model.graph,2).show(getFragmentManager(), "DialogSaveGraph");
+                new DialogSave(model.getGraph(),2).show(getFragmentManager(), "DialogSaveGraph");
+                break;
+
+            }
+            case R.id.show_matrix: {
+                model.createGraph();
+                new DialogShowMatrix(model.createMatrixSumig(),model.createMatrixLink()).show(getFragmentManager(), "DialogSaveGraph");
                 break;
 
             }
@@ -171,6 +180,7 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
             }
             case R.id.graph: {
                 model.createGraph();
+          //      model.coddingGraph((int) (Math.log10(model.allGraphsObjs.size())/Math.log10(2)));
                 fsurface.draw(MySurfaceView.DRAW_GRAPH);
                 break;
             }
@@ -335,8 +345,9 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
         try {
             is = new ObjectInputStream(new FileInputStream(path));
             myGraph = (MyGraph) is.readObject();
-            model.allGraphsObjs = myGraph.allGraphsObjs;
-            model.allGraphLinks = myGraph.allGraphLinks;
+            model.blocsUseInGraph = myGraph.mGraphObjs;
+            model.matrixL = myGraph.allGraphLinks;
+
             is.close();
         } catch (IOException e) {
             e.printStackTrace();

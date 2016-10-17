@@ -18,6 +18,7 @@ import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -29,6 +30,8 @@ public class Model {
     int id_counter;
     int IdCrossing;
     MyGraph graph;
+    public String[][] matrixL;
+    public String[][] matrixS;
 
     public static boolean isShowGraph() {
         return showGraph;
@@ -42,7 +45,7 @@ public class Model {
     HashMap<Integer, BlocObj> allBlocs;
     HashMap<Integer, Link> allLinks;
     HashMap<Integer, GraphObj> allGraphsObjs;
-    HashMap<Integer, GraphLink> allGraphLinks;
+    HashMap<Integer, GraphLink> linkMatrixL;
 
     BlocObj thisBloc;
     Link thisLinc;
@@ -86,11 +89,11 @@ public class Model {
         this.mainActivity = mainActivity;
         allBlocs = new HashMap<>();
         allLinks = new HashMap<>();
-        allGraphLinks = new HashMap<>();
+        linkMatrixL = new HashMap<>();
         allGraphsObjs = new HashMap<>();
         thisArrows = new ArrayList<>();
         mySurfaceView = mainActivity.fsurface;
-        graph = new MyGraph(allGraphsObjs, allGraphLinks);
+
 
     }
 
@@ -179,7 +182,10 @@ public class Model {
         }
 
     }
+public MyGraph getGraph(){
 
+   return graph = new MyGraph(matrixL,blocsUseInGraph);
+}
     private void searchThisBlocCrossing() {
 
         thisBloc = allBlocs.get(IdCrossing);
@@ -497,18 +503,8 @@ public class Model {
     String saveToFile() {
         saveBlocks();
         saveLinks();
-        String matrixLincs = "\n  ";
-        int[][] res = createMatrixLinc();
-        BlocObj[] blocs = new BlocObj[res.length];
-        allBlocs.values().toArray(blocs);
-        for (int i = 0; i < blocs.length; i++) {
-            matrixLincs += blocs[i].getId() + " ";
-        }
-        matrixLincs += '\n';
-        for (int i = 0; i < res.length; i++) {
-            matrixLincs += blocs[i].getId() + Arrays.toString(res[i]) + '\n';
-        }
-        return saveBlocks() + saveLinks() + matrixLincs;
+
+        return saveBlocks() + saveLinks();
     }
 
     String saveBlocks() {
@@ -877,25 +873,28 @@ public class Model {
     int id_to_from_rhombs = 0;
     int idgraph = 1;
 
-    void createGraph() {
+    GraphObj[] blocsUseInGraph;
 
+
+    void searchBlocksForGraph() {
         idgraph = 1;
-        allGraphLinks.clear();
+        linkMatrixL.clear();
         allGraphsObjs.clear();
+        //знаходження всіх не умовних блоків
         for (BlocObj block : allBlocs.values()) {
             if (block.getType() != BlocTypes.RHOMB) {
                 if (block.getType() == BlocTypes.RECT) {
                     allGraphsObjs.put(block.getId(), new GraphObj(block.getId(), "Z" + idgraph, block.getText()));
                     idgraph++;
                 } else
-
                     allGraphsObjs.put(block.getId(), new GraphObj(block.getId(), "Z0", "0"));
-
-
             }
 
         }
+    }
 
+    void createGraph() {
+        searchBlocksForGraph();
         int radius = 300;
         float x;
         float y;
@@ -922,89 +921,50 @@ public class Model {
                 i++;
             }
 
-        }
-
-        idgraph = 0;
-        for (Link linc : allLinks.values()) {
-            if (allBlocs.get(linc.getId_from()).getType() == BlocTypes.RECT && allBlocs.get(linc.getId_to()).getType() == BlocTypes.RECT) {
-                allGraphLinks.put(idgraph, new GraphLink(idgraph, linc.getId_from(), linc.getId_to(), "―"));
-                idgraph++;
-            }
-            if (allBlocs.get(linc.getId_from()).getType() == BlocTypes.BEGIN && allBlocs.get(linc.getId_to()).getType() == BlocTypes.RECT) {
-                allGraphLinks.put(idgraph, new GraphLink(idgraph, linc.getId_from(), linc.getId_to(), "―"));
-                idgraph++;
-            }
-            if (allBlocs.get(linc.getId_from()).getType() == BlocTypes.RECT && allBlocs.get(linc.getId_to()).getType() == BlocTypes.END) {
-                allGraphLinks.put(idgraph, new GraphLink(idgraph, linc.getId_from(), linc.getId_to(), "―"));
-                idgraph++;
-            }
-
-
-            if ((allBlocs.get(linc.getId_from()).getType() == BlocTypes.RECT || allBlocs.get(linc.getId_from()).getType() == BlocTypes.BEGIN) && allBlocs.get(linc.getId_to()).getType() == BlocTypes.RHOMB) {
-                searchRectBloc(linc.getId_to(), linc.getId_from(), "");
-                idgraph++;
-            }
-        }
-
-
-        for (GraphLink gl1 : allGraphLinks.values()) {
-            for (GraphLink gl2 : allGraphLinks.values()) {
-                {
-                    if (gl1 != gl2) {
-                        if (gl1.getId_to() == gl2.getId_from() && gl1.getId_from() == gl2.getId_to()) {
-                            if (!gl1.isCycle() && !gl2.isCycle()) {
-                                gl1.setCycle(true);
-                                gl2.setCycle(true);
-                            }
-                        }
-
-                    }
-                }
-
-            }
-            if (allBlocs.get(gl1.getId_from()).getType() == BlocTypes.BEGIN || allBlocs.get(gl1.getId_from()).getType() == BlocTypes.END)
-                gl1.setCycle(true);
 
         }
-
+        blocsUseInGraph = new GraphObj[allGraphsObjs.size()];
+        allGraphsObjs.values().toArray(blocsUseInGraph);
+        createMatrixSumig();
+        createMatrixLink();
     }
 
-    void searchRectBloc(int to, int from, String t) {
+    int searchRectBloc(int to, int from, String t, int position) {
         int id_to = to;
         String text = t;
         Link link;
+        int pos = position;
 
 
         if (allBlocs.get(to).getType() == BlocTypes.RHOMB) {
-            link = searchLinc(id_to, true);
+            link = searchLink(id_to, true);
 
             if (allBlocs.get(link.getId_to()).getType() == BlocTypes.RECT || allBlocs.get(link.getId_to()).getType() == BlocTypes.END) {
 
                 id_to_from_rhombs = id_to;
-                allGraphLinks.put(idgraph, new GraphLink(idgraph, from, link.getId_to(), text + "(not " + allBlocs.get(to).getText() + ")"));
-                idgraph++;
+                linkMatrixL.put(pos, new GraphLink(pos, from, link.getId_to(), text + "(not " + allBlocs.get(to).getText() + ")"));
+                pos++;
             } else
-                searchRectBloc(link.getId_to(), from, text + "(not" + allBlocs.get(to).getText() + ")");
+               pos =  searchRectBloc(link.getId_to(), from, text + "(not" + allBlocs.get(to).getText() + ")", pos);
 
-
-            link = searchLinc(id_to, false);
+            link = searchLink(id_to, false);
 
             if (allBlocs.get(link.getId_to()).getType() == BlocTypes.RECT || allBlocs.get(link.getId_to()).getType() == BlocTypes.END) {
-                allGraphLinks.put(idgraph, new GraphLink(idgraph, from, link.getId_to(), text + allBlocs.get(to).getText()));
+                linkMatrixL.put(pos, new GraphLink(pos, from, link.getId_to(), text + allBlocs.get(to).getText()));
                 id_to_from_rhombs = id_to;
-                idgraph++;
+                pos++;
 
             } else
-                searchRectBloc(link.getId_to(), from, text + allBlocs.get(to).getText());
+               pos = searchRectBloc(link.getId_to(), from, text + allBlocs.get(to).getText(), pos);
         } else {
-            allGraphLinks.put(idgraph, new GraphLink(idgraph, from, to, text + allBlocs.get(to).getText()));
-            idgraph++;
+            linkMatrixL.put(pos, new GraphLink(pos, from, to, text + allBlocs.get(to).getText()));
+            pos++;
         }
 
-
+        return pos;
     }
 
-    Link searchLinc(int id_to, boolean f_point) {
+    Link searchLink(int id_to, boolean f_point) {
         for (Link link : allLinks.values()) {
             if (link.getId_from() == id_to && link.isF_point() == f_point)
                 return link;
@@ -1012,47 +972,229 @@ public class Model {
         return null;
     }
 
-    void coddingFraph() {
-        int cellSize = 3;
-        String tmoCode = "";
+
+    HashSet<String> allcode = new HashSet<>();
+
+    void coddingGraph(int size) {
+        //int cellSize =
+        int cellSize = size;
+        String tmpCode = "";
         for (int i = 0; i < cellSize; i++) {
-            tmoCode += '0';
+            tmpCode += '0';
         }
+
         for (GraphObj obj : allGraphsObjs.values()) {
-            if (allBlocs.get(obj.getId()).getType() == BlocTypes.BEGIN || allBlocs.get(obj.getId()).getType() == BlocTypes.END) {
-                obj.setCode(tmoCode);
+            if (allcode.size() == 0) {
+                obj.setCode(tmpCode);
+                allcode.add(tmpCode);
             }
-
-
-        }
-        HashMap<Integer, ArrayList<Integer>> cycle;
-        for (GraphLink obj : allGraphLinks.values()) {
-            if (obj.isCycle()) ;
-
+            codiingObj(obj, size);
         }
 
 
     }
 
-    int[][] createMatrixLinc() {
+    void codiingObj(GraphObj obj, int size) {
+        ArrayList<String> allsusidcode = new ArrayList<>();
+        ArrayList<String> allNotUsecode = new ArrayList<>();
+        for (int i = 0; i < size; i++) {
+            allsusidcode.add(replaceChar(obj.code, i));
+        }
+        for (int i = 0; i < size; i++) {
+            if (!allcode.contains(allsusidcode.get(i)))
+                allNotUsecode.add(allsusidcode.get(i));
+        }
+
+
+        int i = 0;
+        for (GraphLink link : linkMatrixL.values()) {
+            if (link.getId_to() != link.getId_from()) {
+                if (link.id_from == obj.getId()) {
+                    allGraphsObjs.get(link.getId_to()).setCode(allNotUsecode.get(i));
+                    i++;
+                    if (i == allNotUsecode.size())
+                        break;
+                }
+
+                if (link.getId_to() == obj.getId()) {
+                    allGraphsObjs.get(link.getId_from()).setCode(allNotUsecode.get(i));
+                    i++;
+                    if (i == allNotUsecode.size())
+                        break;
+                }
+
+            }
+
+
+        }
+        for (int j = 0; j < i; j++) {
+            allcode.add(allNotUsecode.get(j));
+        }
+        for (GraphLink link : linkMatrixL.values()) {
+            if (link.getId_to() != link.getId_from()) {
+                if (link.id_from == obj.getId()) {
+                    codiingObj(allGraphsObjs.get(link.id_to), size);
+                }
+
+                if (link.getId_to() == obj.getId()) {
+                    codiingObj(allGraphsObjs.get(link.id_from), size);
+                }
+
+            }
+
+        }
+        for (GraphLink link : linkMatrixL.values()) {
+            if (link.getId_to() != link.getId_from()) {
+                if (link.id_from == obj.getId()) {
+                    if (allGraphsObjs.get(link.id_to).code == null)
+
+                        size++;
+                    coddingGraph(size);
+                }
+
+                if (link.getId_to() == obj.getId()) {
+                    if (allGraphsObjs.get(link.id_from).code == null)
+                        size++;
+                    coddingGraph(size);
+                }
+            }
+
+        }
+
+    }
+
+
+    private String replaceChar(String code, int index) {
+        char[] array = code.toCharArray();
+        String res = code;
+        char c = res.charAt(index);
+        if (c == '1')
+            c = '0';
+        else c = '1';
+
+        array[index] = c;
+        res = "";
+        for (int i = 0; i < array.length; i++) {
+            res += array[i];
+        }
+        return res;
+
+    }
+
+
+   public String[] createMatrixSumig() {
         int size = allBlocs.size();
-        BlocObj[] blocs = new BlocObj[size];
-        int[][] matrix = new int[size][size];
-        allBlocs.values().toArray(blocs);
+
+        BlocObj[] blocksMatrixS = new BlocObj[size];
+        allBlocs.values().toArray(blocksMatrixS);
+
+        matrixS = new String[size][size];
+        for (int i = 0; i < size; i++) {
+            Arrays.fill(matrixS[i], " ");
+        }
         for (int i = 0; i < size; i++) {
             for (Link link : allLinks.values()) {
-                if (link.getId_from() == blocs[i].getId()) {
+                if (link.getId_from() == blocksMatrixS[i].getId()) {
                     for (int j = 0; j < size; j++) {
-                        if (blocs[j].getId() == link.getId_to())
-                            matrix[i][j] = 1;
+                        if (blocksMatrixS[j].getId() == link.getId_to())
+                            matrixS[i][j] = "1";
                     }
                 }
             }
         }
 
-        return matrix;
+        return getStringMatrix(matrixS, blocksMatrixS);
     }
 
+
+    public String[] createMatrixLink() {
+        //знаходжу всі обєкти графа (allGraphsObjs)
+        searchBlocksForGraph();
+
+        int size = 0;
+        List<BlocObj> list = new ArrayList<>();
+        for (GraphObj obj : allGraphsObjs.values()) {
+            if (allBlocs.get(obj.getId()).getType() != BlocTypes.RHOMB) {
+                size++;
+                list.add(allBlocs.get(obj.getId()));
+            }
+        }
+
+        BlocObj[] blocksMatrixL = new BlocObj[size];
+        list.toArray(blocksMatrixL);
+
+        matrixL = new String[size][size];
+
+        for (int i = 0; i < size; i++) {
+            Arrays.fill(matrixL[i], " ");
+        }
+
+        int position = 0;
+
+        for (Link linc : allLinks.values()) {
+            if (allBlocs.get(linc.getId_from()).getType() == BlocTypes.RECT && allBlocs.get(linc.getId_to()).getType() == BlocTypes.RECT) {
+                linkMatrixL.put(position, new GraphLink(position, linc.getId_from(), linc.getId_to(), "―"));
+                position++;
+            }
+            if (allBlocs.get(linc.getId_from()).getType() == BlocTypes.BEGIN && allBlocs.get(linc.getId_to()).getType() == BlocTypes.RECT) {
+                linkMatrixL.put(position, new GraphLink(position, linc.getId_from(), linc.getId_to(), "―"));
+                position++;
+            }
+            if (allBlocs.get(linc.getId_from()).getType() == BlocTypes.RECT && allBlocs.get(linc.getId_to()).getType() == BlocTypes.END) {
+               linkMatrixL.put(position, new GraphLink(position, linc.getId_from(), linc.getId_to(), "―"));
+                position++;
+            }
+
+            if ((allBlocs.get(linc.getId_from()).getType() == BlocTypes.RECT || allBlocs.get(linc.getId_from()).getType() == BlocTypes.BEGIN) && allBlocs.get(linc.getId_to()).getType() == BlocTypes.RHOMB) {
+                position =  searchRectBloc(linc.getId_to(), linc.getId_from(), "", position);
+                position++;
+            }
+        }
+
+        for (int i = 0; i < size; i++) {
+            for (GraphLink link : linkMatrixL.values()) {
+                if (link.getId_from() == blocksMatrixL[i].getId()) {
+                    for (int j = 0; j < size; j++) {
+                        if (blocksMatrixL[j].getId() == link.getId_to()) {
+                            matrixL[i][j] = link.getText();
+                            if (matrixL[i][j].equals("―"))
+                                matrixL[i][j] = "1";
+                        }
+
+                    }
+                }
+            }
+        }
+
+        return getStringMatrix(matrixL, blocksMatrixL);
+    }
+
+
+    private String[] getStringMatrix(String[][] input, BlocObj[] blocs) {
+
+        List<String> list = new ArrayList<>();
+
+
+        String[][] res = input;
+        BlocObj[] myblocs = blocs;
+
+        list.add(" ");
+        for (int i = 0; i < myblocs.length; i++) {
+            list.add(myblocs[i].getText());
+        }
+
+
+        for (int i = 0; i < res.length; i++) {
+
+            list.add(myblocs[i].getText());
+            for (int j = 0; j < res.length; j++) {
+                list.add(res[i][j]);
+            }
+
+        }
+        String[] result = new String[list.size()];
+        return list.toArray(result);
+    }
 
 
     public HashMap<Integer, GraphObj> getAllGraphsObjs() {
@@ -1063,12 +1205,12 @@ public class Model {
         this.allGraphsObjs = allGraphsObjs;
     }
 
-    public HashMap<Integer, GraphLink> getAllGraphLinks() {
-        return allGraphLinks;
+    public HashMap<Integer, GraphLink> getlinkMatrixL() {
+        return linkMatrixL;
     }
 
-    public void setAllGraphLinks(HashMap<Integer, GraphLink> allGraphLinks) {
-        this.allGraphLinks = allGraphLinks;
+    public void setlinkMatrixL(HashMap<Integer, GraphLink> linkMatrixL) {
+        this.linkMatrixL = linkMatrixL;
     }
 
 

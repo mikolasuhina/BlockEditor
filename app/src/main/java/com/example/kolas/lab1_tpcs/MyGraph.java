@@ -1,5 +1,7 @@
 package com.example.kolas.lab1_tpcs;
 
+import com.example.kolas.lab1_tpcs.blocs.BlocObj;
+
 import java.io.Serializable;
 import java.util.HashMap;
 
@@ -8,12 +10,16 @@ import java.util.HashMap;
  */
 
 public class MyGraph implements Serializable {
-    HashMap<Integer, GraphObj> allGraphsObjs;
-    HashMap<Integer, GraphLink> allGraphLinks;
-
-    public MyGraph(HashMap<Integer, GraphObj> allGraphsObjs, HashMap<Integer, GraphLink> allGraphLinks) {
-        this.allGraphsObjs = allGraphsObjs;
+    public MyGraph(String[][] allGraphLinks, GraphObj[] graphObjs) {
         this.allGraphLinks = allGraphLinks;
+        mGraphObjs = graphObjs;
+
     }
+
+    String [][]  allGraphLinks;
+    GraphObj [] mGraphObjs;
+
+
+
 
 }
