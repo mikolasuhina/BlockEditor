@@ -39,7 +39,6 @@ import java.io.ObjectInputStream;
 
 public class MainActivity extends AppCompatActivity implements View.OnTouchListener, View.OnClickListener {
     FrameLayout frame;
-    Button b;
     DialogEditName editName;
     final String LOG_TAG = "myLogs";
     public static boolean isblocfrom;
@@ -50,7 +49,6 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
     public MySurfaceView fsurface;
 
     public Model model;
-
 
 
     @Override
@@ -160,22 +158,21 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
 
             }
             case R.id.save: {
-                new DialogSave(model.saveToFile(),1).show(getFragmentManager(), "DialogSaveDiagram");
+                new DialogSave(model.saveToFile(), 1).show(getFragmentManager(), "DialogSaveDiagram");
                 break;
 
             }
             case R.id.saveGraph: {
                 model.searchError();
-                if(!model.errors)
-                    new DialogSave(model.getGraph(),2).show(getFragmentManager(), "DialogSaveGraph");
+                if (!model.errors)
+                    new DialogSave(model.getGraph(), 2).show(getFragmentManager(), "DialogSaveGraph");
                 else Toast.makeText(context, "Виправте помилки", Toast.LENGTH_SHORT).show();
 
                 break;
 
             }
             case R.id.show_matrix: {
-                model.createGraph();
-                new DialogShowMatrix(model.getStringMatrix(model.matrixLGraph,model.blocksMatrixLGraph),model.createMatrixLink()).show(getFragmentManager(), "DialogSaveGraph");
+                new DialogShowMatrix(model.createMatrixSumig(), model.createMatrixLink()).show(getFragmentManager(), "DialogSaveGraph");
                 break;
 
             }
@@ -185,12 +182,11 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
                 break;
             }
             case R.id.graph: {
-                model.createGraph();
-          //      model.coddingGraph((int) (Math.log10(model.allGraphsObjs.size())/Math.log10(2))); m
                 model.searchError();
-                if(!model.errors)
-                fsurface.draw(MySurfaceView.DRAW_GRAPH);
-                else Toast.makeText(context, "Виправте помилки", Toast.LENGTH_SHORT).show();
+                if (!model.errors) {
+                    model.createGraph();
+                    fsurface.draw(MySurfaceView.DRAW_GRAPH);
+                } else Toast.makeText(context, "Виправте помилки", Toast.LENGTH_SHORT).show();
                 break;
             }
             case R.id.open: {
@@ -198,7 +194,6 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
                 Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
                 intent.setType("file/*");
                 startActivityForResult(intent, 1);
-
                 break;
 
             }
@@ -219,7 +214,6 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
             }
             case R.id.delete: {
                 model.delete();
-
                 fsurface.draw(MySurfaceView.DRAW_DIAGRAM);
                 break;
 
@@ -228,10 +222,9 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
                 model.setShowGraph(true);
                 model.createGraph();
                 model.searchError();
-                if(!model.errors)
+                if (!model.errors)
                     fsurface.draw(MySurfaceView.DRAW_DIAGRAM);
                 else Toast.makeText(context, "Виправте помилки", Toast.LENGTH_SHORT).show();
-
                 model.setShowGraph(false);
                 break;
 

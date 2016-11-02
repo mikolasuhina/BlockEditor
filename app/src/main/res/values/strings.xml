@@ -1,3 +1,23 @@
 <resources>
-    <string name="app_name">Лабораторна робота №1</string>
+    <string name="app_name">Flowcharts</string>
+    <string name="default_name_file">Name</string>
+    <string name="save">Зберегти</string>
+    <string name="showmatrix">ShowMatrix</string>
+    <string name="update">update</string>
+    <string name="ograph">oGraph</string>
+    <string name="state">State</string>
+    <string name="sgraph">sGraph</string>
+    <string name="error">Error</string>
+    <string name="save_file">Save</string>
+    <string name="clear">Clear</string>
+    <string name="d_bloc">D_Bloc</string>
+    <string name="d_link">D_Link</string>
+    <string name="text">Text</string>
+    <string name="rect">Rect</string>
+    <string name="rhomb">rhomb</string>
+    <string name="begin">begin</string>
+    <string name="link">link</string>
+    <string name="menu">Menu</string>
+    <string name="select_point">виберіть потрібну точку</string>
+    <string name="ok">OK</string>
 </resources>

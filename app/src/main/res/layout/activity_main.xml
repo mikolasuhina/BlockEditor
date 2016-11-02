@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              xmlns:tools="http://schemas.android.com/tools"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent"
-
-              android:orientation="vertical"
-              tools:context="com.example.kolas.lab1_tpcs.MainActivity">
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#000000"
+    android:orientation="vertical"
+    tools:context="com.flowcharts.kolas.labs_tpcs.MainActivity">
 
 
     <LinearLayout
@@ -15,78 +16,90 @@
         android:layout_height="wrap_content"
         android:background="#2efe17"
         android:orientation="vertical">
+
         <HorizontalScrollView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content">
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
 
-            <Button
-                android:id="@+id/save"
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:drawableLeft="@drawable/save"
-                android:onClick="onClick"
-                android:text="Save"/>
+                android:orientation="horizontal">
 
-            <Button
-                android:id="@+id/open"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:drawableLeft="@drawable/open"
-                android:onClick="onClick"
-                android:text="Open"/>
+                <Button
+                    android:id="@+id/save"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:drawableLeft="@drawable/save"
+                    android:onClick="onClick"
+                    android:text="@string/save_file"/>
 
-            <Button
-                android:id="@+id/error"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:drawableLeft="@drawable/error"
-                android:onClick="onClick"
-                android:text="Error"/>
+                <Button
+                    android:id="@+id/open"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:drawableLeft="@drawable/open"
+                    android:onClick="onClick"
+                    android:text="Open"/>
 
-            <Button
-                android:id="@+id/graph"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:onClick="onClick"
-                android:text="Graph"/>
-            <Button
-                android:id="@+id/state"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:onClick="onClick"
-                android:text="State"/>
+                <Button
+                    android:id="@+id/error"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:drawableLeft="@drawable/error"
+                    android:onClick="onClick"
+                    android:text="@string/error"/>
 
-            <Button
-                android:id="@+id/saveGraph"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:onClick="onClick"
-                android:text="sGraph"/>
-            <Button
-                android:id="@+id/openGraph"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:onClick="onClick"
-                android:text="oGraph"/>
-            <Button
-                android:id="@+id/update"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:onClick="onClick"
-                android:text="update"/>
-            <Button
-                android:id="@+id/show_matrix"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:onClick="onClick"
-                android:text="ShowMatrix"/>
+                <Button
+                    android:id="@+id/graph"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:onClick="onClick"
+                    android:drawableLeft="@drawable/create_graph"
+                    android:text="Graph"/>
+
+                <Button
+                    android:id="@+id/state"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:onClick="onClick"
+                    android:drawableLeft="@drawable/state"
+                    android:text="@string/state"/>
+
+                <Button
+                    android:id="@+id/saveGraph"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:onClick="onClick"
+                    android:drawableLeft="@drawable/save"
+                    android:text="@string/sgraph"/>
+
+                <Button
+                    android:id="@+id/openGraph"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:onClick="onClick"
+                    android:drawableLeft="@drawable/open"
+                    android:text="@string/ograph"/>
+
+                <Button
+                    android:id="@+id/update"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:onClick="onClick"
+                    android:drawableLeft="@drawable/update"
+                    android:text="@string/update"/>
+
+                <Button
+                    android:drawableLeft="@drawable/show_matrix"
+                    android:id="@+id/show_matrix"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:onClick="onClick"
+                    android:text="@string/showmatrix"/>
 
 
-        </LinearLayout>
+            </LinearLayout>
         </HorizontalScrollView>
 
         <LinearLayout
@@ -100,7 +113,7 @@
                 android:layout_height="wrap_content"
                 android:drawableRight="@drawable/clear"
                 android:onClick="onClick"
-                android:text="Clear"/>
+                android:text="@string/clear"/>
 
             <Button
 
@@ -109,7 +122,7 @@
                 android:layout_height="wrap_content"
                 android:drawableRight="@drawable/delete"
                 android:onClick="onClick"
-                android:text="D_Bloc"/>
+                android:text="@string/d_bloc"/>
 
             <Button
                 android:id="@+id/d_linc"
@@ -117,7 +130,7 @@
                 android:layout_height="wrap_content"
                 android:drawableRight="@drawable/delete_link"
                 android:onClick="onClick"
-                android:text="D_Link"/>
+                android:text="@string/d_link"/>
 
             <Button
                 android:id="@+id/settext"
@@ -125,7 +138,7 @@
                 android:layout_height="wrap_content"
                 android:drawableRight="@drawable/text"
                 android:onClick="onClick"
-                android:text="Text"/>
+                android:text="@string/text"/>
 
         </LinearLayout>
     </LinearLayout>
@@ -153,7 +166,7 @@
                     android:layout_height="wrap_content"
                     android:drawableBottom="@drawable/rect"
                     android:onClick="onClick"
-                    android:text="Rect"/>
+                    android:text="@string/rect"/>
 
                 <Button
                     android:id="@+id/rhomb"
@@ -161,7 +174,7 @@
                     android:layout_height="wrap_content"
                     android:drawableBottom="@drawable/rhomb"
                     android:onClick="onClick"
-                    android:text="rhomb"/>
+                    android:text="@string/rhomb"/>
 
                 <Button
                     android:id="@+id/begin"
@@ -169,7 +182,7 @@
                     android:layout_height="wrap_content"
                     android:drawableBottom="@drawable/oval"
                     android:onClick="onClick"
-                    android:text="begin"/>
+                    android:text="@string/begin"/>
 
                 <Button
                     android:id="@+id/end"
@@ -185,7 +198,7 @@
                     android:layout_height="wrap_content"
                     android:drawableBottom="@drawable/link"
                     android:onClick="onClick"
-                    android:text="link"/>
+                    android:text="@string/link"/>
 
                 <FrameLayout
                     android:layout_width="match_parent"
@@ -198,7 +211,7 @@
                         android:layout_gravity="right"
                         android:drawableRight="@drawable/menu"
                         android:onClick="onClick"
-                        android:text="Menu"/>
+                        android:text="@string/menu"/>
                 </FrameLayout>
             </LinearLayout>
 

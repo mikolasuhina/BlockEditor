@@ -240,12 +240,14 @@ public class MySurfaceView extends SurfaceView implements
 
         for (GraphObj o : graphObjs) {
             p.setColor(Color.WHITE);
-            c.drawCircle(o.center_x, o.center_y, o.radius, p);
+            if(o.getCode()!=null)
+                c.drawText(o.getCode(),o.center_x, (float) (o.center_y-o.radius*1.2),p);            c.drawCircle(o.center_x, o.center_y, o.radius, p);
             p.setColor(Color.BLACK);
 
             c.drawText(o.top_text, o.center_x, o.center_y - p.getTextSize(), p);
             c.drawText("―", o.center_x, o.center_y, p);
             c.drawText(o.getBottom_text(), o.center_x, o.center_y + p.getTextSize(), p);
+
             if (o.code != null) {
                 c.drawText(o.code, o.center_x + o.radius, o.center_y - o.radius, p);
             }

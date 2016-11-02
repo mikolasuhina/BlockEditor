@@ -14,7 +14,28 @@ public class BlockObj {
     String text;
     String text_state;
     boolean delete;
+    String code;
+    String parrentCode;
 
+
+
+
+
+    public String getCode() {
+        return code;
+    }
+
+    public void setCode(String code) {
+        this.code = code;
+    }
+
+    public String getParrentCode() {
+        return parrentCode;
+    }
+
+    public void setParrentCode(String parrentCode) {
+        this.parrentCode = parrentCode;
+    }
     public String getText_state() {
         return text_state;
     }

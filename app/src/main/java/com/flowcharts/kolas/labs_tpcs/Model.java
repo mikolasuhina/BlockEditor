@@ -60,7 +60,7 @@ public class Model {
     MainActivity mainActivity;
 
 
-    float centers;
+    static float  centers;
     float centerL;
     float centerR;
 
@@ -971,117 +971,14 @@ public class Model {
             graphObjs[i].setAngle((float) ((2 * Math.PI / count) * i));
 
         }
+       CodeGraph codeGraph =  new CodeGraph(matrixLGraph,blocksMatrixLGraph,graphObjs);
+        matrixLGraph = codeGraph.getMatrixLGraph().clone();
+        graphObjs = codeGraph.getGraphObjcts().clone();
 
 
     }
 
-    HashSet<String> allcode = new HashSet<>();
 
-    /* void coddingGraph(int size) {
-         //int cellSize =
-         int cellSize = size;
-         String tmpCode = "";
-         for (int i = 0; i < cellSize; i++) {
-             tmpCode += '0';
-         }
-
-         for (GraphObj obj : allGraphsObjs.values()) {
-             if (allcode.size() == 0) {
-                 obj.setCode(tmpCode);
-                 allcode.add(tmpCode);
-             }
-             codiingObj(obj, size);
-         }
-
-
-     }
-
-     void codiingObj(GraphObj obj, int size) {
-         ArrayList<String> allsusidcode = new ArrayList<>();
-         ArrayList<String> allNotUsecode = new ArrayList<>();
-         for (int i = 0; i < size; i++) {
-             allsusidcode.add(replaceChar(obj.code, i));
-         }
-         for (int i = 0; i < size; i++) {
-             if (!allcode.contains(allsusidcode.get(i)))
-                 allNotUsecode.add(allsusidcode.get(i));
-         }
-
-
-         int i = 0;
-         for (GraphLink link : linkMatrixL.values()) {
-             if (link.getId_to() != link.getId_from()) {
-                 if (link.id_from == obj.getId()) {
-                     allGraphsObjs.get(link.getId_to()).setCode(allNotUsecode.get(i));
-                     i++;
-                     if (i == allNotUsecode.size())
-                         break;
-                 }
-
-                 if (link.getId_to() == obj.getId()) {
-                     allGraphsObjs.get(link.getId_from()).setCode(allNotUsecode.get(i));
-                     i++;
-                     if (i == allNotUsecode.size())
-                         break;
-                 }
-
-             }
-
-
-         }
-         for (int j = 0; j < i; j++) {
-             allcode.add(allNotUsecode.get(j));
-         }
-         for (GraphLink link : linkMatrixL.values()) {
-             if (link.getId_to() != link.getId_from()) {
-                 if (link.id_from == obj.getId()) {
-                     codiingObj(allGraphsObjs.get(link.id_to), size);
-                 }
-
-                 if (link.getId_to() == obj.getId()) {
-                     codiingObj(allGraphsObjs.get(link.id_from), size);
-                 }
-
-             }
-
-         }
-         for (GraphLink link : linkMatrixL.values()) {
-             if (link.getId_to() != link.getId_from()) {
-                 if (link.id_from == obj.getId()) {
-                     if (allGraphsObjs.get(link.id_to).code == null)
-
-                         size++;
-                     coddingGraph(size);
-                 }
-
-                 if (link.getId_to() == obj.getId()) {
-                     if (allGraphsObjs.get(link.id_from).code == null)
-                         size++;
-                     coddingGraph(size);
-                 }
-             }
-
-         }
-
-     }
-
- */
-    private String replaceChar(String code, int index) {
-        char[] array = code.toCharArray();
-        String res = code;
-        char c = res.charAt(index);
-        if (c == '1')
-            c = '0';
-        else c = '1';
-
-        array[index] = c;
-        res = "";
-        for (int i = 0; i < array.length; i++) {
-            res += array[i];
-        }
-        return res;
-
-    }
 
 
     public String[] createMatrixSumig() {

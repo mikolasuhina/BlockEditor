@@ -25,7 +25,7 @@
             android:layout_height="wrap_content"
             android:background="@drawable/bg_title"
             android:padding="10dp"
-            android:text="НАЖИВКА"
+            android:text="@string/select_point"
             android:textSize="18sp"
             android:textColor="@android:color/white"
             android:gravity="center_vertical|center_horizontal" />
@@ -50,7 +50,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="6dp"
-            android:text="OK"
+            android:text="@string/ok"
             android:id="@+id/eatexitbtn"
             android:textColor="@android:color/white"
             />
