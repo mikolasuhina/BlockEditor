@@ -972,6 +972,7 @@ public class Model {
 
         }
        CodeGraph codeGraph =  new CodeGraph(matrixLGraph,blocksMatrixLGraph,graphObjs);
+
         matrixLGraph = codeGraph.getMatrixLGraph().clone();
         graphObjs = codeGraph.getGraphObjcts().clone();
 

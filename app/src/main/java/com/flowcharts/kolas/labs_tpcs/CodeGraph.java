@@ -19,6 +19,7 @@ public class CodeGraph {
     String[][] matrixLGraph;
     BlockObj[] blockObjcts;
     GraphObj[] graphObjcts;
+    public String condition;
     public static final String RESTART = "restart";
     public static final String SUCCESSFUL = "successful";
     int beginIndex;
@@ -59,6 +60,7 @@ public class CodeGraph {
         this.graphObjcts = graphObjcts;
     }
 
+
     void coddingGraph(int size) {
 
         int cellSize = size;
@@ -76,10 +78,12 @@ public class CodeGraph {
 
             for (int i = 0; i < count; i++) {
                 if (!matrixLGraph[i][beginIndex].equals(Model.NULL)) {
-                    if (!isCorrectCodes(beginCode, graphObjcts[i].getCode())) {
+                    if (!isCorrectCodes(beginCode, graphObjcts[i].getCode()) && !beginCode.equals(graphObjcts[i].getCode())) {
                         String curentCode = new String(graphObjcts[i].getCode());
-                        matrixLGraph[i][beginIndex]=Model.NULL;
+                        condition = matrixLGraph[i][beginIndex];
+                        matrixLGraph[i][beginIndex] = Model.NULL;
                         addingNewGrapfObj(curentCode, beginCode, graphObjcts[i].top_text, i);
+
                     }
                 }
             }
@@ -124,10 +128,11 @@ public class CodeGraph {
         }
         //додвання стопчика
         for (int i = 0; i < newLenght; i++) {
-            if (i == from)
-                newgraphMatrixL[i][to] = Model.ONE;
-
-            else
+            if (i == from) {
+                if (isConditioninMatrix(condition))
+                    newgraphMatrixL[i][to] = Model.ONE;
+                else newgraphMatrixL[i][to] = condition;
+            } else
                 newgraphMatrixL[i][to] = Model.NULL;
 
         }
@@ -148,40 +153,78 @@ public class CodeGraph {
                 listOfCodes.add(replaceChar(mCurentCode, j));
         }
         //максимальний id
-        int max = getMaxId(graphObjcts);
+        int max = getMaxId(graphObjcts) + addingGraphObj.size();
         //попередня довжина всіх кодів
         int preCount = allcode.size();
         for (int j = 0; j < listOfCodes.size(); j++) {
             //якщо не містить, додаєм новий код і виходим
             if (!allcode.contains(listOfCodes.get(j))) {
                 String tmp = listOfCodes.get(j);
+
                 allcode.add(tmp);
-                addingGraphObj.add(new GraphObj(max + 1, topText += "'", Model.NULL));
-                matrixLGraph = addNewRowToMatrix(from,matrixLGraph.length).clone();
-                if (isCorrectCodes(tmp, mEndCode)){
-                    matrixLGraph[matrixLGraph.length-1][beginIndex]=Model.ONE;
+                GraphObj tmpGraph = new GraphObj(max + 1, topText += "'", Model.NULL);
+                tmpGraph.setCode(tmp);
+                addingGraphObj.add(tmpGraph);
+
+                matrixLGraph = addNewRowToMatrix(from, matrixLGraph.length).clone();
+                if (isCorrectCodes(tmp, mEndCode)) {
+                    matrixLGraph[matrixLGraph.length - 1][beginIndex] = Model.ONE;
                     return;
-                }
-                else addingNewGrapfObj(tmp, codeEnd, topText, from);
+                } else addingNewGrapfObj(tmp, codeEnd, topText, matrixLGraph.length - 1);
                 break;
             }
         }
         //якщо нічого не додано, додаєм нову вершину і збільшуєм розрядність коду на 1
         if (allcode.size() == preCount) {
+            mCurentCode += "1";
+            topText += "'";
+            codeEnd += '0';
             addCharOnewToEndCode();
-            allcode.add(mCurentCode + "1");
-            addingGraphObj.add(new GraphObj(max + 1, topText + "'", Model.NULL));
-            addingNewGrapfObj(mCurentCode + "1", codeEnd, topText + "'", matrixLGraph.length - 1);
+
+            allcode.add(mCurentCode);
+            GraphObj tmpGraph = new GraphObj(max + 1, topText, Model.NULL);
+            tmpGraph.setCode(mCurentCode);
+            addingGraphObj.add(tmpGraph);
+
+
+            matrixLGraph = addNewRowToMatrix(from, matrixLGraph.length).clone();
+            addingNewGrapfObj(mCurentCode, codeEnd, topText, matrixLGraph.length - 1);
         }
 
     }
 
     private void addCharOnewToEndCode() {
         for (int i = 0; i < allcode.size(); i++) {
-            allcode.set(i, allcode.get(i) + '0');
-            graphObjcts[i].setCode(allcode.get(i));
-        }
+            //додавання "0" до уже існуючих
+            for (int j = 0; j < graphObjcts.length; j++) {
+                if (graphObjcts[j].getCode().equals(allcode.get(i))) {
+                    graphObjcts[j].setCode(allcode.get(i) + '0');
+                    break;
+                }
+            }
+            //додавання "0" до тих, що будуть додаватись
+            for (int j = 0; j < addingGraphObj.size(); j++) {
+                if (addingGraphObj.get(j).getCode().equals(allcode.get(i))) {
+                    addingGraphObj.get(j).setCode(allcode.get(i) + '0');
+                    break;
+                }
+            }
 
+            allcode.set(i, allcode.get(i) + '0');
+
+        }
+        beginCode += '0';
+    }
+
+
+    private boolean isConditioninMatrix(String condition) {
+        for (int i = 0; i < matrixLGraph.length; i++) {
+            for (int j = 0; j < matrixLGraph.length; j++) {
+                if (condition.equals(matrixLGraph[i][j]))
+                    return true;
+            }
+        }
+        return false;
     }
 
     private int getMaxId(GraphObj[] mgraphObjcts) {
@@ -195,22 +238,19 @@ public class CodeGraph {
     }
 
     private void restart(int newSize) {
-
         allcode.clear();
         for (int i = 0; i < graphObjcts.length; i++) {
             graphObjcts[i].setCode(null);
         }
         coddingGraph(newSize);
-
-
     }
 
 
-    private boolean isCorrectCodes(String codeBegin, String parentCode) {
-        int lenght = codeBegin.length();
+    private boolean isCorrectCodes(String codeFrom, String codeTo) {
+        int lenght = codeFrom.length();
         int countDifChar = 0;
         for (int i = 0; i < lenght; i++) {
-            if (codeBegin.charAt(i) != parentCode.charAt(i))
+            if (codeFrom.charAt(i) != codeTo.charAt(i))
                 countDifChar++;
         }
         if (countDifChar == 1)
