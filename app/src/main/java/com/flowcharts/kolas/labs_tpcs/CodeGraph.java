@@ -22,7 +22,7 @@ public class CodeGraph {
     public String condition;
     public static final String RESTART = "restart";
     public static final String SUCCESSFUL = "successful";
-    int beginIndex;
+    int fromIndex;
     int count;
 
     public CodeGraph(String[][] matrixLGraph, BlockObj[] blockObjcts, GraphObj[] graphObjcts) {
@@ -30,10 +30,10 @@ public class CodeGraph {
         this.graphObjcts = graphObjcts;
         this.blockObjcts = blockObjcts;
         count = graphObjcts.length;
-        beginIndex = 0;
+        fromIndex = 0;
         for (int i = 0; i < count; i++) {
             if (blockObjcts[i].getType() == BlockTypes.BEGIN) {
-                beginIndex = i;
+                fromIndex = i;
                 break;
             }
         }
@@ -68,22 +68,25 @@ public class CodeGraph {
         for (int i = 0; i < cellSize; i++) {
             beginCode += '0';
         }
-        graphObjcts[beginIndex].setCode(beginCode);
+        graphObjcts[fromIndex].setCode(beginCode);
         allcode.add(beginCode);
 
-        String res = codding(beginIndex, beginCode);
+        String res = codding(fromIndex, beginCode);
         if (res.equals(RESTART))
             restart(size + 1);
         else {
-
             for (int i = 0; i < count; i++) {
-                if (!matrixLGraph[i][beginIndex].equals(Model.NULL)) {
-                    if (!isCorrectCodes(beginCode, graphObjcts[i].getCode()) && !beginCode.equals(graphObjcts[i].getCode())) {
-                        String curentCode = new String(graphObjcts[i].getCode());
-                        condition = matrixLGraph[i][beginIndex];
-                        matrixLGraph[i][beginIndex] = Model.NULL;
-                        addingNewGrapfObj(curentCode, beginCode, graphObjcts[i].top_text, i);
+                for (int j = 0; j < count; j++) {
+                    if (!matrixLGraph[i][j].equals(Model.NULL)) {
+                        if (!isCorrectCodes(graphObjcts[j].getCode(), graphObjcts[i].getCode()) && !graphObjcts[j].getCode().equals(graphObjcts[i].getCode())) {
+                            String fromCode = new String(graphObjcts[i].getCode());
+                            String toCode = new String(graphObjcts[j].getCode());
+                            condition = matrixLGraph[i][j];
+                            matrixLGraph[i][j] = Model.NULL;
+                            fromIndex = j;
+                            addingNewGrapfObj(fromCode, toCode, graphObjcts[i].top_text, i);
 
+                        }
                     }
                 }
             }
@@ -149,7 +152,7 @@ public class CodeGraph {
         //отримую всі можливі коди
         ArrayList<String> listOfCodes = new ArrayList<String>();
         for (int j = 0; j < mCurentCode.length(); j++) {
-            if (mCurentCode.charAt(j) == '1')
+            if (mCurentCode.charAt(j) !=mEndCode.charAt(j) )
                 listOfCodes.add(replaceChar(mCurentCode, j));
         }
         //максимальний id
@@ -168,7 +171,7 @@ public class CodeGraph {
 
                 matrixLGraph = addNewRowToMatrix(from, matrixLGraph.length).clone();
                 if (isCorrectCodes(tmp, mEndCode)) {
-                    matrixLGraph[matrixLGraph.length - 1][beginIndex] = Model.ONE;
+                    matrixLGraph[matrixLGraph.length - 1][fromIndex] = Model.ONE;
                     return;
                 } else addingNewGrapfObj(tmp, codeEnd, topText, matrixLGraph.length - 1);
                 break;
@@ -185,7 +188,6 @@ public class CodeGraph {
             GraphObj tmpGraph = new GraphObj(max + 1, topText, Model.NULL);
             tmpGraph.setCode(mCurentCode);
             addingGraphObj.add(tmpGraph);
-
 
             matrixLGraph = addNewRowToMatrix(from, matrixLGraph.length).clone();
             addingNewGrapfObj(mCurentCode, codeEnd, topText, matrixLGraph.length - 1);
@@ -213,7 +215,7 @@ public class CodeGraph {
             allcode.set(i, allcode.get(i) + '0');
 
         }
-        beginCode += '0';
+
     }
 
 
@@ -260,9 +262,10 @@ public class CodeGraph {
 
     private String codding(int index, String curentCode) {
         String code = curentCode;
-        if (index != beginIndex || allcode.size() == 1) {
-            for (int i = 0; i < count; i++) {
-                if (!matrixLGraph[index][i].equals(Model.NULL) && graphObjcts[i].getCode() == null) {
+
+        for (int i = 0; i < count; i++) {
+            if (!matrixLGraph[index][i].equals(Model.NULL))
+                if (graphObjcts[i].getCode() == null) {
                     int tmpCount = allcode.size();
                     String tmpCode = null;
                     //----------------------------
@@ -283,7 +286,7 @@ public class CodeGraph {
                         return RESTART;
 
                 }
-            }
+
         }
 
         return SUCCESSFUL;
