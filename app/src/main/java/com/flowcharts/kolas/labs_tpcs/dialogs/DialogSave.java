@@ -10,9 +10,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.flowcharts.kolas.labs_tpcs.Graph;
 import com.flowcharts.kolas.labs_tpcs.R;
+import com.flowcharts.kolas.labs_tpcs.TableActivity;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -20,6 +22,7 @@ import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
+import java.util.ArrayList;
 
 /**
  * Created by mikola on 27.09.2016.
@@ -37,6 +40,8 @@ public class DialogSave extends DialogFragment {
 
 
     final String LOG_TAG = "myLogs";
+
+
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -59,6 +64,12 @@ public class DialogSave extends DialogFragment {
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
+                if(what== TableActivity.SAVE_TABLE)
+                    try {
+                        saveTable((ArrayList<String>)file,String.valueOf(name) + ".table");
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                 dismiss();
             }
         });
@@ -73,7 +84,13 @@ public class DialogSave extends DialogFragment {
         oos.flush(); // flush the stream to insure all of the information was written to 'save_object.bin'
         oos.close();// close the stream;
     }
-
+    void saveTable(ArrayList<String> table, String name) throws IOException {
+        ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream("/sdcard/" + name)); //Select where you wish to save the file...
+        oos.writeObject(table);// write the class as an 'object'
+        oos.flush(); // flush the stream to insure all of the information was written to 'save_object.bin'
+        oos.close();// close the stream;
+        Toast.makeText(getActivity(), "Saved", Toast.LENGTH_SHORT).show();
+    }
     void writeFileSD(String file, String name) {
         // проверяем доступность SD
         if (!Environment.getExternalStorageState().equals(

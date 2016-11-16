@@ -19,6 +19,7 @@ public class CodeGraph {
     String[][] matrixLGraph;
     BlockObj[] blockObjcts;
     GraphObj[] graphObjcts;
+
     public String condition;
     public static final String RESTART = "restart";
     public static final String SUCCESSFUL = "successful";
@@ -99,7 +100,7 @@ public class CodeGraph {
             }
             graphObjcts = newGraphObjtc.clone();
 
-            int radius = 300;
+            int radius = Model.radius;
             float x;
             float y;
             int count = allcode.size();
@@ -110,7 +111,7 @@ public class CodeGraph {
                 x = ((float) (centers + radius * Math.cos((2 * Math.PI / count) * i)));
                 newGraphObjtc[i].setCenter_x(x);
                 newGraphObjtc[i].setCenter_y(y);
-                newGraphObjtc[i].setRadius(50);
+                newGraphObjtc[i].setRadius(Model.h/2);
                 if (newGraphObjtc[i].getCode() == null)
                     newGraphObjtc[i].setCode(allcode.get(i));
                 newGraphObjtc[i].setAngle((float) ((2 * Math.PI / count) * i));

@@ -97,6 +97,21 @@
                     android:layout_height="wrap_content"
                     android:onClick="onClick"
                     android:text="@string/showmatrix"/>
+                <Button
+                    android:drawableLeft="@drawable/show_matrix"
+                    android:id="@+id/show_table"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:onClick="onClick"
+                    android:text="Table"/>
+                <Button
+                    android:drawableLeft="@drawable/open"
+                    android:id="@+id/open_table"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:onClick="onClick"
+                    android:text="O_Table"/>
+
 
 
             </LinearLayout>
@@ -148,6 +163,7 @@
         android:layout_height="wrap_content">
 
         <LinearLayout
+            android:id="@+id/menu_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="#000000"

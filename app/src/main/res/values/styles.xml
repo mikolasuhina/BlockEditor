@@ -12,5 +12,5 @@
     <style name="MyAnimation.Window" parent="@android:style/Animation.Activity"><item name="android:windowEnterAnimation">@anim/fadein</item>
         <item name="android:windowExitAnimation">@anim/fadeut</item>
     </style>
-    <style name="MyCustomThemeEat" parent="@android:style/Theme.Panel"><item name="android:windowAnimationStyle">@style/MyAnimation.WindowEat</item></style><style name="MyAnimation.WindowEat" parent="@android:style/Animation.Activity"><item name="android:windowEnterAnimation">@anim/in</item><item name="android:windowExitAnimation">@anim/out</item></style>
+    <style name="MyCustomThemeEat" parent="@android:style/Theme.Panel"></style><style name="MyAnimation.WindowEat" parent="@android:style/Animation.Activity"></style>
 </resources>

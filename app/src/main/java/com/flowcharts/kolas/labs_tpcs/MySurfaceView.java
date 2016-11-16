@@ -48,7 +48,7 @@ public class MySurfaceView extends SurfaceView implements
                         canvas.drawLine(blocObj.getOut_Point().getX(), blocObj.getOut_Point().getY(), blocObj.getOut_Point().getX(), blocObj.getOut_Point().getY() - blocObj.getHeight() / 4, p);
                     if (model.isShowGraph()) {
                         p.setTextAlign(Paint.Align.LEFT);
-                        p.setTextSize(20);
+                        p.setTextSize(18);
                         canvas.drawText(blocObj.getText_state(), blocObj.getX() + blocObj.getWidth(), blocObj.getY() + blocObj.getHeight() / 2, p);
 
                     }
@@ -81,7 +81,7 @@ public class MySurfaceView extends SurfaceView implements
                     }
                     if (rb.getPointB().isUse()) {
                         p.setTextAlign(Paint.Align.CENTER);
-                        p.setTextSize(20);
+                        p.setTextSize(18);
                         canvas.drawText(String.valueOf(rb.getPointB().isType_for_rhomh()), rb.getPointB().getX(), rb.getPointB().getY(), p);
                     }
                     break;
@@ -98,7 +98,7 @@ public class MySurfaceView extends SurfaceView implements
                         canvas.drawLine(blocObj.getOut_Point().getX(), blocObj.getOut_Point().getY(), blocObj.getOut_Point().getX(), blocObj.getOut_Point().getY() - blocObj.getHeight() / 4, p);
                     if (model.isShowGraph()) {
                         p.setTextAlign(Paint.Align.LEFT);
-                        p.setTextSize(20);
+                        p.setTextSize(18);
                         canvas.drawText("Z0", blocObj.getX() + blocObj.getWidth(), blocObj.getY() + blocObj.getHeight() / 2, p);
                     }
                     break;
@@ -108,7 +108,7 @@ public class MySurfaceView extends SurfaceView implements
             }
             p.setColor(Color.RED);
             p.setTextAlign(Paint.Align.CENTER);
-            p.setTextSize(20);
+            p.setTextSize(17);
             canvas.drawText(blocObj.getText(), blocObj.getX() + blocObj.getWidth() / 2, blocObj.getY() + blocObj.getHeight() / 2, p);
         }
 
@@ -221,7 +221,7 @@ public class MySurfaceView extends SurfaceView implements
         p.setColor(Color.WHITE);
 
         p.setTextAlign(Paint.Align.CENTER);
-        p.setTextSize(20);
+        p.setTextSize(18);
         c.drawText("parsing", 0, 0, p);
 
     }
@@ -231,7 +231,7 @@ public class MySurfaceView extends SurfaceView implements
         Paint p = new Paint();
         p.setColor(Color.RED);
         p.setTextAlign(Paint.Align.CENTER);
-        p.setTextSize(20);
+        p.setTextSize(18);
         p.setColor(Color.WHITE);
 
 
@@ -262,8 +262,8 @@ public class MySurfaceView extends SurfaceView implements
                 if (!modernMatr[i][j].equals(Model.NULL)) {
                     Point p1 = new Point(graphObjs[i].center_x, graphObjs[i].center_y);
                     Point p2 = new Point(graphObjs[j].center_x, graphObjs[j].center_y);
-                    Point p_from = getCircleLineIntersectionPoint(p1, p2, p1, 50).get(1);
-                    Point p_to = getCircleLineIntersectionPoint(p1, p2, p2, 50).get(0);
+                    Point p_from = getCircleLineIntersectionPoint(p1, p2, p1, Model.h/2).get(1);
+                    Point p_to = getCircleLineIntersectionPoint(p1, p2, p2, Model.h/2).get(0);
 
                     if (!modernMatr[i][j].equals(Model.NULL)&&!modernMatr[j][i].equals(Model.NULL)) {
                         p_from = getCollCircleWithAngle(p1, p_from, (float) (Math.PI / 6));
@@ -274,7 +274,7 @@ public class MySurfaceView extends SurfaceView implements
                     if (i == j&&!modernMatr[i][j].equals(Model.NULL)) {
                         float center_x = (float) (p1.x + graphObjs[i].getRadius() * Math.cos(graphObjs[i].getAngle()));
                         float center_y = (float) (p1.y + graphObjs[i].getRadius() * Math.sin(graphObjs[i].getAngle()));
-                        c.drawCircle(center_x, center_y, 50, p);
+                        c.drawCircle(center_x, center_y, Model.h/2, p);
                         p_to = getCollCircleWithAngle(p2, new Point(center_x, center_y), (float) (-Math.PI / 3));
                         p_from = getCollCircleWithAngle(p1, new Point(center_x, center_y), (float) (-Math.PI / 3));
                         c.rotate((float) (150 + Math.toDegrees(graphObjs[i].angle)), p_to.x, p_to.y);

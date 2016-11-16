@@ -1,5 +1,6 @@
 package com.flowcharts.kolas.labs_tpcs;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Build;
 import android.support.annotation.RequiresApi;
@@ -14,6 +15,7 @@ import com.flowcharts.kolas.labs_tpcs.blocks.RhombBlock;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -49,6 +51,8 @@ public class Model {
     BlockObj[] blocksMatrixLGraph;
     BlockObj[] blocksMatrixS;
     BlockObj[] blocksMatrixL;
+    public  static ArrayList<String> conditions = new ArrayList<>();
+    public  static ArrayList<String> functions = new ArrayList<>();
 
     BlockObj thisBloc;
     Link thisLinc;
@@ -60,9 +64,29 @@ public class Model {
     MainActivity mainActivity;
 
 
-    static float  centers;
+    static float centers;
     float centerL;
     float centerR;
+    int w;
+    static int radius = 300;
+
+    public int getH() {
+        return h;
+    }
+
+    public void setH(int h) {
+        this.h = h;
+    }
+
+    public int getW() {
+        return w;
+    }
+
+    public void setW(int w) {
+        this.w = w;
+    }
+
+    public static int h;
 
     public float getCenterL() {
         return centerL;
@@ -116,8 +140,7 @@ public class Model {
     }
 
     void addingNewBloc(BlockTypes type, float x, float y) {
-        int w = 100;
-        int h = 100;
+
         if (thisBloc != null)
             thisBloc.setColor(Color.WHITE);
         switch (type) {
@@ -242,7 +265,11 @@ public class Model {
     void searshBlocForConnect() {
         for (BlockObj block : allBlocs.values()) {
             if (block.getType() != BlockTypes.END) {
-                if (!block.getOut_Point().isUse())
+                if (block.getType() == BlockTypes.RHOMB) {
+                    if (!(((RhombBlock) block).getFirst() != RhombBlock.FREE && ((RhombBlock) block).getSecond() != RhombBlock.FREE)) {
+                        block.setColor(Color.YELLOW);
+                    }
+                } else if (!block.getOut_Point().isUse())
                     block.setColor(Color.YELLOW);
             }
         }
@@ -948,7 +975,7 @@ public class Model {
         searchBlocksForGraph();
 
         int idgraph = 1;
-        int radius = 300;
+
         float x;
         float y;
         int count = blocksMatrixLGraph.length;
@@ -967,19 +994,31 @@ public class Model {
             x = ((float) (centers + radius * Math.cos((2 * Math.PI / count) * i)));
             graphObjs[i].setCenter_x(x);
             graphObjs[i].setCenter_y(y);
-            graphObjs[i].setRadius(50);
+            graphObjs[i].setRadius(w / 2);
             graphObjs[i].setAngle((float) ((2 * Math.PI / count) * i));
 
         }
-       CodeGraph codeGraph =  new CodeGraph(matrixLGraph,blocksMatrixLGraph,graphObjs);
+        conditions.clear();
+        functions.clear();
+        for (BlockObj obj:blocksMatrixS) {
+            if(obj.getType()==BlockTypes.RHOMB)
+                conditions.add(obj.getText());
+            if(obj.getType()==BlockTypes.RECT){
+                if(obj.getText().contains(","))
+                Collections.addAll(functions, obj.getText().split(","));
+                else functions.add(obj.getText());
+            }
+
+        }
+        CodeGraph codeGraph = new CodeGraph(matrixLGraph, blocksMatrixLGraph, graphObjs);
 
         matrixLGraph = codeGraph.getMatrixLGraph().clone();
         graphObjs = codeGraph.getGraphObjcts().clone();
 
+        new GenerateTable(matrixLGraph,graphObjs);
+
 
     }
-
-
 
 
     public String[] createMatrixSumig() {
@@ -1093,7 +1132,7 @@ public class Model {
         if (blocksMatrixS[curent].getType() != BlockTypes.RHOMB) {
             matrixL[from][curent] = tmp;
         } else
-
+             tmp+=',';
             for (int k = 0; k < matrixS.length; k++) {
                 if (matrixS[curent][k].equals(ONE_TRUE))
                     searchNotRhombBlock(from, k, curent, tmp, true);

@@ -2,6 +2,7 @@ package com.flowcharts.kolas.labs_tpcs;
 
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Context;
 
 import android.content.Intent;
@@ -13,6 +14,7 @@ import android.provider.MediaStore;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
@@ -35,6 +37,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.ObjectInputStream;
+import java.util.ArrayList;
 
 
 public class MainActivity extends AppCompatActivity implements View.OnTouchListener, View.OnClickListener {
@@ -48,8 +51,9 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
     public static boolean arrow = false;
     public MySurfaceView fsurface;
 
-    public Model model;
 
+    public Model model;
+    DisplayMetrics dm;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,17 +61,26 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
         setContentView(R.layout.activity_main);
         frame = (FrameLayout) findViewById(R.id.frame);
         model = new Model(this);
-
+        context = this;
         fsurface = new MySurfaceView(this, model);
         fsurface.setLayoutParams(new ActionBar.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
         frame.addView(fsurface);
         fsurface.setOnTouchListener(this);
-        context = this;
+
+        dm = new DisplayMetrics();
+        getWindowManager().getDefaultDisplay().getMetrics(dm);
+        model.setH(dm.widthPixels / 9);
+        model.setW(dm.widthPixels / 9);
+        model.setCenters(dm.widthPixels / 2);
+        model.radius = dm.widthPixels / 3;
+        model.setCenterL((float) (model.getCenters() - 2 * model.getH()));
+        model.setCenterR((float) (model.getCenters() + 2 * model.getH()));
 
         bar = (LinearLayout) findViewById(R.id.bar);
 
 
     }
+
 
     public static boolean isArrow() {
         return arrow;
@@ -118,9 +131,7 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
 
     @Override
     public void onClick(View v) {
-        model.setCenters(frame.getWidth() / 2);
-        model.setCenterL(model.getCenters() - 150);
-        model.setCenterR(model.getCenters() + 150);
+
         switch (v.getId()) {
             case R.id.line: {
                 model.searshBlocForConnect();
@@ -181,12 +192,31 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
                 fsurface.draw(MySurfaceView.DRAW_DIAGRAM);
                 break;
             }
+            case R.id.open_table: {
+                WHAT_OPEN = 3;
+                Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+                intent.setType("file/*");
+                startActivityForResult(intent, 3);
+                break;
+            }
             case R.id.graph: {
                 model.searchError();
                 if (!model.errors) {
                     model.createGraph();
                     fsurface.draw(MySurfaceView.DRAW_GRAPH);
                 } else Toast.makeText(context, "Виправте помилки", Toast.LENGTH_SHORT).show();
+                break;
+            }
+            case R.id.show_table: {
+                if (GenerateTable.tableViewData.size() != 0)
+                    startActivity(new Intent(this, TableActivity.class));
+                else {
+                    model.searchError();
+                    if (!model.errors) {
+                        model.createGraph();
+                        startActivity(new Intent(this, TableActivity.class));
+                    } else Toast.makeText(context, "Виправте помилки", Toast.LENGTH_SHORT).show();
+                }
                 break;
             }
             case R.id.open: {
@@ -202,6 +232,7 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
                 Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
                 intent.setType("file/*");
                 startActivityForResult(intent, 1);
+
                 break;
 
             }
@@ -243,9 +274,15 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
             }
             case R.id.menu: {
                 if (bar.isShown()) {
+                    bar.animate().translationY(-bar.getHeight()).start();
+                    bar.animate().alpha(0).start();
                     bar.setVisibility(View.GONE);
 
-                } else bar.setVisibility(View.VISIBLE);
+                } else {
+                    bar.animate().alpha(1).start();
+                    bar.animate().translationY(0).start();
+                    bar.setVisibility(View.VISIBLE);
+                }
                 break;
 
             }
@@ -284,6 +321,8 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
             if (WHAT_OPEN == 1)
                 new Parsing().execute(readFileSD(spath));
             if (WHAT_OPEN == 2)
+                new Parsing().execute(spath);
+            if (WHAT_OPEN == 3)
                 new Parsing().execute(spath);
 
 
@@ -329,6 +368,9 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
                 model.parseFile(params[0]);
             if (WHAT_OPEN == 2)
                 read(params[0]);
+            if (WHAT_OPEN == 3)
+                openTable(params[0]);
+
             return null;
         }
 
@@ -352,6 +394,22 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
             myGraph = (Graph) is.readObject();
             model.graphObjs = myGraph.mGraphObjs;
             model.matrixLGraph = myGraph.allGraphLinks;
+            is.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    void openTable(String path) {
+        ObjectInputStream is = null;
+        Graph myGraph = null;
+        try {
+            is = new ObjectInputStream(new FileInputStream(path));
+            GenerateTable.tableViewData = (ArrayList<String>) is.readObject();
+            startActivity(new Intent(this, TableActivity.class));
             is.close();
         } catch (IOException e) {
             e.printStackTrace();
