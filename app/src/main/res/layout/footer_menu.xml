@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/bar"
+    style="@style/MyCustomThemeEat"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@android:color/black"
+    android:layout_alignParentTop="true"
+    android:orientation="vertical"
+    android:visibility="gone"
+
+    android:gravity="center">
+
+    <HorizontalScrollView
+        android:background="@drawable/bg_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+
+            <Button
+                android:id="@+id/menu_file"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:drawableLeft="@drawable/open"
+                android:onClick="onClick"
+                android:text="FILE"/>
+
+
+            <Button
+                android:id="@+id/menu_show"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:onClick="onClick"
+                android:text="SHOW"/>
+
+            <Button
+                android:id="@+id/graph"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:drawableLeft="@drawable/create_graph"
+                android:onClick="onClick"
+                android:text="Graph"/>
+
+
+            <Button
+                android:id="@+id/update"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:drawableLeft="@drawable/update"
+                android:onClick="onClick"
+                android:text="@string/update"/>
+
+
+            <Button
+                android:id="@+id/show_table"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:drawableLeft="@drawable/show_matrix"
+                android:onClick="onClick"
+                android:text="Table"/>
+
+
+
+
+        </LinearLayout>
+    </HorizontalScrollView>
+
+    <LinearLayout
+        android:gravity="center"
+        android:background="@drawable/bg_bar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/clear"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:drawableRight="@drawable/clear"
+            android:onClick="onClick"
+            android:text="@string/clear"/>
+
+        <Button
+
+            android:id="@+id/delete"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:drawableRight="@drawable/delete"
+            android:onClick="onClick"
+            android:text="@string/d_bloc"/>
+
+        <Button
+            android:id="@+id/d_linc"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:drawableRight="@drawable/delete_link"
+            android:onClick="onClick"
+            android:text="@string/d_link"/>
+
+        <Button
+            android:id="@+id/settext"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:drawableRight="@drawable/text"
+            android:onClick="onClick"
+            android:text="@string/text"/>
+
+    </LinearLayout>
+
+</LinearLayout>

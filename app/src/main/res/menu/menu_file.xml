@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+
+    <item
+        android:id="@+id/menu_open_flow"
+        android:icon="@drawable/open"
+        android:title="Open Flowchart"/>
+    <item
+        android:id="@+id/menu_open_graph"
+        android:title="Open Graph"/>
+    <item
+        android:id="@+id/menu_open_table"
+        android:title="Open Table">
+
+    </item>
+
+    <item
+        android:id="@+id/menu_save_flowchart"
+        android:icon="@drawable/save"
+        android:title="Save Flowchart"/>
+    <item
+        android:id="@+id/menu_save_graph"
+        android:title="Save Graph"/>
+    <item
+        android:id="@+id/menu_save_table"
+        android:title="Save Table">
+
+    </item>
+
+</menu>
