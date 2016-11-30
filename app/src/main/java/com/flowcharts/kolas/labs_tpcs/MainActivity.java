@@ -86,8 +86,8 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
         menuBlocks = (HorizontalScrollView) findViewById(R.id.menu_layout);
         dm = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(dm);
-        model.setH(dm.widthPixels / 9);
-        model.setW(dm.widthPixels / 9);
+        model.setH(dm.widthPixels / 10);
+        model.setW(dm.widthPixels / 10);
         model.setCenters(dm.widthPixels / 2);
         model.radius = dm.widthPixels / 3;
         model.setCenterL((float) (model.getCenters() - 2 * model.getH()));

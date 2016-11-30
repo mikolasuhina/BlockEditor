@@ -70,6 +70,10 @@ public class DialogSave extends DialogFragment {
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
+
+                if(what ==TableActivity.SAVE_STATISTICS){
+                    writeFileSD( (String) file, "СТ_"+String.valueOf(name) + ".txt");
+                }
                 dismiss();
             }
         });

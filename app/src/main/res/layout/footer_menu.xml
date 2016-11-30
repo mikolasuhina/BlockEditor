@@ -5,17 +5,18 @@
     style="@style/MyCustomThemeEat"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@android:color/black"
     android:layout_alignParentTop="true"
+    android:background="@android:color/black"
+    android:gravity="center"
     android:orientation="vertical"
-    android:visibility="gone"
 
-    android:gravity="center">
+    android:visibility="gone">
 
     <HorizontalScrollView
-        android:background="@drawable/bg_bar"
+
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:background="@color/colorPrimary">
 
         <LinearLayout
 
@@ -67,51 +68,57 @@
                 android:text="Table"/>
 
 
-
-
         </LinearLayout>
     </HorizontalScrollView>
 
-    <LinearLayout
-        android:gravity="center"
-        android:background="@drawable/bg_bar"
-        android:layout_width="wrap_content"
+    <HorizontalScrollView
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:background="@drawable/bg_bar"
+        android:paddingLeft="20dp"
+        android:paddingRight="20dp">
 
-        <Button
-            android:id="@+id/clear"
+        <LinearLayout
+
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:drawableRight="@drawable/clear"
-            android:onClick="onClick"
-            android:text="@string/clear"/>
 
-        <Button
+            android:gravity="center"
+            android:orientation="horizontal">
 
-            android:id="@+id/delete"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:drawableRight="@drawable/delete"
-            android:onClick="onClick"
-            android:text="@string/d_bloc"/>
+            <Button
+                android:id="@+id/clear"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:drawableRight="@drawable/clear"
+                android:onClick="onClick"
+                android:text="@string/clear"/>
 
-        <Button
-            android:id="@+id/d_linc"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:drawableRight="@drawable/delete_link"
-            android:onClick="onClick"
-            android:text="@string/d_link"/>
+            <Button
 
-        <Button
-            android:id="@+id/settext"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:drawableRight="@drawable/text"
-            android:onClick="onClick"
-            android:text="@string/text"/>
+                android:id="@+id/delete"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:drawableRight="@drawable/delete"
+                android:onClick="onClick"
+                android:text="@string/d_bloc"/>
 
-    </LinearLayout>
+            <Button
+                android:id="@+id/d_linc"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:drawableRight="@drawable/delete_link"
+                android:onClick="onClick"
+                android:text="@string/d_link"/>
 
+            <Button
+                android:id="@+id/settext"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:drawableRight="@drawable/text"
+                android:onClick="onClick"
+                android:text="@string/text"/>
+
+        </LinearLayout>
+    </HorizontalScrollView>
 </LinearLayout>

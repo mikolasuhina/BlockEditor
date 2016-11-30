@@ -672,8 +672,6 @@ public class Model {
         String text = getTagString(bloc, "<text>");
 
 
-        int w = 100;
-        int h = 100;
         if (thisBloc != null)
             thisBloc.setColor(Color.WHITE);
         switch (type) {

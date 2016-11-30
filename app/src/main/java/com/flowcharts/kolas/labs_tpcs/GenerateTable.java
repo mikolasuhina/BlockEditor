@@ -1,6 +1,7 @@
 package com.flowcharts.kolas.labs_tpcs;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 
 /**
@@ -11,8 +12,10 @@ public class GenerateTable {
     private String matrixLGraph[][];
     private GraphObj[] mGraphObjs;
     private ArrayList<String[]> table = new ArrayList<>();
+
     private String conditions[];
     private String functions[];
+
     public static ArrayList<String> tableViewData = new ArrayList<>();
     public final static int columnCount = 6;
 
@@ -32,8 +35,8 @@ public class GenerateTable {
         rowTable[0] = "Перехід";
         rowTable[1] = generateLayoutState(lenght, false);
         rowTable[2] = generateLayoutState(lenght, true);
-        rowTable[3] = Model.conditions.toString();
-        rowTable[4] = Model.functions.toString();
+        rowTable[3] = Arrays.toString(conditions);
+        rowTable[4] = Arrays.toString(functions);
         rowTable[5] = generateLayoutTrigers(lenght);
         table.add(rowTable);
 
@@ -62,10 +65,12 @@ public class GenerateTable {
 
     }
 
+
+
     private String generateLayoutTrigers(int lenght) {
         String res = "";
         for (int i = 0; i < lenght; i++)
-            res += "R" + i + "S" + i+" ";
+            res += "R" + i + " S" + i+" ";
         return res;
     }
 
@@ -74,13 +79,13 @@ public class GenerateTable {
         String res = "";
         for (int i = 0; i < lenght; i++) {
             if (codeFrom.charAt(i) == '0' && codeTo.charAt(i) == '0') {
-                res += "-0 ";
+                res += "-0";
             } else if (codeFrom.charAt(i) == '1' && codeTo.charAt(i) == '0') {
-                res += "01 ";
+                res += "01";
             } else if (codeFrom.charAt(i) == '0' && codeTo.charAt(i) == '1') {
-                res += "10 ";
+                res += "10";
             } else if (codeFrom.charAt(i) == '1' && codeTo.charAt(i) == '1') {
-                res += "0- ";
+                res += "0-";
             }
         }
         return res;
@@ -147,7 +152,7 @@ public class GenerateTable {
         String res = "";
         for (int i = 0; i < length; i++) {
             if (!b) {
-                res += "Q" + i + "▼ ";
+                res += "Q" + i + " ";
             } else {
                 res += "Q" + i + "► ";
             }

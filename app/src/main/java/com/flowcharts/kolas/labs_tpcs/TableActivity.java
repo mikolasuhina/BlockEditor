@@ -22,6 +22,7 @@ import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.flowcharts.kolas.labs_tpcs.dialogs.DialogMinimizationResult;
 import com.flowcharts.kolas.labs_tpcs.dialogs.DialogSave;
 
 import java.io.FileOutputStream;
@@ -31,6 +32,7 @@ import java.util.ArrayList;
 
 public class TableActivity extends AppCompatActivity {
     public static final int SAVE_TABLE = 3;
+    public static final int SAVE_STATISTICS =4 ;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,7 +45,6 @@ public class TableActivity extends AppCompatActivity {
 
         for (int i = 0; i < GenerateTable.tableViewData.size() / GenerateTable.columnCount; i++) {
             TableRow tableRow = new TableRow(this);
-            ;
             tableRow.setLayoutParams(layoutRow);
             tableRow.setGravity(Gravity.CENTER);
             TableRow.LayoutParams layoutHistory = new TableRow.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.MATCH_PARENT);
@@ -70,7 +71,6 @@ public class TableActivity extends AppCompatActivity {
 
 
     TableLayout gvMain;
-    ArrayAdapter<String> adapter;
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -83,8 +83,9 @@ public class TableActivity extends AppCompatActivity {
         int id = item.getItemId();
         if (id == R.id.save_table) {
             new DialogSave(GenerateTable.tableViewData, SAVE_TABLE).show(getFragmentManager(), "Dialog Save Table");
-            ;
-
+        }
+        if (id == R.id.min_table) {
+            getSupportFragmentManager().beginTransaction().add(new DialogMinimizationResult(),"DialogMinimizationResult").commit();
         }
         return super.onOptionsItemSelected(item);
     }
