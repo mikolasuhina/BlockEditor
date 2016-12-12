@@ -21,6 +21,9 @@
     <string name="select_point">виберіть потрібну точку</string>
     <string name="ok">OK</string>
     <string name="menu_file">FILE</string>
+    <string name="mindata">
+  </string>
+
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>

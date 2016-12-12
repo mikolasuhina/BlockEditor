@@ -71,8 +71,8 @@ public class DialogSave extends DialogFragment {
                         e.printStackTrace();
                     }
 
-                if(what ==TableActivity.SAVE_STATISTICS){
-                    writeFileSD( (String) file, "СТ_"+String.valueOf(name) + ".txt");
+                if(what ==TableActivity.SAVE_MIN){
+                    writeFileSD( (String) file, "MIN_"+String.valueOf(name) + ".txt");
                 }
                 dismiss();
             }

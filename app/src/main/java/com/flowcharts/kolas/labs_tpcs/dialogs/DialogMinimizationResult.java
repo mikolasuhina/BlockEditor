@@ -36,7 +36,7 @@ public class DialogMinimizationResult extends DialogFragment{
                 .setNeutralButton("Зберегти", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        new DialogSave(minimization.getStaticticString(), TableActivity.SAVE_STATISTICS).show(getActivity().getFragmentManager(), "DialogSaveStat");
+                        new DialogSave(minimization.getResult(), TableActivity.SAVE_MIN).show(getActivity().getFragmentManager(), "DialogSaveStat");
                     }
                 })
                 .create()

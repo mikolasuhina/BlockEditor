@@ -32,7 +32,7 @@ import java.util.ArrayList;
 
 public class TableActivity extends AppCompatActivity {
     public static final int SAVE_TABLE = 3;
-    public static final int SAVE_STATISTICS =4 ;
+    public static final int SAVE_MIN =4 ;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

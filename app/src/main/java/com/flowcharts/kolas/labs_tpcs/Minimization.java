@@ -259,7 +259,7 @@ public class Minimization {
             result += (convertToNormalView(kern.get(i))+ ' ' + V_CHAR + ' ');
             else  result += (convertToNormalView(kern.get(i)));
         }
-        result +=(")"+'\n');
+        result +=(");"+'\n');
         position++;
     }
 
