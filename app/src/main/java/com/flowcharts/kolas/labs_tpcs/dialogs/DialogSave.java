@@ -72,7 +72,7 @@ public class DialogSave extends DialogFragment {
                     }
 
                 if(what ==TableActivity.SAVE_MIN){
-                    writeFileSD( (String) file, "MIN_"+String.valueOf(name) + ".txt");
+                    writeFileSD( (String) file, "MIN_"+String.valueOf(name) + ".vhd");
                 }
                 dismiss();
             }

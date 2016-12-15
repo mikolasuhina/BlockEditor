@@ -7,6 +7,7 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AlertDialog;
 
+import com.flowcharts.kolas.labs_tpcs.BooleanFunctionNotAndOr;
 import com.flowcharts.kolas.labs_tpcs.Minimization;
 import com.flowcharts.kolas.labs_tpcs.TableActivity;
 
@@ -19,9 +20,10 @@ public class DialogMinimizationResult extends DialogFragment{
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         final Minimization minimization = new Minimization();
+        final BooleanFunctionNotAndOr m = new BooleanFunctionNotAndOr(minimization.getResult());
         return new  AlertDialog.Builder(getActivity())
                 .setTitle("Мінімізація")
-                .setMessage(minimization.getResult())
+                .setMessage(m.generateVHDL())
                 .setPositiveButton("OK",null)
                 .setNegativeButton("Статистика", new DialogInterface.OnClickListener() {
                     @Override
@@ -36,7 +38,7 @@ public class DialogMinimizationResult extends DialogFragment{
                 .setNeutralButton("Зберегти", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        new DialogSave(minimization.getResult(), TableActivity.SAVE_MIN).show(getActivity().getFragmentManager(), "DialogSaveStat");
+                        new DialogSave(m.generateVHDL(), TableActivity.SAVE_MIN).show(getActivity().getFragmentManager(), "DialogSaveStat");
                     }
                 })
                 .create()

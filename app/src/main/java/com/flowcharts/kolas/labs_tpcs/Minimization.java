@@ -246,17 +246,17 @@ public class Minimization {
 
     private void printResult(ArrayList<String> kern) {
         if (position < lenghtFunctions) {
-            result += (templateFunctions[position] + " = (");
+            result += (templateFunctions[position] + "=(");
             statistic.add(new String[]{String.valueOf((countBlocs/countBlocsAfterMin)),
                     String.valueOf((countEnters/countEntersAfterMin)),templateFunctions[position]});
         } else {
-            result += (templateTrigers[position - lenghtFunctions] + " = ");
+            result += (templateTrigers[position - lenghtFunctions] + "=(");
             statistic.add(new String[]{String.valueOf((countBlocs/countBlocsAfterMin)),
                     String.valueOf((countEnters/countEntersAfterMin)),templateTrigers[position - lenghtFunctions]});
         }
         for (int i = 0; i <kern.size() ; i++) {
             if(i!=kern.size()-1)
-            result += (convertToNormalView(kern.get(i))+ ' ' + V_CHAR + ' ');
+            result += (convertToNormalView(kern.get(i))+ V_CHAR );
             else  result += (convertToNormalView(kern.get(i)));
         }
         result +=(");"+'\n');
@@ -270,7 +270,7 @@ public class Minimization {
               if (s.charAt(i) == ONE_CHAR)
                   result += (templateConditionsFunction.get(i) + AND_CHAR);
               else {
-                  result += ("not (" + templateConditionsFunction.get(i) + ")" + AND_CHAR);
+                  result += ("not(" + templateConditionsFunction.get(i) + ")" + AND_CHAR);
               }
           }
         }
